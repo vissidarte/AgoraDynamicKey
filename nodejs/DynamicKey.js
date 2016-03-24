@@ -22,6 +22,18 @@ var generateDynamicKey2 = function(vendorKey, signKey, channelName, unixTs, rand
     return sign + vendorKey + unixTsStr + randomIntStr+ uidStr+ expiredTsStr;
 };
 
+var generateDynamicKey3 = function(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) {
+    var version = "003";
+    var unixTsStr = unixTs.toString();  //Unix Time stamp, track time as a running total of seconds
+    var rndTxt = randomInt.toString(16);
+    var randomIntStr = ("00000000" + rndTxt).substring(rndTxt.length);
+    var uidStr = ("0000000000" + uid).substring(String(uid).length);
+    var expiredTsStr = ("0000000000" + expiredTs).substring(String(expiredTs).length);
+    var sign = generateSignature2(vendorKey, signKey, channelName, unixTsStr, randomIntStr, uidStr, expiredTsStr);
+    return version + sign + vendorKey + unixTsStr + randomIntStr+ uidStr+ expiredTsStr;
+};
+
+
 var generateSignature = function(vendorKey, signKey, channelName, unixTsStr, randomIntStr) {
     var buffer = Buffer.concat([new Buffer(vendorKey), new Buffer(unixTsStr), new Buffer(randomIntStr), new Buffer(channelName)]);
     var sign = encodeHMac(signKey, buffer);
@@ -49,3 +61,4 @@ var expiredTs=1446455471;
 
 console.log(generateDynamicKey(vendor, key, channel, ts, r));
 console.log(generateDynamicKey2(vendor, key, channel, ts, r, uid, expiredTs));
+console.log(generateDynamicKey3(vendor, key, channel, ts, r, uid, expiredTs));

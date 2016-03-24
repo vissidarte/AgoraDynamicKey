@@ -145,10 +145,30 @@ namespace agora { namespace tools {
             return ss.str();
         }
     };
-
+    struct DynamicKey3{
+        std::string signature;
+        std::string staticKey;
+        uint32_t unixTs ;
+        uint32_t randomInt;
+        uint32_t uid;
+        uint32_t expiredTs;
+        std::string toString() const
+        {
+            std::stringstream ss;
+            int version=3;
+            ss  << std::setfill ('0') << std::setw(3) << version
+                << signature
+                << staticKey
+                << std::setfill ('0') << std::setw(10) << unixTs
+                << std::setfill ('0') << std::setw(8) << std::hex << randomInt
+                << std::setfill ('0') << std::setw(10) << std::dec<< uid
+                << std::setfill ('0') << std::setw(10) << expiredTs;
+            return ss.str();
+        }
+    };
 
     static const uint32_t HMAC_LENGTH = 20;
-    std::string signChannelInfo(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt)
+    std::string generateSignature(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt)
     {
         SignatureContent signContent;
         signContent.staticKey = staticKey;
@@ -158,7 +178,7 @@ namespace agora { namespace tools {
 
         return stringToHex(singleton<crypto>::instance()->hmac_sign2(signKey, signContent.pack(), HMAC_LENGTH));
     }
-    static std::string signChannelInfo2(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs)   {
+    static std::string generateSignature2(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs)   {
         SignatureContent2 signContent;                                                                                                                                  
         signContent.staticKey = staticKey;                                                                                                                             
         signContent.unixTs = unixTs;                                                                                                                                   
@@ -173,7 +193,7 @@ namespace agora { namespace tools {
     std::string generateDynamicKey(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt)
     {
         DynamicKey dynamicKey;
-        dynamicKey.signature = signChannelInfo(staticKey, signKey, channelName, unixTs, randomInt);
+        dynamicKey.signature = generateSignature(staticKey, signKey, channelName, unixTs, randomInt);
         dynamicKey.staticKey = staticKey;
         dynamicKey.unixTs = unixTs;
         dynamicKey.randomInt = randomInt;
@@ -183,7 +203,7 @@ namespace agora { namespace tools {
     std::string generateDynamicKey2(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs)   
     {                                                                                                                                                                  
         DynamicKey2 dynamicKey;                                                                                                                                         
-        dynamicKey.signature = signChannelInfo2(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs);
+        dynamicKey.signature = generateSignature2(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs);
         dynamicKey.staticKey = staticKey;                                                                                                                  
         dynamicKey.unixTs = unixTs;                                                                                                                        
         dynamicKey.randomInt = randomInt;                                                                                                                  
@@ -192,5 +212,16 @@ namespace agora { namespace tools {
 
         return dynamicKey.toString();                                                                                                                                  
     }
+    std::string generateDynamicKey3(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs)   
+    {                                                                                                                                                                  
+        DynamicKey3 dynamicKey;                                                                                                                                         
+        dynamicKey.signature = generateSignature2(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs);
+        dynamicKey.staticKey = staticKey;                                                                                                                  
+        dynamicKey.unixTs = unixTs;                                                                                                                        
+        dynamicKey.randomInt = randomInt;                                                                                                                  
+        dynamicKey.uid = uid;                                                                                                                  
+        dynamicKey.expiredTs = expiredTs;                                                                                                                  
 
+        return dynamicKey.toString();                                                                                                                                  
+    }
 }}

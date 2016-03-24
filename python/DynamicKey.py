@@ -31,6 +31,32 @@ def generateSignaure(staticKey, signKey, channelName, unixTs, randomInt):
     signature = hmac.new(signKey, content, sha1).hexdigest()
     return signature
 
+def generateDynamicKey3(
+        staticKey,
+        signKey,
+        channelName,
+        unixTs,
+        randomInt,
+        uid,
+        expiredTs):
+    key = "\x00" * (32 - len(staticKey)) + staticKey
+    signature = generateSignaure2(
+        staticKey,
+        signKey,
+        channelName,
+        unixTs,
+        randomInt,
+        uid,
+        expiredTs)
+    version= '{0:0>3}'.format(3)
+    ret = version+str(signature) + \
+        staticKey + \
+        '{0:0>10}'.format(unixTs) + \
+        "%.8x" % (int(randomInt)) + \
+        '{:0>10}'.format(uid) + \
+        '{:0>10}'.format(expiredTs)
+    return ret
+
 
 def generateDynamicKey2(
         staticKey,
@@ -94,6 +120,15 @@ def main():
                               999,
                               1446455471
                               )
+    print generateDynamicKey3("970ca35de60c44645bbae84215061b33b",
+                              "5cfd2fd1755d40ecb72977518be15d3b",
+                              "7d72365eb983485397e3e3f9d460bdda",
+                              1446455472,
+                              58964981,
+                              999,
+                              1446455471
+                              )
+
 
 
 if __name__ == "__main__":

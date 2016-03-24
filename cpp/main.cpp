@@ -60,5 +60,10 @@ int main(int argc, char* argv[])
 	cout << "\ngenerateDynamicKey2 Result:" << endl;
 	cout << "\t" << result << endl;
 	cout << "---------------------------------------------------------------------------" << endl;
+
+	result = agora::tools::generateDynamicKey3(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs);
+	cout << "\ngenerateDynamicKey3 Result:" << endl;
+	cout << "\t" << result << endl;
+	cout << "---------------------------------------------------------------------------" << endl;
 	return 0;
 }

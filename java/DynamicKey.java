@@ -38,6 +38,16 @@ public class DynamicKey{
         System.out.println(signature);
         return String.format("%s%s%s%s%s%s", signature, vendorKey, unixTsStr, randomIntStr, uidStr, expiredTsStr);
     }
+    public static String generateDynamicKey3(String vendorKey, String signKey, String channelName, int unixTs, int randomInt, int uid, int expiredTs) throws Exception{
+        String version="003";
+        String unixTsStr = ("0000000000"+Integer.toString(unixTs)).substring(Integer.toString(unixTs).length());
+        String randomIntStr = ("00000000"+Integer.toHexString(randomInt)).substring(Integer.toHexString(randomInt).length());
+        String uidStr = ("0000000000"+Integer.toString(uid)).substring(Integer.toString(uid).length());
+        String expiredTsStr = ("0000000000"+Integer.toString(expiredTs)).substring(Integer.toString(expiredTs).length());
+        String signature = generateSignature2(vendorKey, signKey, channelName, unixTsStr, randomIntStr, uidStr, expiredTsStr);
+        System.out.println(signature);
+        return String.format("%s%s%s%s%s%s%s",version, signature, vendorKey, unixTsStr, randomIntStr, uidStr, expiredTsStr);
+    }
     private static String generateSignature(String vendorKey, String signKey, String channelName, String unixTsStr, String randomIntStr) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         baos.write(vendorKey.getBytes());
@@ -90,6 +100,8 @@ public class DynamicKey{
             System.out.println("Dyanmic key to join channel is:"+res);
             res = DynamicKey.generateDynamicKey2(vkey, signKey, cName, ts, rint, uid, expiredTs);
             System.out.println("Dyanmic key2 to join channel is:"+res);
+            res = DynamicKey.generateDynamicKey3(vkey, signKey, cName, ts, rint, uid, expiredTs);
+            System.out.println("Dyanmic key3 to join channel is:"+res);
         }catch (Exception  e){
             System.err.println("Failed to generate dynamic key");
             e.printStackTrace();
