@@ -8,7 +8,8 @@
 #include <cstddef>
 
 namespace agora { namespace tools {
-    struct L
+      static const std::string DYNAMIC_KEY_V3="003";
+      struct L
       {
           static const uint32_t HMAC_LENGTH = 20;
           static const uint32_t SIGNATURE_LENGTH = 40;
@@ -203,8 +204,7 @@ namespace agora { namespace tools {
         std::string toString() const
         {
             std::stringstream ss;
-            int version=3;
-            ss  << std::setfill ('0') << std::setw(3) << version
+            ss  << DYNAMIC_KEY_V3
                 << signature
                 << staticKey
                 << std::setfill ('0') << std::setw(10) << unixTs
