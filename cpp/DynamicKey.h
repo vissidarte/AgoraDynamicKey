@@ -1,17 +1,33 @@
 #pragma once
 
-#include <cstdio>
 #include <string>
 #include <sstream>
-#include <fstream>
 #include <openssl/hmac.h>
 #include <stdexcept>
 #include <iomanip>
-#include <stdint.h>
-#include <string.h>
-#include <iostream>
+#include <cstddef>
 
 namespace agora { namespace tools {
+    struct L
+      {
+          static const uint32_t HMAC_LENGTH = 20;
+          static const uint32_t SIGNATURE_LENGTH = 40;
+          static const uint32_t STATIC_KEY_LENGTH = 32;
+          static const uint32_t UNIX_TS_LENGTH = 10;
+          static const uint32_t RANDOM_INT_LENGTH = 8;
+          static const uint32_t UID_LENGTH = 10;
+          static const uint32_t VERSION_LENGTH = 3;
+          static const uint32_t DYNAMIC_KEY_LENGTH = SIGNATURE_LENGTH + STATIC_KEY_LENGTH + UNIX_TS_LENGTH + RANDOM_INT_LENGTH;
+          static const uint32_t DYNAMIC_KEY_LENGTH2 = SIGNATURE_LENGTH + STATIC_KEY_LENGTH + UNIX_TS_LENGTH + RANDOM_INT_LENGTH + UNIX_TS_LENGTH + UID_LENGTH ;
+
+          static const uint32_t SIGNATURE_OFFSET = 0;
+          static const uint32_t STATIC_KEY_OFFSET = SIGNATURE_LENGTH;
+          static const uint32_t UNIX_TS_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH;
+          static const uint32_t RANDOM_INT_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH+UNIX_TS_LENGTH;
+          static const uint32_t UID_INT_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH+UNIX_TS_LENGTH+RANDOM_INT_LENGTH;
+          static const uint32_t EXPIREDTS_INT_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH+UNIX_TS_LENGTH+RANDOM_INT_LENGTH+UID_LENGTH;
+      };
+
     template <class T>
         class singleton
         {
@@ -125,6 +141,21 @@ namespace agora { namespace tools {
                 << std::setfill ('0') << std::setw(8) << std::hex << randomInt;
             return ss.str();
         }
+        bool fromString(const std::string& dynamicKeyString)
+        {
+            if (dynamicKeyString.length() != 90) {
+                return false;
+            }
+            this->signature = dynamicKeyString.substr(L::SIGNATURE_OFFSET, L::SIGNATURE_LENGTH);
+            this->staticKey = dynamicKeyString.substr(L::STATIC_KEY_OFFSET, L::STATIC_KEY_LENGTH);
+            try {
+                this->unixTs =std::stoul(dynamicKeyString.substr(L::UNIX_TS_OFFSET, L::UNIX_TS_LENGTH),nullptr, 10);
+                this->randomInt =std::stoul(dynamicKeyString.substr(L::RANDOM_INT_OFFSET, L::RANDOM_INT_LENGTH),nullptr, 16);
+            } catch(std::exception& e) {
+                return false;
+            }
+            return true;
+        }
     };
     struct DynamicKey2{
         std::string signature;
@@ -144,6 +175,23 @@ namespace agora { namespace tools {
                 << std::setfill ('0') << std::setw(10) << expiredTs;
             return ss.str();
         }
+        bool fromString(const std::string& dynamicKeyString)
+        {
+              if (dynamicKeyString.length() != L::DYNAMIC_KEY_LENGTH2) {
+                  return false;
+              }
+              this->signature = dynamicKeyString.substr(L::SIGNATURE_OFFSET, L::SIGNATURE_LENGTH);
+              this->staticKey = dynamicKeyString.substr(L::STATIC_KEY_OFFSET, L::STATIC_KEY_LENGTH);
+              try {
+                  this->unixTs =std::stoul(dynamicKeyString.substr(L::UNIX_TS_OFFSET, L::UNIX_TS_LENGTH),nullptr, 10);
+                  this->randomInt =std::stoul(dynamicKeyString.substr(L::RANDOM_INT_OFFSET, L::RANDOM_INT_LENGTH),nullptr, 16);
+                  this->uid =std::stoul(dynamicKeyString.substr(L::UID_INT_OFFSET, L::UID_LENGTH),nullptr, 10);
+                  this->expiredTs =std::stoul(dynamicKeyString.substr(L::EXPIREDTS_INT_OFFSET, L::UNIX_TS_LENGTH),nullptr, 10);
+              } catch(std::exception& e) {
+                  return false;
+              }
+              return true;
+          }
     };
     struct DynamicKey3{
         std::string signature;
@@ -165,6 +213,23 @@ namespace agora { namespace tools {
                 << std::setfill ('0') << std::setw(10) << expiredTs;
             return ss.str();
         }
+        bool fromString(const std::string& dynamicKeyString)
+        {
+              if (dynamicKeyString.length() != L::DYNAMIC_KEY_LENGTH2) {
+                  return false;
+              }
+              this->signature = dynamicKeyString.substr(L::SIGNATURE_OFFSET, L::SIGNATURE_LENGTH);
+              this->staticKey = dynamicKeyString.substr(L::STATIC_KEY_OFFSET, L::STATIC_KEY_LENGTH);
+              try {
+                  this->unixTs = std::stoul(dynamicKeyString.substr(L::UNIX_TS_OFFSET, L::UNIX_TS_LENGTH), nullptr, 10);
+                  this->randomInt = std::stoul(dynamicKeyString.substr(L::RANDOM_INT_OFFSET, L::RANDOM_INT_LENGTH), nullptr, 16);
+                  this->uid = std::stoul(dynamicKeyString.substr(L::UID_INT_OFFSET, L::UID_LENGTH), nullptr, 10);
+                  this->expiredTs = std::stoul(dynamicKeyString.substr(L::EXPIREDTS_INT_OFFSET, L::UNIX_TS_LENGTH), nullptr, 10);
+              } catch(std::exception& e) {
+                  return false;
+              }
+              return true;
+          }
     };
 
     static const uint32_t HMAC_LENGTH = 20;
