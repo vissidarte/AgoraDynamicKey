@@ -215,16 +215,16 @@ namespace agora { namespace tools {
         }
         bool fromString(const std::string& dynamicKeyString)
         {
-              if (dynamicKeyString.length() != L::DYNAMIC_KEY_LENGTH2) {
+              if (dynamicKeyString.length() != (L::DYNAMIC_KEY_LENGTH2+L::VERSION_LENGTH)) {
                   return false;
               }
-              this->signature = dynamicKeyString.substr(L::SIGNATURE_OFFSET, L::SIGNATURE_LENGTH);
-              this->staticKey = dynamicKeyString.substr(L::STATIC_KEY_OFFSET, L::STATIC_KEY_LENGTH);
+              this->signature = dynamicKeyString.substr(L::VERSION_LENGTH +L::SIGNATURE_OFFSET, L::SIGNATURE_LENGTH);
+              this->staticKey = dynamicKeyString.substr(L::VERSION_LENGTH +L::STATIC_KEY_OFFSET, L::STATIC_KEY_LENGTH);
               try {
-                  this->unixTs = std::stoul(dynamicKeyString.substr(L::UNIX_TS_OFFSET, L::UNIX_TS_LENGTH), nullptr, 10);
-                  this->randomInt = std::stoul(dynamicKeyString.substr(L::RANDOM_INT_OFFSET, L::RANDOM_INT_LENGTH), nullptr, 16);
-                  this->uid = std::stoul(dynamicKeyString.substr(L::UID_INT_OFFSET, L::UID_LENGTH), nullptr, 10);
-                  this->expiredTs = std::stoul(dynamicKeyString.substr(L::EXPIREDTS_INT_OFFSET, L::UNIX_TS_LENGTH), nullptr, 10);
+                  this->unixTs = std::stoul(dynamicKeyString.substr(L::VERSION_LENGTH +L::UNIX_TS_OFFSET, L::UNIX_TS_LENGTH), nullptr, 10);
+                  this->randomInt = std::stoul(dynamicKeyString.substr(L::VERSION_LENGTH +L::RANDOM_INT_OFFSET, L::RANDOM_INT_LENGTH), nullptr, 16);
+                  this->uid = std::stoul(dynamicKeyString.substr(L::VERSION_LENGTH +L::UID_INT_OFFSET, L::UID_LENGTH), nullptr, 10);
+                  this->expiredTs = std::stoul(dynamicKeyString.substr(L::VERSION_LENGTH +L::EXPIREDTS_INT_OFFSET, L::UNIX_TS_LENGTH), nullptr, 10);
               } catch(std::exception& e) {
                   return false;
               }
