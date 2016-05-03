@@ -1,7 +1,8 @@
+import sys
+sys.path.append('../src')
 from DynamicKey import generateDynamicKey
 from DynamicKey3 import generateDynamicKey3
 from DynamicKey4 import generateDynamicKey4
-import sys
 
 
 def main():

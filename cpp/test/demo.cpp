@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "DynamicKey.h"
-#include "DynamicKey3.h"
-#include "DynamicKey4.h"
+#include "../src/DynamicKey.h"
+#include "../src/DynamicKey3.h"
+#include "../src/DynamicKey4.h"
 
 using namespace std;
 
