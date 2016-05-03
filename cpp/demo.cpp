@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 #include "DynamicKey.h"
+#include "DynamicKey3.h"
+#include "DynamicKey4.h"
 
 using namespace std;
 
@@ -56,13 +58,17 @@ int main(int argc, char* argv[])
 	cout << "\t" << result << endl;
 	cout << "---------------------------------------------------------------------------" << endl;
 
-	result = agora::tools::generateDynamicKey2(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs);
-	cout << "\ngenerateDynamicKey2 Result:" << endl;
+	result = agora::tools::generateDynamicKey3(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs);
+	cout << "\ngenerateDynamicKey3 Result:" << endl;
 	cout << "\t" << result << endl;
 	cout << "---------------------------------------------------------------------------" << endl;
 
-	result = agora::tools::generateDynamicKey3(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs);
-	cout << "\ngenerateDynamicKey3 Result:" << endl;
+	result = agora::tools::generateDynamicKey4(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, 0);
+	cout << "\ngenerateDynamicKey4 Result:" << endl;
+	cout << "\t" << result << endl;
+
+	result = agora::tools::generateDynamicKey4(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, 1);
+	cout << "\ngenerateRecordTicket Result:" << endl;
 	cout << "\t" << result << endl;
 	cout << "---------------------------------------------------------------------------" << endl;
 	return 0;

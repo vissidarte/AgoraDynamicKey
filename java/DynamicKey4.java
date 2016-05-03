@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
  * Util to generate Agora media dynamic key.
  */
 public class DynamicKey{
+
     /**
      * Manipulate Agora dynamic key for media connection.
      * @param vendorKey Vendor key assigned by Agora when register
@@ -21,18 +22,46 @@ public class DynamicKey{
      * @return String representation of dynamic key to join Agora media server
      * @throws Exception if any error occurs
      */
-    public static String generateDynamicKey(String vendorKey, String signKey, String channelName, int unixTs, int randomInt) throws Exception{
+    public static String generateDynamicKey4(String vendorKey, String signKey, String channelName, int unixTs, int randomInt, int uid, int expiredTs, int type) throws Exception{
+        String version="004";
         String unixTsStr = ("0000000000"+Integer.toString(unixTs)).substring(Integer.toString(unixTs).length());
         String randomIntStr = ("00000000"+Integer.toHexString(randomInt)).substring(Integer.toHexString(randomInt).length());
-        String signature = generateSignature(vendorKey, signKey, channelName, unixTsStr, randomIntStr);
-        return String.format("%s%s%s%s", signature, vendorKey, unixTsStr, randomIntStr);
+        String uidStr = ("0000000000"+Integer.toString(uid)).substring(Integer.toString(uid).length());
+        String expiredTsStr = ("0000000000"+Integer.toString(expiredTs)).substring(Integer.toString(expiredTs).length());
+
+        String signature ;
+        if(type==0){
+            signature= generateSignature4(vendorKey, signKey, channelName, unixTsStr, randomIntStr, uidStr, expiredTsStr);
+        }else if(type==1){
+            signature= generateRecordSignature(vendorKey, signKey, channelName, unixTsStr, randomIntStr, uidStr, expiredTsStr);
+        }else{
+            return "";
+        }
+        return String.format("%s%s%s%s%s%s",version, signature, vendorKey, unixTsStr, randomIntStr, expiredTsStr);
     }
-    private static String generateSignature(String vendorKey, String signKey, String channelName, String unixTsStr, String randomIntStr) throws Exception {
+    private static String generateRecordSignature(String vendorKey, String signKey, String channelName, String unixTsStr, String randomIntStr ,String uidStr, String expiredTsStr) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        String tp="ARS";
+        baos.write(tp.getBytes());
         baos.write(vendorKey.getBytes());
         baos.write(unixTsStr.getBytes());
         baos.write(randomIntStr.getBytes());
         baos.write(channelName.getBytes());
+        baos.write(uidStr.getBytes());
+        baos.write(expiredTsStr.getBytes());
+        byte[] sign = encodeHMAC(signKey, baos.toByteArray());
+        return bytesToHex(sign);
+    }
+    private static String generateSignature4(String vendorKey, String signKey, String channelName, String unixTsStr, String randomIntStr ,String uidStr, String expiredTsStr) throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        String tp="ACS";
+        baos.write(tp.getBytes());
+        baos.write(vendorKey.getBytes());
+        baos.write(unixTsStr.getBytes());
+        baos.write(randomIntStr.getBytes());
+        baos.write(channelName.getBytes());
+        baos.write(uidStr.getBytes());
+        baos.write(expiredTsStr.getBytes());
         byte[] sign = encodeHMAC(signKey, baos.toByteArray());
         return bytesToHex(sign);
     }
