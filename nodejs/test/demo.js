@@ -6,7 +6,8 @@ var key = "5cfd2fd1755d40ecb72977518be15d3b";
 var channel = "7d72365eb983485397e3e3f9d460bdda";
 var ts = 1446455472;
 var r = 58964981;
-var uid=999;
+//var uid=999;
+var uid=4294966297;
 var expiredTs=1446455471;
 
 console.log("generateDynamicKey:");

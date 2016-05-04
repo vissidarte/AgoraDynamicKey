@@ -2,6 +2,7 @@ import hmac
 from hashlib import sha1
 import sys
 
+import ctypes
 
 def generateSignaure3(
         staticKey,
@@ -30,6 +31,7 @@ def generateDynamicKey3(
         randomInt,
         uid,
         expiredTs):
+    uid = ctypes.c_uint(uid).value
     key = "\x00" * (32 - len(staticKey)) + staticKey
     signature = generateSignaure3(
         staticKey,

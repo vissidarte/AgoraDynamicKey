@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
         channelName= "7d72365eb983485397e3e3f9d460bdda";
         unixTs = 1446455472;
         randomInt = 58964981;
-        uid=999;
+        uid=-999;
         expiredTs=1446455471;
     }else{
         staticKey=argv[1];

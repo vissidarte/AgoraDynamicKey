@@ -11,7 +11,7 @@ def main():
         signkey = "5cfd2fd1755d40ecb72977518be15d3b"
         channelname = "7d72365eb983485397e3e3f9d460bdda"
         unixts = 1446455472
-        uid = 999
+        uid = 4294966297
         randomint = 58964981
         expiredts = 1446455471
     else:

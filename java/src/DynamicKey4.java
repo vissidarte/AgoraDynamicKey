@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
  * Created by hefeng on 15/8/10.
  * Util to generate Agora media dynamic key.
  */
-public class DynamicKey{
+public class DynamicKey4{
 
     /**
      * Manipulate Agora dynamic key for media connection.
@@ -89,16 +89,12 @@ public class DynamicKey{
         //String cName = "7d72365eb983485397e3e3f9d460bdda";
         //int ts = 1446455472;
         //int rint = 58964981;
-        //int uid=999;
+        //int uid=-999;
         //int expiredTs = 1446455471;
         //int a = (int) (System.currentTimeMillis()/1000);
         //System.out.println("xxx "+ a);
         //try {
-            //String res = DynamicKey.generateDynamicKey(vkey, signKey, cName, ts, rint);
-            //System.out.println("Dyanmic key to join channel is:"+res);
-            //res = DynamicKey.generateDynamicKey2(vkey, signKey, cName, ts, rint, uid, expiredTs);
-            //System.out.println("Dyanmic key2 to join channel is:"+res);
-            //res = DynamicKey.generateDynamicKey3(vkey, signKey, cName, ts, rint, uid, expiredTs);
+            //String res = DynamicKey4.generateDynamicKey4(vkey, signKey, cName, ts, rint, uid, expiredTs,0);
             //System.out.println("Dyanmic key3 to join channel is:"+res);
         //}catch (Exception  e){
             //System.err.println("Failed to generate dynamic key");

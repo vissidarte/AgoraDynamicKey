@@ -2,6 +2,7 @@ import hmac
 from hashlib import sha1
 import sys
 import time
+import ctypes
 
 TYPE_DYNAMIC_KEY = 0
 TYPE_RECORD_TICKET = 1
@@ -54,6 +55,7 @@ def generateDynamicKey4(
         uid,
         expiredTs,
         type):
+    uid = ctypes.c_uint(uid).value
     key = "\x00" * (32 - len(staticKey)) + staticKey
     if type == TYPE_DYNAMIC_KEY:
         signature_fun = generateSignature4
