@@ -4,8 +4,8 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
 import DynamicKey3
 
-statickey = "970ca35de60c44645bbae84215061b33b"
-signkey = "5cfd2fd1755d40ecb72977518be15d3b"
+statickey   = "970ca35de60c44645bbae8a215061b33"
+signkey     = "5cfd2fd1755d40ecb72977518be15d3b"
 channelname = "7d72365eb983485397e3e3f9d460bdda"
 unixts = 1446455472
 uid = 2882341273
@@ -16,7 +16,7 @@ expiredts = 1446455471
 class DynamicKey3Test(unittest.TestCase):
 
     def test_generate(self):
-        expected = "00381e1588b09e6e76a0d2e8fd9e5257dbddd9c60a0970ca35de60c44645bbae84215061b33b14464554720383bbf528823412731446455471"
+        expected = "0037666966591a93ee5a3f712e22633f31f0cbc8f13970ca35de60c44645bbae8a215061b3314464554720383bbf528823412731446455471"
         actual = DynamicKey3.generate(
             statickey,
             signkey,
