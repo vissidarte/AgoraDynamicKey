@@ -15,6 +15,8 @@ namespace agora { namespace tools {
     const uint32_t RANDOM_INT_LENGTH = 8;
     const uint32_t UID_LENGTH = 10;
     const uint32_t VERSION_LENGTH = 3;
+    const std::string  RECORDING_SERVICE = "ARS"; 
+    const std::string  MEDIA_CHANNEL_SERVICE = "ACS";
 
     template <class T>
         class singleton

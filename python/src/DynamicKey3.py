@@ -23,7 +23,7 @@ def generateSignaure3(
     return signature
 
 
-def generateDynamicKey3(
+def generate(
         staticKey,
         signKey,
         channelName,

@@ -13,7 +13,7 @@ def generateSignaure(staticKey, signKey, channelName, unixTs, randomInt):
     return signature
 
 
-def generateDynamicKey(staticKey, signKey, channelName, unixTs, randomInt):
+def generate(staticKey, signKey, channelName, unixTs, randomInt):
     signature = generateSignaure(
         staticKey,
         signKey,

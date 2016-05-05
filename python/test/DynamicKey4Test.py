@@ -18,11 +18,13 @@ class DynamicKeyTest(unittest.TestCase):
     def test_recording(self):
         expected = "0040f6609180e7967c4047f88fcc8c187e77a4d22a4970ca35de60c44645bbae84215061b33b14464554720383bbf51446455471";
         actual = generateRecordingKey(statickey, signkey, channelname, unixts, randomint, uid, expiredts);
+        print actual
         self.assertEqual(expected, actual)
 
     def test_mediachannel(self):
         expected = "004b3e0a78e01b5a07a4627b03ff1bdcc4330839c9a970ca35de60c44645bbae84215061b33b14464554720383bbf51446455471";
         actual = generateMediaChannelKey(statickey, signkey, channelname, unixts, randomint, uid, expiredts);
+        print actual
         self.assertEqual(expected, actual)
 
 if __name__ == "__main__":
