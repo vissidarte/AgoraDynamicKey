@@ -5,7 +5,7 @@
 var crypto = require('crypto');
 
 
-module.exports.generateDynamicKey3 = function(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) {
+module.exports.generate = function(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) {
     var version = "003";
     var unixTsStr = unixTs.toString();  //Unix Time stamp, track time as a running total of seconds
     var rndTxt = randomInt.toString(16);

@@ -8,7 +8,7 @@ var encodeHMac = function(key, message) {
     return crypto.createHmac('sha1', key).update(message).digest('hex');
 };
 
-module.exports.generateDynamicKey = function(vendorKey, signKey, channelName, unixTs, randomInt) {
+module.exports.generate = function(vendorKey, signKey, channelName, unixTs, randomInt) {
     var unixTsStr = ("0000000000" + unixTs).substring(String(unixTs).length);
     var rndTxt = randomInt.toString(16);
     var randomIntStr = ("00000000" + rndTxt).substring(rndTxt.length);
@@ -21,6 +21,3 @@ var generateSignature = function(vendorKey, signKey, channelName, unixTsStr, ran
     var sign = encodeHMac(signKey, buffer);
     return sign.toString('hex');
 };
-
-
-
