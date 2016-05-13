@@ -73,5 +73,5 @@ namespace agora { namespace tools {
         return toString(staticKey, signature, unixTs, randomInt);                                                                                                                                  
     }
     };
-    const std::string DynamicKey3::VERSION="001";
+    const std::string DynamicKey::VERSION="001";
 }}
