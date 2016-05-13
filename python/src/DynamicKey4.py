@@ -4,19 +4,16 @@ import sys
 import time
 import ctypes
 
-TYPE_DYNAMIC_KEY = 0
-TYPE_RECORD_TICKET = 1
-
 def generateRecordingKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs):
-    return generateDynamicKey4(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, "ARS")
+    return generateDynamicKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, "ARS")
 
 def generateMediaChannelKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs):
-    return generateDynamicKey4(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, "ACS")
+    return generateDynamicKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, "ACS")
 
-def generateDynamicKey4(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, servicetype):
+def generateDynamicKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, servicetype):
     uid = ctypes.c_uint(uid).value
     key = "\x00" * (32 - len(staticKey)) + staticKey
-    signature = generateSignature4(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, servicetype)
+    signature = generateSignature(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, servicetype)
     version = '{0:0>3}'.format(4)
     ret = version + str(signature) + \
         staticKey + \
@@ -25,7 +22,7 @@ def generateDynamicKey4(staticKey, signKey, channelName, unixTs, randomInt, uid,
         '{:0>10}'.format(expiredTs)
     return ret
 
-def generateSignature4(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, servicetype):
+def generateSignature(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, servicetype):
     key = "\x00" * (32 - len(staticKey)) + staticKey
     content = servicetype + key +\
         '{:0>10}'.format(unixTs) + \

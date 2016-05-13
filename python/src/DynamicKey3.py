@@ -4,7 +4,7 @@ import sys
 
 import ctypes
 
-def generateSignaure3(
+def generateSignaure(
         staticKey,
         signKey,
         channelName,
@@ -33,7 +33,7 @@ def generate(
         expiredTs):
     uid = ctypes.c_uint(uid).value
     key = "\x00" * (32 - len(staticKey)) + staticKey
-    signature = generateSignaure3(
+    signature = generateSignaure(
         staticKey,
         signKey,
         channelName,

@@ -18,13 +18,14 @@ namespace agora { namespace tools {
                     return ss.str();
                 }
             };
-          static const uint32_t DYNAMIC_KEY_LENGTH = SIGNATURE_LENGTH + STATIC_KEY_LENGTH + UNIX_TS_LENGTH + RANDOM_INT_LENGTH;
-          static const uint32_t SIGNATURE_OFFSET = 0;
-          static const uint32_t STATIC_KEY_OFFSET = SIGNATURE_LENGTH;
-          static const uint32_t UNIX_TS_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH;
-          static const uint32_t RANDOM_INT_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH+UNIX_TS_LENGTH;
-          static const uint32_t UID_INT_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH+UNIX_TS_LENGTH+RANDOM_INT_LENGTH;
-          static const uint32_t EXPIREDTS_INT_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH+UNIX_TS_LENGTH+RANDOM_INT_LENGTH;
+        static const uint32_t DYNAMIC_KEY_LENGTH = SIGNATURE_LENGTH + STATIC_KEY_LENGTH + UNIX_TS_LENGTH + RANDOM_INT_LENGTH;
+        static const uint32_t SIGNATURE_OFFSET = 0;
+        static const uint32_t STATIC_KEY_OFFSET = SIGNATURE_LENGTH;
+        static const uint32_t UNIX_TS_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH;
+        static const uint32_t RANDOM_INT_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH+UNIX_TS_LENGTH;
+        static const uint32_t UID_INT_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH+UNIX_TS_LENGTH+RANDOM_INT_LENGTH;
+        static const uint32_t EXPIREDTS_INT_OFFSET = SIGNATURE_LENGTH+STATIC_KEY_LENGTH+UNIX_TS_LENGTH+RANDOM_INT_LENGTH;
+        static const std::string VERSION;
         std::string signature;
         std::string staticKey;
         uint32_t unixTs ;
@@ -72,4 +73,5 @@ namespace agora { namespace tools {
         return toString(staticKey, signature, unixTs, randomInt);                                                                                                                                  
     }
     };
+    const std::string DynamicKey3::VERSION="001";
 }}
