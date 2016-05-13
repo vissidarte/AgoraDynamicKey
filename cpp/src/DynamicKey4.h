@@ -46,7 +46,7 @@ namespace agora { namespace tools {
               return true;
           }
 
-        static std::string generateSignature4(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs, std::string service)   {
+        static std::string generateSignature(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs, std::string service)   {
         std::stringstream ss;
         ss<< service
             << std::setfill ('\0') << std::setw(32) << staticKey
@@ -60,14 +60,14 @@ namespace agora { namespace tools {
 
         static std::string generateMediaChannelKey(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs)   
     {                                                                                                                                                                  
-       std::string  signature = generateSignature4(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, MEDIA_CHANNEL_SERVICE);
+       std::string  signature = generateSignature(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, MEDIA_CHANNEL_SERVICE);
 
         return toString(staticKey,signature,  unixTs, randomInt,  expiredTs);                                                                                                                                  
     }
     
     static std::string generateRecordingKey(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs)   
     {                                                                                                                                                                  
-        std::string signature = generateSignature4(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, RECORDING_SERVICE);
+        std::string signature = generateSignature(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, RECORDING_SERVICE);
         
         return toString(staticKey,signature, unixTs, randomInt, expiredTs);                                                                                                                                  
     }
