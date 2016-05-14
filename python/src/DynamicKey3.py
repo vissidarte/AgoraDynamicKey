@@ -15,7 +15,7 @@ def generateSignaure(
     key = "\x00" * (32 - len(staticKey)) + staticKey
     content = key +\
         '{:0>10}'.format(unixTs) + \
-        "%.8x" % (int(randomInt)) + \
+        "%.8x" % (int(randomInt) & 0xFFFFFFFF) + \
         str(channelName) +\
         '{:0>10}'.format(uid) + \
         '{:0>10}'.format(expiredTs)
@@ -45,7 +45,7 @@ def generate(
     ret = version + str(signature) + \
         staticKey + \
         '{0:0>10}'.format(unixTs) + \
-        "%.8x" % (int(randomInt)) + \
+        "%.8x" % (int(randomInt) & 0xFFFFFFFF) + \
         '{:0>10}'.format(uid) + \
         '{:0>10}'.format(expiredTs)
     return ret

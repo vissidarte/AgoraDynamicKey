@@ -7,7 +7,7 @@ def generateSignaure(staticKey, signKey, channelName, unixTs, randomInt):
     key = "\x00" * (32 - len(staticKey)) + staticKey
     content = key +\
         '{:0>10}'.format(unixTs) + \
-        "%.8x" % (int(randomInt)) + \
+        "%.8x" % (int(randomInt) & 0xFFFFFFFF) + \
         str(channelName)
     signature = hmac.new(signKey, content, sha1).hexdigest()
     return signature
@@ -23,5 +23,5 @@ def generate(staticKey, signKey, channelName, unixTs, randomInt):
     ret = str(signature) + \
         staticKey + \
         '{0:0>10}'.format(unixTs) + \
-        "%.8x" % (int(randomInt))
+        "%.8x" % (int(randomInt) & 0xFFFFFFFF)
     return ret
