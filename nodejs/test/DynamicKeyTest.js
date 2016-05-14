@@ -1,4 +1,8 @@
-
+/**
+ * run this test with command:
+ * nodeunit DynamicKeyTest.js
+ * see https://github.com/caolan/nodeunit
+ */
 var DynamicKey = require('../src/DynamicKey');
 var DynamicKey3 = require('../src/DynamicKey3');
 var DynamicKey4 = require('../src/DynamicKey4');
