@@ -27,7 +27,7 @@ void generateMediaKey(){
     int randomInt = (::rand()%256 << 24) + (::rand()%256 << 16) + (::rand()%256 << 8) + (::rand()%256);
     uint32_t uid = 2882341273u;
     auto  expiredTs = 0;
-    std::string result = agora::tools::DynamicKey4::generateRecordingKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs);
+    std::string result = agora::tools::DynamicKey4::generateMediaChannelKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs);
     std::cout << result << std::endl;
 }
 
