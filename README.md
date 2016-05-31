@@ -6,6 +6,26 @@ For recording service, use generateRecordingKey
 
 Here are sample for C++, java, python and nodejs
 
+## Compatibility tables of SDK and Dynamic Key for our customers.
+
+### Customers that need verify user ID
+
+| Dynamic Key Version | UID | SDK Version  |
+|---|---|---|
+| DynamicKey4  | specify uid of user | 1.3.0 and UP  |
+| DynamicKey3  | specify uid of user  | 1.2.3 and UP  |
+| DynamicKey  |  NA |  NA |
+
+### Customers that do not need verify user ID
+
+| Dynamic Key Version | UID | SDK Version  |
+|---|---|---|
+| DynamicKey4  | 0 | All |
+| DynamicKey3  | 0 | All |
+| DynamicKey  | All | All |
+
+We recommend all our customers to upgrade to DynamicKey4 ASAP.
+
 ## C++
 ```c
 /**
