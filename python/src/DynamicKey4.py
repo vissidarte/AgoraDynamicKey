@@ -4,6 +4,9 @@ import sys
 import time
 import ctypes
 
+def generatePublicSharingKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs):
+    return generateDynamicKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, "APSS")
+
 def generateRecordingKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs):
     return generateDynamicKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, "ARS")
 

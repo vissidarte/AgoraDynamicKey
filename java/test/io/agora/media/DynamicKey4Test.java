@@ -8,6 +8,20 @@ import static org.junit.Assert.*;
  * Created by liwei on 5/4/16.
  */
 public class DynamicKey4Test {
+    @Test
+    public void testGeneratePublicSharingKey() throws Exception {
+        String vendor   = "970ca35de60c44645bbae8a215061b33";
+        String key      = "5cfd2fd1755d40ecb72977518be15d3b";
+        String channel  = "7d72365eb983485397e3e3f9d460bdda";
+        int ts = 1446455472;
+        int r = 58964981;
+        long uid = 2882341273L;
+        int expiredTs=1446455471;
+
+        String expected = "004ec32c0d528e58ef90e8ff437a9706124137dc795970ca35de60c44645bbae8a215061b3314464554720383bbf51446455471";
+        String result = DynamicKey4.generatePublicSharingKey(vendor, key, channel, ts, r, uid, expiredTs);
+        assertEquals(expected, result);
+    }
 
     @Test
     public void testGenerateRecordingKey() throws Exception {

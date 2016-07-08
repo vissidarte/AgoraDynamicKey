@@ -4,6 +4,10 @@
 
 var crypto = require('crypto');
 
+module.exports.generatePublicSharingKey = function (vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) {
+  return doGenerate(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, 'APSS');
+}
+
 module.exports.generateRecordingKey = function (vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) {
   return doGenerate(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, 'ARS');
 }

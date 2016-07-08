@@ -4,8 +4,25 @@ import java.io.ByteArrayOutputStream;
 
 public class DynamicKey4 {
 
+    private static final String PUBLIC_SHARING_SERVICE = "APSS";
     private static final String RECORDING_SERVICE = "ARS";
     private static final String MEDIA_CHANNEL_SERVICE = "ACS";
+    /**
+     * Generate Dynamic Key for Public Sharing Service
+     * @param vendorKey Vendor key assigned by Agora
+     * @param signKey Sign key assigned by Agora
+     * @param channelName name of channel to join, limited to 64 bytes and should be printable ASCII characters
+     * @param unixTs unix timestamp in seconds when generating the Dynamic Key
+     * @param randomInt salt for generating dynamic key
+     * @param uid user id, range from 0 - max uint32
+     * @param expiredTs should be 0
+     * @return String representation of dynamic key
+     * @throws Exception if any error occurs
+     */
+    public static String generatePublicSharingKey(String vendorKey, String signKey, String channelName, int unixTs, int randomInt, long uid, int expiredTs) throws Exception {
+        return doGenerate(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, PUBLIC_SHARING_SERVICE);
+    }
+
 
     /**
      * Generate Dynamic Key for recording service

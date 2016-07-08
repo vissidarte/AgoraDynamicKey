@@ -16,6 +16,7 @@ namespace agora { namespace tools {
     const uint32_t UID_LENGTH = 10;
     const uint32_t VERSION_LENGTH = 3;
     const std::string  RECORDING_SERVICE = "ARS"; 
+    const std::string  PUBLIC_SHARING_SERVICE = "APSS"; 
     const std::string  MEDIA_CHANNEL_SERVICE = "ACS";
 
     template <class T>

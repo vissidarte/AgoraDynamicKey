@@ -72,7 +72,15 @@ namespace agora { namespace tools {
         return toString(staticKey,signature, unixTs, randomInt, expiredTs);                                                                                                                                  
     }
 
+    static std::string generatePublicSharingKey(const std::string& staticKey, const std::string& signKey, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs)   
+    {                                                                                                                                                                  
+        std::string signature = generateSignature(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, PUBLIC_SHARING_SERVICE);
+
+        return toString(staticKey,signature, unixTs, randomInt, expiredTs);                                                                                                                                  
+    }
+
     };
+
     const std::string DynamicKey4::VERSION="004";
 
 }}

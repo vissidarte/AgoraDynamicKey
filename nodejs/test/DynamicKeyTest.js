@@ -22,10 +22,16 @@ exports.DynamicKeyTest = function (test) {
   test.done();
 };
 
-
 exports.DynamicKey3Test = function (test) {
   var expected = "0037666966591a93ee5a3f712e22633f31f0cbc8f13970ca35de60c44645bbae8a215061b3314464554720383bbf528823412731446455471";
   var actual = DynamicKey3.generate(vendor, key, channel, ts, r, uid, expiredTs);
+  test.equal(expected, actual);
+  test.done();
+};
+
+exports.PublicSharingKeyTest = function (test) {
+  var expected = "004ec32c0d528e58ef90e8ff437a9706124137dc795970ca35de60c44645bbae8a215061b3314464554720383bbf51446455471";
+  var actual = DynamicKey4.generatePublicSharingKey(vendor, key, channel, ts, r, uid, expiredTs);
   test.equal(expected, actual);
   test.done();
 };

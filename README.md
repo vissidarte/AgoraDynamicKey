@@ -50,6 +50,7 @@ int main(int argc, char const *argv[]) {
 
   std::cout << agora::tools::DynamicKey4::generateRecordingKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) << std::endl;
   std::cout << agora::tools::DynamicKey4::generateMediaChannelKey(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) << std::endl;
+  std::cout << agora::tools::DynamicKey4::generatePublicSharing(staticKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) << std::endl;
   return 0;
 }
 ```
@@ -74,6 +75,7 @@ public class DynamicKey4Sample {
     public static void main(String[] args) throws Exception {
         System.out.println(DynamicKey4.generateMediaChannelKey(vendor, key, channel, ts, r, uid, expiredTs));
         System.out.println(DynamicKey4.generateRecordingKey(vendor, key, channel, ts, r, uid, expiredTs));
+        System.out.println(DynamicKey4.generatePublicSharing(vendor, key, channel, ts, r, uid, expiredTs));
     }
 }
 ```
@@ -88,6 +90,7 @@ from random import randint
 sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
 from DynamicKey4 import generateRecordingKey
 from DynamicKey4 import generateMediaChannelKey
+from DynamicKey4 import generatePublicSharing   
 
 statickey   = "970ca35de60c44645bbae8a215061b33"
 signkey     = "5cfd2fd1755d40ecb72977518be15d3b"
@@ -102,6 +105,7 @@ print "%.8x" % (randomint & 0xFFFFFFFF)
 if __name__ == "__main__":
     print generateRecordingKey(statickey, signkey, channelname, unixts, randomint, uid, expiredts)
     print generateMediaChannelKey(statickey, signkey, channelname, unixts, randomint, uid, expiredts)
+    print generatePublicSharing(statickey, signkey, channelname, unixts, randomint, uid, expiredts)
 ```
 
 ## Node.js
@@ -123,4 +127,6 @@ console.log(recordingKey);
 var mediaChannelKey = DynamicKey4.generateMediaChannelKey(vendor, key, channel, ts, r, uid, expiredTs);
 console.log(mediaChannelKey);
 
+var publicSharingKey = DynamicKey4.generatePublicSharing(vendor, key, channel, ts, r, uid, expiredTs);
+console.log(publicSharingKey );
 ```
