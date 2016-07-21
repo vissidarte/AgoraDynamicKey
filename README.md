@@ -130,3 +130,25 @@ console.log(mediaChannelKey);
 var publicSharingKey = DynamicKey4.generatePublicSharing(vendor, key, channel, ts, r, uid, expiredTs);
 console.log(publicSharingKey );
 ```
+
+## go
+
+```go
+import (
+	"../src/DynamicKey4"
+    "fmt"
+)
+vendorKey:="970ca35de60c44645bbae8a215061b33"
+signKey:="5cfd2fd1755d40ecb72977518be15d3b"
+channelName := "7d72365eb983485397e3e3f9d460bdda"
+unixTs:=uint32(1446455472)
+uid:=uint32(2882341273)
+randomInt:=uint32(58964981)
+expiredTs:=uint32(1446455471)
+var publicSharingKey = DynamicKey4.GeneratePublicSharingKey(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs)
+var mediaChannelKey = DynamicKey4.GenerateMediaChannelKey(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs)
+var recordingKey = DynamicKey4.GenerateRecordingKey(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs)
+fmt.Println(publicSharingKey)
+fmt.Println(mediaChannelKey)
+fmt.Println(recordingKey)
+```
