@@ -4,19 +4,19 @@
 
 var crypto = require('crypto');
 
-module.exports.generatePublicSharingKey = function (vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) {
-  return doGenerate(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, 'APSS');
+module.exports.generatePublicSharingKey = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+  return doGenerate(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, 'APSS');
 }
 
-module.exports.generateRecordingKey = function (vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) {
-  return doGenerate(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, 'ARS');
+module.exports.generateRecordingKey = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+  return doGenerate(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, 'ARS');
 }
 
-module.exports.generateMediaChannelKey = function (vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs) {
-  return doGenerate(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, 'ACS');
+module.exports.generateMediaChannelKey = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+  return doGenerate(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, 'ACS');
 }
 
-function doGenerate(vendorKey, signKey, channelName, unixTs, randomInt, uid, expiredTs, serviceType) {
+function doGenerate(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, serviceType) {
     uid=(new Uint32Array([uid]))[0]
     var version = "004";
     var unixTsStr = unixTs.toString();  //Unix Time stamp, track time as a running total of seconds
@@ -24,13 +24,13 @@ function doGenerate(vendorKey, signKey, channelName, unixTs, randomInt, uid, exp
     var randomIntStr = ("00000000" + rndTxt).substring(rndTxt.length);
     var expiredTsStr = ("0000000000" + expiredTs).substring(String(expiredTs).length);
     var uidStr = ("0000000000" + uid).substring(String(uid).length);
-    var sign = generateSignature4(vendorKey, signKey, channelName, unixTsStr, randomIntStr, uidStr, expiredTsStr, serviceType);
-    return version + sign + vendorKey + unixTsStr + randomIntStr+ expiredTsStr;
+    var sign = generateSignature4(appID, appCertificate, channelName, unixTsStr, randomIntStr, uidStr, expiredTsStr, serviceType);
+    return version + sign + appID + unixTsStr + randomIntStr+ expiredTsStr;
 };
 
-var generateSignature4 = function(vendorKey, signKey, channelName, unixTsStr, randomIntStr,uidStr, expiredTsStr, serviceType) {
-    var buffer = Buffer.concat([new Buffer(serviceType), new Buffer(vendorKey), new Buffer(unixTsStr), new Buffer(randomIntStr), new Buffer(channelName), new Buffer(uidStr), new Buffer(expiredTsStr)]);
-    var sign = encodeHMac(signKey, buffer);
+var generateSignature4 = function(appID, appCertificate, channelName, unixTsStr, randomIntStr,uidStr, expiredTsStr, serviceType) {
+    var buffer = Buffer.concat([new Buffer(serviceType), new Buffer(appID), new Buffer(unixTsStr), new Buffer(randomIntStr), new Buffer(channelName), new Buffer(uidStr), new Buffer(expiredTsStr)]);
+    var sign = encodeHMac(appCertificate, buffer);
     return sign.toString('hex');
 };
 

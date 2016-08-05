@@ -1,16 +1,16 @@
 <?php
 
-    function generateRecordingKey($staticKey, $signKey, $channelName, $ts, $randomInt, $uid, $expiredTs ,$serviceType='ARS')
+    function generateRecordingKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs ,$serviceType='ARS')
     {
-        return generateDynamicKey($staticKey, $signKey, $channelName, $ts, $randomInt, $uid, $expiredTs ,$serviceType);
+        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs ,$serviceType);
     }
 
-    function generateMediaChannelKey($staticKey, $signKey, $channelName, $ts, $randomInt, $uid, $expiredTs ,$serviceType='ACS')
+    function generateMediaChannelKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs ,$serviceType='ACS')
     {
-        return generateDynamicKey($staticKey, $signKey, $channelName, $ts, $randomInt, $uid, $expiredTs ,$serviceType);
+        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs ,$serviceType);
     }
 
-    function generateDynamicKey($staticKey, $signKey, $channelName, $ts, $randomInt, $uid, $expiredTs ,$serviceType)
+    function generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs ,$serviceType)
     {
         $version = "004";
 
@@ -23,14 +23,14 @@
         $expiredStr = "0000000000" . $expiredTs;
         $expiredStr = substr($expiredStr,-10);
 
-        $signature = generateSignature($staticKey, $signKey, $channelName, $ts, $randomStr, $uidStr, $expiredStr ,$serviceType);
+        $signature = generateSignature($appID, $appCertificate, $channelName, $ts, $randomStr, $uidStr, $expiredStr ,$serviceType);
 
-        return $version . $signature . $staticKey . $ts . $randomStr . $expiredStr;
+        return $version . $signature . $appID . $ts . $randomStr . $expiredStr;
     }
 
-    function generateSignature($staticKey, $signKey, $channelName, $ts, $randomStr, $uidStr, $expiredStr ,$serviceType)
+    function generateSignature($appID, $appCertificate, $channelName, $ts, $randomStr, $uidStr, $expiredStr ,$serviceType)
     {
-        $concat = $serviceType . $staticKey . $ts . $randomStr . $channelName . $uidStr . $expiredStr;
-        return hash_hmac('sha1', $concat, $signKey);
+        $concat = $serviceType . $appID . $ts . $randomStr . $channelName . $uidStr . $expiredStr;
+        return hash_hmac('sha1', $concat, $appCertificate);
     }
 ?>

@@ -5,37 +5,37 @@ import sys
 import ctypes
 
 def generateSignaure(
-        staticKey,
-        signKey,
+        appID,
+        appCertificate,
         channelName,
         unixTs,
         randomInt,
         uid,
         expiredTs):
-    key = "\x00" * (32 - len(staticKey)) + staticKey
+    key = "\x00" * (32 - len(appID)) + appID
     content = key +\
         '{:0>10}'.format(unixTs) + \
         "%.8x" % (int(randomInt) & 0xFFFFFFFF) + \
         str(channelName) +\
         '{:0>10}'.format(uid) + \
         '{:0>10}'.format(expiredTs)
-    signature = hmac.new(signKey, content, sha1).hexdigest()
+    signature = hmac.new(appCertificate, content, sha1).hexdigest()
     return signature
 
 
 def generate(
-        staticKey,
-        signKey,
+        appID,
+        appCertificate,
         channelName,
         unixTs,
         randomInt,
         uid,
         expiredTs):
     uid = ctypes.c_uint(uid).value
-    key = "\x00" * (32 - len(staticKey)) + staticKey
+    key = "\x00" * (32 - len(appID)) + appID
     signature = generateSignaure(
-        staticKey,
-        signKey,
+        appID,
+        appCertificate,
         channelName,
         unixTs,
         randomInt,
@@ -43,7 +43,7 @@ def generate(
         expiredTs)
     version = '{0:0>3}'.format(3)
     ret = version + str(signature) + \
-        staticKey + \
+        appID + \
         '{0:0>10}'.format(unixTs) + \
         "%.8x" % (int(randomInt) & 0xFFFFFFFF) + \
         '{:0>10}'.format(uid) + \

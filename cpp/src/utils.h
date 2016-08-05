@@ -10,7 +10,7 @@
 namespace agora { namespace tools {
     const uint32_t HMAC_LENGTH = 20;
     const uint32_t SIGNATURE_LENGTH = 40;
-    const uint32_t STATIC_KEY_LENGTH = 32;
+    const uint32_t APP_ID_LENGTH = 32;
     const uint32_t UNIX_TS_LENGTH = 10;
     const uint32_t RANDOM_INT_LENGTH = 8;
     const uint32_t UID_LENGTH = 10;
@@ -45,15 +45,15 @@ namespace agora { namespace tools {
                 return hmac_sign2(hmac_key_, message, 20);
             }
 
-            std::string hmac_sign2(const std::string& signkey, const std::string& message, uint32_t signSize)
+            std::string hmac_sign2(const std::string& appCertificate, const std::string& message, uint32_t signSize)
             {
-                if (signkey.empty()) {
+                if (appCertificate.empty()) {
                     /*throw std::runtime_error("empty hmac key");*/
                     return "";
                 }
                 return std::string((char *)HMAC(EVP_sha1()
-                            , (const unsigned char*)signkey.data()
-                            , signkey.length()
+                            , (const unsigned char*)appCertificate.data()
+                            , appCertificate.length()
                             , (const unsigned char*)message.data()
                             , message.length(), NULL, NULL)
                         , signSize);
