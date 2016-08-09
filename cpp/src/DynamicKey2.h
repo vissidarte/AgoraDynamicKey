@@ -6,12 +6,12 @@ namespace agora { namespace tools {
 
     struct DynamicKey2{
         static const uint32_t DYNAMIC_KEY_LENGTH = SIGNATURE_LENGTH + APP_ID_LENGTH + UNIX_TS_LENGTH + RANDOM_INT_LENGTH + UNIX_TS_LENGTH + UID_LENGTH ;
-        static const uint32_t SIGNATURE_OFFSET = VERSION_LENGTH;
+        static const uint32_t SIGNATURE_OFFSET = 0;
         static const uint32_t APP_ID_OFFSET = SIGNATURE_LENGTH;
         static const uint32_t UNIX_TS_OFFSET = SIGNATURE_LENGTH+APP_ID_LENGTH;
         static const uint32_t RANDOM_INT_OFFSET = SIGNATURE_LENGTH+APP_ID_LENGTH+UNIX_TS_LENGTH;
         static const uint32_t UID_INT_OFFSET = SIGNATURE_LENGTH+APP_ID_LENGTH+UNIX_TS_LENGTH+RANDOM_INT_LENGTH;
-        static const uint32_t EXPIREDTS_INT_OFFSET = SIGNATURE_LENGTH+APP_ID_LENGTH+UNIX_TS_LENGTH+RANDOM_INT_LENGTH;
+        static const uint32_t EXPIREDTS_INT_OFFSET = SIGNATURE_LENGTH+APP_ID_LENGTH+UNIX_TS_LENGTH+RANDOM_INT_LENGTH+UID_LENGTH;
 
         static const std::string VERSION;
 
