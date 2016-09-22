@@ -3,9 +3,14 @@
  * g++ main.cpp  -lcrypto -std=c++0x
  */
 
+#include "../src/DynamicKey.h"
+#include "../src/DynamicKey2.h"
+#include "../src/DynamicKey3.h"
 #include "../src/DynamicKey4.h"
+#include "../src/DynamicKey5.h"
 #include <iostream>
 #include <cstdint>
+using namespace agora::tools;
 
 int main(int argc, char const *argv[]) {
   ::srand(::time(NULL));
@@ -18,7 +23,28 @@ int main(int argc, char const *argv[]) {
   uint32_t uid = 2882341273u;
   auto  expiredTs = 0;
 
+  std::cout << "1 " << DynamicKey::DYNAMIC_KEY_LENGTH << std::endl;
+  std::cout << "2 " << DynamicKey2::DYNAMIC_KEY_LENGTH << std::endl;
+  std::cout << "3 " << DynamicKey3::DYNAMIC_KEY_LENGTH << std::endl;
+  std::cout << "4 " << DynamicKey4::DYNAMIC_KEY_LENGTH << std::endl;
+  std::cout << std::endl;
+
+  std::cout << std::endl;
+  std::cout << agora::tools::DynamicKey::generate(appID, appCertificate, channelName, unixTs, randomInt) << std::endl;
+
+  std::cout << std::endl;
+  std::cout << agora::tools::DynamicKey2::generate(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) << std::endl;
+
+  std::cout << std::endl;
+  std::cout << agora::tools::DynamicKey3::generate(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) << std::endl;
+
+  std::cout << std::endl;
   std::cout << agora::tools::DynamicKey4::generateRecordingKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) << std::endl;
   std::cout << agora::tools::DynamicKey4::generateMediaChannelKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) << std::endl;
+
+  std::cout << std::endl;
+  std::cout << DynamicKey5::generateMediaChannelKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) << std::endl;
+  std::cout << DynamicKey5::generateRecordingKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) << std::endl;
+
   return 0;
 }
