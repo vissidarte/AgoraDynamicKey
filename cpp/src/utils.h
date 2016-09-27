@@ -70,6 +70,30 @@ namespace agora { namespace tools {
             std::string hmac_key_;
     };
 
+    inline std::string toupper(const std::string& in)
+    {
+        std::string out;
+        for (char x : in) {
+            int u = std::toupper(x);
+            out.push_back((char)u);
+        }
+        return out;
+    }
+
+    inline std::string stringToHEX(const std::string& in)
+    {
+        static const char hexTable[]= "0123456789ABCDEF";
+
+        if (in.empty()) {
+            return std::string();
+        }
+        std::string out(in.size()*2, '\0');
+        for (uint32_t i = 0; i < in.size(); ++i){
+            out[i*2 + 0] = hexTable[(in[i] >> 4) & 0x0F];
+            out[i*2 + 1] = hexTable[(in[i]     ) & 0x0F];
+        }
+        return out;
+    }
 
     inline std::string stringToHex(const std::string& in)
     {

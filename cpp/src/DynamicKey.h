@@ -23,7 +23,7 @@ namespace agora { namespace tools {
         static const uint32_t APP_ID_OFFSET = SIGNATURE_LENGTH;
         static const uint32_t UNIX_TS_OFFSET = SIGNATURE_LENGTH+APP_ID_LENGTH;
         static const uint32_t RANDOM_INT_OFFSET = SIGNATURE_LENGTH+APP_ID_LENGTH+UNIX_TS_LENGTH;
-        static const std::string VERSION;
+        static std::string version() { return "001"; }
         std::string signature;
         std::string appID;
         uint32_t unixTs ;
@@ -71,5 +71,4 @@ namespace agora { namespace tools {
         return toString(appID, signature, unixTs, randomInt);                                                                                                                                  
     }
     };
-    const std::string DynamicKey::VERSION="001";
 }}

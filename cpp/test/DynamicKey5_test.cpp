@@ -17,8 +17,8 @@ class DynamicKey5_test : public testing::Test
 protected:
     virtual void SetUp()
     {
-        appID  = "970ca35de60c44645bbae8a215061b33";
-        appCertificate   = "5cfd2fd1755d40ecb72977518be15d3b";
+        appID  = "970CA35de60c44645bbae8a215061b33";
+        appCertificate   = "5CFd2fd1755d40ecb72977518be15d3b";
         channelName= "7d72365eb983485397e3e3f9d460bdda";
         unixTs = 1446455472;
         randomInt = 58964981;
@@ -51,13 +51,12 @@ void testDynamicKey(const std::string& expected, DynamicKey5::ServiceType servic
     bool parsed = k5.fromString(result);
     ASSERT_TRUE(parsed);
 
-    EXPECT_EQ(k5.appID, appID);
+    EXPECT_EQ(k5.appID, toupper(appID));
     EXPECT_EQ(k5.unixTs, unixTs);
     EXPECT_EQ(k5.randomInt, randomInt);
     EXPECT_EQ(k5.expiredTs, expiredTs);
 
-    std::string signature = stringToHex(
-                                DynamicKey5::generateSignature(
+    std::string signature = DynamicKey5::generateSignature(
                                     appCertificate
                                     , service
                                     , k5.appID
@@ -66,13 +65,13 @@ void testDynamicKey(const std::string& expected, DynamicKey5::ServiceType servic
                                     , channelName
                                     , uid
                                     , k5.expiredTs
-                                    , k5.extra)
-                                );
+                                    , k5.extra);
     EXPECT_EQ(k5.signature, signature);
+    v(k5);
 }
 
 void DynamicKey5_test::test_PublicSharingKey(){
-    auto expected = "005AwAUAKwwSjO3QjRdh9gbTak9g8xRY1H5EACXDKNd5gxEZFu66KIVBhszsCg3VvW7gwOvKDdWAAA=";
+    auto expected = "005AwAoADc0QTk5RTVEQjI4MDk0NUI0NzUwNTk0MUFDMjM4MDU2NzIwREY3QjAQAJcMo13mDERkW7roohUGGzOwKDdW9buDA68oN1YAAA==";
 
     testDynamicKey(expected, DynamicKey5::PUBLIC_SHARING_SERVICE, []() {
         return DynamicKey5::generatePublicSharingKey(
@@ -83,11 +82,11 @@ void DynamicKey5_test::test_PublicSharingKey(){
                     , randomInt
                     , uid
                     , expiredTs);
-    }, []() {});
+    }, [](const DynamicKey5& k5) {});
 }
 
 void DynamicKey5_test::test_RecordingKey(){
-    auto expected = "005AgAUALtRqMJ/tpXPIrKnF5cAwbFoHvt9EACXDKNd5gxEZFu66KIVBhszsCg3VvW7gwOvKDdWAAA=";
+    auto expected = "005AgAoADkyOUM5RTQ2MTg3QTAyMkJBQUIyNkI3QkYwMTg0MzhDNjc1Q0ZFMUEQAJcMo13mDERkW7roohUGGzOwKDdW9buDA68oN1YAAA==";
 
     testDynamicKey(expected, DynamicKey5::RECORDING_SERVICE, []() {
         return DynamicKey5::generateRecordingKey(
@@ -98,11 +97,11 @@ void DynamicKey5_test::test_RecordingKey(){
                     , randomInt
                     , uid
                     , expiredTs);
-    }, []() {});
+    }, [](const DynamicKey5& k5) {});
 }
 
 void DynamicKey5_test::test_MediaChannelKey(){
-    auto expected = "005AQAUAG16xAzXKyFRrrXyP2rFjJitR8VeEACXDKNd5gxEZFu66KIVBhszsCg3VvW7gwOvKDdWAAA=";
+    auto expected = "005AQAoAEJERTJDRDdFNkZDNkU0ODYxNkYxQTYwOUVFNTM1M0U5ODNCQjFDNDQQAJcMo13mDERkW7roohUGGzOwKDdW9buDA68oN1YAAA==";
 
     testDynamicKey(expected, DynamicKey5::MEDIA_CHANNEL_SERVICE, []() {
         return DynamicKey5::generateMediaChannelKey(
@@ -113,12 +112,12 @@ void DynamicKey5_test::test_MediaChannelKey(){
                     , randomInt
                     , uid
                     , expiredTs);
-    }, []() {});
+    }, [](const DynamicKey5& k5) {});
 }
 
 void DynamicKey5_test::test_InChannelPermission()
 {
-    auto noUpload = "005BAAUAP3lym6ibLmTcmaI5LWlxKo0D+G1EACXDKNd5gxEZFu66KIVBhszsCg3VvW7gwOvKDdWAQABAAEAMA==";
+    auto noUpload = "005BAAoADgyNEQxNDE4M0FGRDkyOEQ4REFFMUU1OTg5NTg2MzA3MTEyNjRGNzQQAJcMo13mDERkW7roohUGGzOwKDdW9buDA68oN1YBAAEAAQAw";
     testDynamicKey(noUpload, DynamicKey5::IN_CHANNEL_PERMISSION, []() {
         return DynamicKey5::generateInChannelPermissionKey(
                     appID
@@ -128,14 +127,14 @@ void DynamicKey5_test::test_InChannelPermission()
                     , randomInt
                     , uid
                     , expiredTs
-                    , DynamicKey5::NO_UPLOAD);
+                    , DynamicKey5::noUpload());
     }, [](DynamicKey5& k5) {
         ASSERT_FALSE(k5.extra.empty());
         EXPECT_TRUE(k5.extra.find(DynamicKey5::ALLOW_UPLOAD_IN_CHANNEL) != k5.extra.end());
-        EXPECT_EQ(k5.extra[DynamicKey5::ALLOW_UPLOAD_IN_CHANNEL], DynamicKey5::NO_UPLOAD);
+        EXPECT_EQ(k5.extra[DynamicKey5::ALLOW_UPLOAD_IN_CHANNEL], DynamicKey5::noUpload());
     });
 
-    auto audioVideoUpload = "005BAAUAFrd/gdrIoTi8A/100e/nCNjGVQeEACXDKNd5gxEZFu66KIVBhszsCg3VvW7gwOvKDdWAQABAAEAMw==";
+    auto audioVideoUpload = "005BAAoADJERDA3QThENTE2NzJGNjQwMzY5NTFBNzE0QkI5NTc0N0Q1QjZGQjMQAJcMo13mDERkW7roohUGGzOwKDdW9buDA68oN1YBAAEAAQAz";
     testDynamicKey(audioVideoUpload, DynamicKey5::IN_CHANNEL_PERMISSION, []() {
         return DynamicKey5::generateInChannelPermissionKey(
                     appID
@@ -145,11 +144,11 @@ void DynamicKey5_test::test_InChannelPermission()
                     , randomInt
                     , uid
                     , expiredTs
-                    , DynamicKey5::AUDIO_VIDEO_UPLOAD);
+                    , DynamicKey5::audioVideoUpload());
     }, [](DynamicKey5& k5) {
         ASSERT_FALSE(k5.extra.empty());
         EXPECT_TRUE(k5.extra.find(DynamicKey5::ALLOW_UPLOAD_IN_CHANNEL) != k5.extra.end());
-        EXPECT_EQ(k5.extra[DynamicKey5::ALLOW_UPLOAD_IN_CHANNEL], DynamicKey5::AUDIO_VIDEO_UPLOAD);
+        EXPECT_EQ(k5.extra[DynamicKey5::ALLOW_UPLOAD_IN_CHANNEL], DynamicKey5::audioVideoUpload());
     });
 }
 

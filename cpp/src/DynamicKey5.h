@@ -16,14 +16,14 @@ namespace agora { namespace tools {
             ALLOW_UPLOAD_IN_CHANNEL = 1,
         };
 
-        const static std::string NO_UPLOAD;
-        const static std::string AUDIO_VIDEO_UPLOAD;
+        static std::string version() { return "005"; }
+        static std::string noUpload() { return "0"; }
+        static std::string audioVideoUpload() { return "3"; }
 
         typedef std::map<uint16_t, std::string> extra_map;
-        DECLARE_PACKABLE_8(Message, uint16_t,serviceType, std::string,appId, uint32_t,unixTs, uint32_t,salt, std::string,channelName, uint32_t,uid, uint32_t,expiredTs, extra_map,extra);
-        DECLARE_PACKABLE_7(DynamicKey5Content, uint16_t,serviceType, std::string,signature, std::string,appId, uint32_t,unixTs, uint32_t,randomInt, uint32_t,expiredTs, extra_map,extra);
+        DECLARE_PACKABLE_8(Message, uint16_t,serviceType, std::string,appID, uint32_t,unixTs, uint32_t,salt, std::string,channelName, uint32_t,uid, uint32_t,expiredTs, extra_map,extra);
+        DECLARE_PACKABLE_7(DynamicKey5Content, uint16_t,serviceType, std::string,signature, std::string,appID, uint32_t,unixTs, uint32_t,randomInt, uint32_t,expiredTs, extra_map,extra);
 
-        static const std::string VERSION;
         std::string signature;
         std::string appID;
         uint32_t unixTs ;
@@ -48,7 +48,7 @@ namespace agora { namespace tools {
 
         bool fromString(const std::string& channelKeyString)
         {
-            if (channelKeyString.substr(0, VERSION_LENGTH) != "005") {
+            if (channelKeyString.substr(0, VERSION_LENGTH) != version()) {
                 return false;
             }
 
@@ -60,8 +60,8 @@ namespace agora { namespace tools {
             DynamicKey5Content content;
             unpack(rawContent, content);
 
-            this->signature = stringToHex(content.signature);
-            this->appID = stringToHex(content.appId);
+            this->signature = content.signature;
+            this->appID = stringToHEX(content.appID);
             this->unixTs = content.unixTs;
             this->randomInt = content.randomInt;
             this->expiredTs = content.expiredTs;
@@ -69,12 +69,15 @@ namespace agora { namespace tools {
             return true;
         }
 
-        static std::string generateSignature(const std::string& appCertificate, ServiceType service, const std::string& appId, uint32_t unixTs, uint32_t salt, const std::string& channelName, uint32_t uid, uint32_t expiredTs, const extra_map& extra)
+        static std::string generateSignature(const std::string& appCertificate, ServiceType service, const std::string& appID, uint32_t unixTs, uint32_t salt, const std::string& channelName, uint32_t uid, uint32_t expiredTs, const extra_map& extra)
         {
-            std::string rawAppId = hexDecode(appId);
-            Message m(service, rawAppId, unixTs, salt, channelName, uid, expiredTs, extra);
+            // decode hex to avoid case problem
+            std::string rawAppID = hexDecode(appID);
+            std::string rawAppCertificate = hexDecode(appCertificate);
+
+            Message m(service, rawAppID, unixTs, salt, channelName, uid, expiredTs, extra);
             std::string toSign = pack(m);
-            return singleton<crypto>::instance()->hmac_sign2(appCertificate, toSign, HMAC_LENGTH);
+            return stringToHEX(singleton<crypto>::instance()->hmac_sign2(rawAppCertificate, toSign, HMAC_LENGTH));
         }
 
         static std::string generateDynamicKey(
@@ -91,7 +94,7 @@ namespace agora { namespace tools {
         {
             std::string  signature = generateSignature(appCertificate, service, appID, unixTs, randomInt, channelName, uid, expiredTs, extra);
             DynamicKey5Content content(service, signature, hexDecode(appID), unixTs, randomInt, expiredTs, extra);
-            return VERSION + base64Encode(pack(content));
+            return version() + base64Encode(pack(content));
         }
 
         static std::string generateMediaChannelKey(const std::string& appID
@@ -104,7 +107,7 @@ namespace agora { namespace tools {
         {
             return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, extra_map(), MEDIA_CHANNEL_SERVICE);
         }
-        
+
         static std::string generateRecordingKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs)   
         {            
             return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, extra_map(), RECORDING_SERVICE);
@@ -123,9 +126,4 @@ namespace agora { namespace tools {
         }
 
     };
-
-    const std::string DynamicKey5::VERSION="005";
-    const std::string DynamicKey5::NO_UPLOAD = "0";
-    const std::string DynamicKey5::AUDIO_VIDEO_UPLOAD = "3";
-
 }}
