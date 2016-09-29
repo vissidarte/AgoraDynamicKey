@@ -432,6 +432,9 @@ private:
     bool			copy_;
 };
 
+#ifdef DECLARE_STRUCT_END 
+#else
+
 #define DECLARE_STRUCT_END };
 
 #define DECLARE_SIMPLE_STRUCT_1_START(name,type1,name1) \
@@ -445,6 +448,7 @@ name & operator=(const name & r) { \
   name1 = r.name1; \
   return *this; \
 }
+
 #define DECLARE_SIMPLE_STRUCT_1(name,type1,name1) DECLARE_SIMPLE_STRUCT_1_START(name,type1,name1) \
 DECLARE_STRUCT_END
 
@@ -1255,5 +1259,5 @@ friend unpacker & operator>> (unpacker & p, name & x) \
 }
 #define DECLARE_PACKABLE_9(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) DECLARE_PACKABLE_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
 DECLARE_STRUCT_END
-
+#endif
 }}
