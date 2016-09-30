@@ -2,6 +2,7 @@
 
 #include "Packer.h"
 #include "utils.h"
+#include <iostream>
 
 namespace agora { namespace tools {
     struct DynamicKey5 {
