@@ -1,4 +1,5 @@
 var DynamicKey4 = require('../src/DynamicKey4');
+var DynamicKey5 = require('../src/DynamicKey5');
 var appID  = "970ca35de60c44645bbae8a215061b33";
 var appCertificate     = "5cfd2fd1755d40ecb72977518be15d3b";
 var channel = "my channel name";
@@ -7,9 +8,12 @@ var r = Math.floor(Math.random() * 0xFFFFFFFF);
 var uid = 2882341273;
 var expiredTs = 0;
 
+console.log("4 recording key: " + DynamicKey4.generateRecordingKey(appID, appCertificate, channel, ts, r, uid, expiredTs));
+console.log("4 channel key: " + DynamicKey4.generateMediaChannelKey(appID, appCertificate, channel, ts, r, uid, expiredTs));
 
-var recordingKey = DynamicKey4.generateRecordingKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
-console.log(recordingKey);
-
-var mediaChannelKey = DynamicKey4.generateMediaChannelKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
-console.log(mediaChannelKey);
+console.log("5 recording key: " + DynamicKey5.generateRecordingKey(appID, appCertificate, channel, ts, r, uid, expiredTs));
+console.log("5 channel key: " + DynamicKey5.generateMediaChannelKey(appID, appCertificate, channel, ts, r, uid, expiredTs));
+console.log("5 in channel permission key(no upload): "
+    + DynamicKey5.generateInChannelPermissionKey(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.noUpload));
+console.log("5 in channel permission key(audio video upload): "
+    + DynamicKey5.generateInChannelPermissionKey(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.audioVideoUpload));
