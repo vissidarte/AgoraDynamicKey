@@ -7,6 +7,7 @@ var DynamicKey = require('../src/DynamicKey');
 var DynamicKey3 = require('../src/DynamicKey3');
 var DynamicKey4 = require('../src/DynamicKey4');
 var DynamicKey5 = require('../src/DynamicKey5');
+
 var appID  = "970ca35de60c44645bbae8a215061b33";
 var appCertificate     = "5cfd2fd1755d40ecb72977518be15d3b";
 var channel = "7d72365eb983485397e3e3f9d460bdda";
