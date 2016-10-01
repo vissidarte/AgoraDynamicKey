@@ -13,7 +13,11 @@ import java.security.NoSuchAlgorithmException;
 public class DynamicKeyUtil {
 
     static byte[] encodeHMAC(String key, byte[] message) throws NoSuchAlgorithmException, InvalidKeyException {
-        SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "RAW");
+        return encodeHMAC(key.getBytes(), message);
+    }
+
+    static byte[] encodeHMAC(byte[] key, byte[] message) throws NoSuchAlgorithmException, InvalidKeyException {
+        SecretKeySpec keySpec = new SecretKeySpec(key, "RAW");
 
         Mac mac = Mac.getInstance("HmacSHA1");
         mac.init(keySpec);
