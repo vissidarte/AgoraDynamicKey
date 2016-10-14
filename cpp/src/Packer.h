@@ -432,8 +432,8 @@ private:
     bool			copy_;
 };
 
-#ifdef DECLARE_STRUCT_END 
-#else
+#ifndef __DECLARE_STRUCT__
+#define __DECLARE_STRUCT__
 
 #define DECLARE_STRUCT_END };
 
@@ -1142,6 +1142,11 @@ friend bool operator!=(const name & l, const name & r) \
 #define DECLARE_STRUCT_9(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) DECLARE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
 DECLARE_STRUCT_END
 
+#endif
+
+#ifndef __DECLARE_PACKABLE__
+#define __DECLARE_PACKABLE__
+
 #define DECLARE_PACKABLE_1_START(name,type1,name1) DECLARE_STRUCT_1_START(name,type1,name1) \
 friend packer & operator<< (packer& p, const name & x) \
 {	\
@@ -1259,5 +1264,6 @@ friend unpacker & operator>> (unpacker & p, name & x) \
 }
 #define DECLARE_PACKABLE_9(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) DECLARE_PACKABLE_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
 DECLARE_STRUCT_END
+
 #endif
 }}
