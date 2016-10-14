@@ -16,14 +16,14 @@ $IN_CHANNEL_PERMISSION = 4;
     {
         global $RECORDING_SERVICE;
 
-        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $RECORDING_SERVICE, null);
+        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $RECORDING_SERVICE, array());
     }
 
     function generateMediaChannelKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs)
     {
         global $MEDIA_CHANNEL_SERVICE;
 
-        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $MEDIA_CHANNEL_SERVICE, null);
+        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $MEDIA_CHANNEL_SERVICE, array());
     }
 
     function generateInChannelPermissionKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $permission)
@@ -37,12 +37,56 @@ $IN_CHANNEL_PERMISSION = 4;
 
     function generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $serviceType, $extra)
     {
-        return "";
+        $signature = generateSignature($serviceType, $appID, $appCertificate, $channelName, $uid, $ts, $randomInt, $expiredTs, $extra);
+        $content = packContent($serviceType, $signature, hex2bin($appID), $ts, $randomInt, $expiredTs, $extra);
+        // echo bin2hex($content);
+        global $version;
+        return $version . base64_encode($content);
     }
 
-    function generateSignature($appID, $appCertificate, $channelName, $ts, $randomStr, $uidStr, $expiredStr, $serviceType)
+    function generateSignature($serviceType, $appID, $appCertificate, $channelName, $uid, $ts, $salt, $expiredTs, $extra)
     {
-        return "";
+        $rawAppID = hex2bin($appID);
+        $rawAppCertificate = hex2bin($appCertificate);
+        
+        $buffer = pack("S", $serviceType);
+        $buffer .= pack("S", strlen($rawAppID)) . $rawAppID;
+        $buffer .= pack("I", $ts);
+        $buffer .= pack("I", $salt);
+        $buffer .= pack("S", strlen($channelName)) . $channelName;
+        $buffer .= pack("I", $uid);
+        $buffer .= pack("I", $expiredTs);
+
+        $buffer .= pack("S", count($extra));
+        foreach ($extra as $key => $value) {
+            $buffer .= pack("S", $key);
+            $buffer .= pack("S", strlen($value)) . $value;
+        } 
+
+        return strtoupper(hash_hmac('sha1', $buffer, $rawAppCertificate));
+    }
+
+    function packString($value)
+    {
+        return pack("S", strlen($value)) . $value;
+    }
+
+    function packContent($serviceType, $signature, $appID, $ts, $salt, $expiredTs, $extra)
+    {
+        $buffer = pack("S", $serviceType);
+        $buffer .= packString($signature);
+        $buffer .= packString($appID);
+        $buffer .= pack("I", $ts);
+        $buffer .= pack("I", $salt);
+        $buffer .= pack("I", $expiredTs);
+
+        $buffer .= pack("S", count($extra));
+        foreach ($extra as $key => $value) {
+            $buffer .= pack("S", $key);
+            $buffer .= packString($value);
+        } 
+
+        return $buffer;
     }
 
 ?>
