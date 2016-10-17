@@ -9,7 +9,7 @@ Here are sample for C++, Go, Java, Nodejs, PHP and Python.
 ## SDK and Dynamic Key Compatibility
 Note: It is recommended for you to upgrade to DynamicKey5 ASAP.
 
-### If you need to verify user permission in channel
+### If you need to verify user permission in channel:
 | Dynamic Key Version | UID | SDK Version  |
 |---|---|---|
 | DynamicKey5  | specify the permission | 1.7.0 or later  |
@@ -121,9 +121,6 @@ import io.agora.media.DynamicKey5;
 import java.util.Date;
 import java.util.Random;
 
-/**
- * Created by Li on 10/1/2016.
- */
 public class DynamicKey5Sample {
     static String appID = "970ca35de60c44645bbae8a215061b33";
     static String appCertificate = "5cfd2fd1755d40ecb72977518be15d3b";
@@ -136,6 +133,8 @@ public class DynamicKey5Sample {
     public static void main(String[] args) throws Exception {
         System.out.println(DynamicKey5.generateMediaChannelKey(appID, appCertificate, channel, ts, r, uid, expiredTs));
         System.out.println(DynamicKey5.generateRecordingKey(appID, appCertificate, channel, ts, r, uid, expiredTs));
+        System.out.println(DynamicKey5.generateInChannelPermissionKey(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.noUpload));
+        System.out.println(DynamicKey5.generateInChannelPermissionKey(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.audioVideoUpload));
     }
 }
 ```
