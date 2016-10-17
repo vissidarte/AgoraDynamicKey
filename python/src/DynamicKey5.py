@@ -113,6 +113,7 @@ def generateDynamicKey(
         expiredTs,
         extra
 ):
+
     uid = ctypes.c_uint(uid).value
     signature = generateSignature(
         servicetype,
@@ -130,18 +131,19 @@ def generateDynamicKey(
         + packString(signature)\
         + packString(appID.decode('hex'))\
         + packUint32(unixTs) \
-        + packUint32(randomInt) \
+        + packInt32(randomInt) \
         + packUint32(expiredTs)\
         + packMap(extra)
     return version + base64.b64encode(content)
-
-
 
 def packUint16(x):
     return struct.pack('<H',int(x))
 
 def packUint32(x):
     return struct.pack('<I',int(x))
+
+def packInt32(x):
+    return struct.pack('<i', int(x))
 
 def packString(string):
     return packUint16(len(string)) + string
@@ -166,7 +168,7 @@ def generateSignature(
     content = packUint16(servicetype) \
         + packString(appID.decode('hex'))\
         + packUint32(unixTs)  \
-        + packUint32(randomInt)  \
+        + packInt32(randomInt)  \
         + packString(channelName) \
         + packUint32(uid)\
         + packUint32(expiredTs)\
