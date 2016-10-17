@@ -31,8 +31,8 @@ var generateDynamicKey = function (appID, appCertificate, channelName, unixTs, r
         , unixTs: unixTs
         , salt: randomInt
         , expiredTs: expiredTs
-        , extra: extra});
-    return version + content.pack().toString('base64');
+        , extra: extra}).pack();
+    return version + content.toString('base64');
 };
 
 module.exports.version = version;
