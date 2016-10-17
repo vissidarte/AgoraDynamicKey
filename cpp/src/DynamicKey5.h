@@ -81,6 +81,21 @@ namespace agora { namespace tools {
             return stringToHEX(singleton<crypto>::instance()->hmac_sign2(rawAppCertificate, toSign, HMAC_LENGTH));
         }
 
+        static bool isUUID(const std::string& v)
+        {
+            if (v.length() != 32) {
+                return false;
+            }
+
+            for (char x : v) {
+                if (! isxdigit(x)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         static std::string generateDynamicKey(
                 const std::string& appID
                 , const std::string& appCertificate
@@ -93,6 +108,16 @@ namespace agora { namespace tools {
                 , ServiceType service
                 )
         {
+            if (! isUUID(appID)) {
+                perror("invalid appID");
+                return "";
+            }
+
+            if (! isUUID(appCertificate)) {
+                perror("invalid appCertificate");
+                return "";
+            }
+
             std::string  signature = generateSignature(appCertificate, service, appID, unixTs, randomInt, channelName, uid, expiredTs, extra);
             DynamicKey5Content content(service, signature, hexDecode(appID), unixTs, randomInt, expiredTs, extra);
             return version() + base64Encode(pack(content));
