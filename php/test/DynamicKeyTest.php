@@ -1,5 +1,6 @@
 <?php
     include '../src/DynamicKey4.php';
+    include 'TestTool.php';
 
     $appID = '970ca35de60c44645bbae8a215061b33';
     $appCertificate = '5cfd2fd1755d40ecb72977518be15d3b';
@@ -15,9 +16,8 @@
         
         $actual = generateRecordingKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs);
 
-        // echo($actual);
+        assertEqual($expected, $actual);
     }
-    testRecordingKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs);
 
     function testMediaChannelKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs)
     {   
@@ -25,7 +25,9 @@
         
         $actual = generateMediaChannelKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs);
 
-        // echo($actual);
+        assertEqual($expected, $actual);
     }
+
+    testRecordingKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs);
     testMediaChannelKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs);
 ?>

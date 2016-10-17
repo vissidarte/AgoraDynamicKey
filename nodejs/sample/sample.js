@@ -7,9 +7,5 @@ var r = Math.floor(Math.random() * 0xFFFFFFFF);
 var uid = 2882341273;
 var expiredTs = 0;
 
-
-var recordingKey = DynamicKey4.generateRecordingKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
-console.log(recordingKey);
-
-var mediaChannelKey = DynamicKey4.generateMediaChannelKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
-console.log(mediaChannelKey);
+console.log("4 recording key: " + DynamicKey4.generateRecordingKey(appID, appCertificate, channel, ts, r, uid, expiredTs));
+console.log("4 channel key: " + DynamicKey4.generateMediaChannelKey(appID, appCertificate, channel, ts, r, uid, expiredTs));
