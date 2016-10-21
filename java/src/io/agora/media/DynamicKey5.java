@@ -1,10 +1,8 @@
 package io.agora.media;
 
-import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 
-import java.nio.ByteBuffer;
 import java.util.TreeMap;
 
 /**
@@ -51,19 +49,19 @@ public class DynamicKey5 {
     }
 
     public static String generatePublicSharingKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws Exception {
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<>(), PUBLIC_SHARING_SERVICE);
+        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<Short, String>(), PUBLIC_SHARING_SERVICE);
     }
 
     public static String generateRecordingKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws Exception {
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<>(), RECORDING_SERVICE);
+        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<Short, String>(), RECORDING_SERVICE);
     }
 
     public static String generateMediaChannelKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws Exception {
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<>(), MEDIA_CHANNEL_SERVICE);
+        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<Short, String>(), MEDIA_CHANNEL_SERVICE);
     }
 
     public static String generateInChannelPermissionKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs, String permission) throws Exception {
-        TreeMap<Short, String> extra = new TreeMap<>();
+        TreeMap<Short, String> extra = new TreeMap<Short, String>();
         extra.put(ALLOW_UPLOAD_IN_CHANNEL, permission);
         return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, extra, IN_CHANNEL_PERMISSION);
     }
@@ -89,7 +87,6 @@ public class DynamicKey5 {
             this.extra = extra;
         }
 
-        @Override
         public ByteBuf marshall(ByteBuf out) {
             return out.put(serviceType).put(appID).put(unixTs).put(salt).put(channelName).put(uid).put(expiredTs).put(extra);
         }
@@ -114,7 +111,6 @@ public class DynamicKey5 {
             this.extra = extra;
         }
 
-        @Override
         public ByteBuf marshall(ByteBuf out) {
             return out.put(serviceType).put(signature).put(appID).put(unixTs).put(salt).put(expiredTs).put(extra);
         }

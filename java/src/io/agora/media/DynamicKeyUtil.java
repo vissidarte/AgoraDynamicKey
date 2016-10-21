@@ -2,7 +2,6 @@ package io.agora.media;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayOutputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
