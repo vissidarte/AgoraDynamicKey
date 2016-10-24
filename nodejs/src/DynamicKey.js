@@ -9,6 +9,7 @@ var encodeHMac = function(key, message) {
 };
 
 module.exports.generate = function(appID, appCertificate, channelName, unixTs, randomInt) {
+    channelName=channelName.toString();
     var unixTsStr = ("0000000000" + unixTs).substring(String(unixTs).length);
     var rndTxt = randomInt.toString(16);
     var randomIntStr = ("00000000" + rndTxt).substring(rndTxt.length);

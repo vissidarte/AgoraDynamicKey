@@ -46,6 +46,7 @@ exports.RecordingKey4_Test = function (test) {
 };
 
 exports.MediaChannelKey4_Test = function (test) {
+  console.log("MediaChannelKey4_Test");
   var expected = "004d0ec5ee3179c964fe7c0485c045541de6bff332b970ca35de60c44645bbae8a215061b3314464554720383bbf51446455471";
   var actual = DynamicKey4.generateMediaChannelKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
   test.equal(expected, actual);

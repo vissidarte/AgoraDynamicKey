@@ -5,14 +5,17 @@ var noUpload = "0";
 var audioVideoUpload = "3";
 
 var generatePublicSharingKey = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+    channelName=channelName.toString();
     return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, null, PUBLIC_SHARING_SERVICE);
 };
 
 var generateRecordingKey = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+    channelName=channelName.toString();
     return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, null, RECORDING_SERVICE);
 };
 
 var generateMediaChannelKey = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+    channelName=channelName.toString();
     return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, null, MEDIA_CHANNEL_SERVICE);
 };
 

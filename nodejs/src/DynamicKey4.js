@@ -5,14 +5,17 @@
 var crypto = require('crypto');
 
 module.exports.generatePublicSharingKey = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+  channelName=channelName.toString();
   return doGenerate(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, 'APSS');
 }
 
 module.exports.generateRecordingKey = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+  channelName=channelName.toString();
   return doGenerate(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, 'ARS');
 }
 
 module.exports.generateMediaChannelKey = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+  channelName=channelName.toString();
   return doGenerate(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, 'ACS');
 }
 
