@@ -32,6 +32,7 @@ def generate(
         uid,
         expiredTs):
     uid = ctypes.c_uint(uid).value
+    randomInt = ctypes.c_uint(randomInt).value
     key = "\x00" * (32 - len(appID)) + appID
     signature = generateSignaure(
         appID,

@@ -1,7 +1,5 @@
 import hmac
 from hashlib import sha1
-import sys
-import time
 import ctypes
 
 def generatePublicSharingKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs):
@@ -15,6 +13,7 @@ def generateMediaChannelKey(appID, appCertificate, channelName, unixTs, randomIn
 
 def generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, servicetype):
     uid = ctypes.c_uint(uid).value
+    randomInt = ctypes.c_uint(randomInt).value
     key = "\x00" * (32 - len(appID)) + appID
     signature = generateSignature(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, servicetype)
     version = '{0:0>3}'.format(4)

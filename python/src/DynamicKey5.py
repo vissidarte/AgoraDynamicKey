@@ -1,7 +1,5 @@
 import hmac
 from hashlib import sha1
-import sys
-import time
 import ctypes
 import base64
 import struct
@@ -113,8 +111,8 @@ def generateDynamicKey(
         expiredTs,
         extra
 ):
-
     uid = ctypes.c_uint(uid).value
+    randomInt = ctypes.c_uint(randomInt).value
     signature = generateSignature(
         servicetype,
         appID,
@@ -131,7 +129,7 @@ def generateDynamicKey(
         + packString(signature)\
         + packString(appID.decode('hex'))\
         + packUint32(unixTs) \
-        + packInt32(randomInt) \
+        + packUint32(randomInt) \
         + packUint32(expiredTs)\
         + packMap(extra)
     return version + base64.b64encode(content)

@@ -1,7 +1,6 @@
 import hmac
 from hashlib import sha1
-import sys
-
+import ctypes
 
 def generateSignaure(appID, appCertificate, channelName, unixTs, randomInt):
     key = "\x00" * (32 - len(appID)) + appID
@@ -14,6 +13,7 @@ def generateSignaure(appID, appCertificate, channelName, unixTs, randomInt):
 
 
 def generate(appID, appCertificate, channelName, unixTs, randomInt):
+    randomInt = ctypes.c_uint(randomInt).value
     signature = generateSignaure(
         appID,
         appCertificate,
