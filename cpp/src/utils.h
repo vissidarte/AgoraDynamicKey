@@ -130,7 +130,7 @@ namespace agora { namespace tools {
         "abcdefghijklmnopqrstuvwxyz"
         "0123456789+/";
 
-    static char * base64_encode(const unsigned char *input, int length)
+    inline char * base64_encode(const unsigned char *input, int length)
     {
         /* http://www.adp-gmbh.ch/cpp/common/base64.html */
         int i=0, j=0, s=0;
@@ -173,11 +173,11 @@ namespace agora { namespace tools {
         return b64str;
     }
 
-    static inline bool is_base64(unsigned char c) {
+    inline bool is_base64(unsigned char c) {
         return (isalnum(c) || (c == '+') || (c == '/'));
     }
 
-    static unsigned char * base64_decode(const char *input, int length, int *outlen)
+    inline unsigned char * base64_decode(const char *input, int length, int *outlen)
     {
         int i = 0;
         int j = 0;
@@ -227,7 +227,7 @@ namespace agora { namespace tools {
         return output;
     }
 
-    static std::string base64Encode(const std::string& data)
+    inline std::string base64Encode(const std::string& data)
     {
         char* r = base64_encode((const unsigned char*)data.data(), data.length());
         std::string s(r);
@@ -235,7 +235,7 @@ namespace agora { namespace tools {
         return s;
     }
 
-    static std::string base64Decode(const std::string& data)
+    inline std::string base64Decode(const std::string& data)
     {
         int length = 0;
         const unsigned char* r = base64_decode(data.data(), data.length(), &length);
