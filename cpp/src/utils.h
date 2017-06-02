@@ -22,53 +22,21 @@ namespace agora { namespace tools {
     const std::string  PUBLIC_SHARING_SERVICE = "APSS"; 
     const std::string  MEDIA_CHANNEL_SERVICE = "ACS";
 
-    template <class T>
-        class singleton
-        {
-            public:
-                static T* instance()
-                {
-                    static T inst;
-                    return &inst;
-                }
-            protected:
-                singleton(){}
-                virtual ~singleton(){}
-            private:
-                singleton(const singleton&);
-                singleton& operator = (const singleton& rhs);
-        };
-
-    class crypto : public singleton<crypto>
+    // HMAC
+    inline std::string hmac_sign2(const std::string& appCertificate, const std::string& message, uint32_t signSize)
     {
-        public:
-            // HMAC
-            std::string hmac_sign(const std::string& message)
-            {
-                return hmac_sign2(hmac_key_, message, 20);
-            }
-
-            std::string hmac_sign2(const std::string& appCertificate, const std::string& message, uint32_t signSize)
-            {
-                if (appCertificate.empty()) {
-                    /*throw std::runtime_error("empty hmac key");*/
-                    return "";
-                }
-                return std::string((char *)HMAC(EVP_sha1()
-                            , (const unsigned char*)appCertificate.data()
-                            , appCertificate.length()
-                            , (const unsigned char*)message.data()
-                            , message.length(), NULL, NULL)
-                        , signSize);
-            }
-
-            bool hmac_verify(const std::string & message, const std::string & signature)
-            {
-                return signature == hmac_sign(message);
-            }
-        private:
-            std::string hmac_key_;
-    };
+        if (appCertificate.empty()) {
+            return "";
+        }
+        unsigned char md[64];
+        uint32_t md_len = 0;
+        HMAC(EVP_sha1()
+            , (const unsigned char*)appCertificate.data()
+            , appCertificate.length()
+            , (const unsigned char*)message.data()
+            , message.length(), &md[0], &md_len);
+        return std::string(reinterpret_cast<char *>(md), signSize);
+    }
 
     inline std::string toupper(const std::string& in)
     {
