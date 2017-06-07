@@ -12,7 +12,7 @@
 
 namespace agora { namespace tools {
 
-class packer
+class Packer
 {
     enum
     {
@@ -21,18 +21,18 @@ class packer
     }
     ;
 public:
-    packer()
+    Packer()
         : buffer_(PACKET_BUFFER_SIZE)
         , length_(0)
         , position_(2)
     {
     }
-    ~packer()
+    ~Packer()
     {
     }
 
 public:
-    packer & pack()
+    Packer & pack()
     {
         length_ = position_;
         position_ = 0;
@@ -100,7 +100,7 @@ public:
         }
     }
 
-    packer& push(const void* data, size_t length)
+    Packer& push(const void* data, size_t length)
     {
         check_size(length, position_);
         if (length > 0) {
@@ -119,66 +119,66 @@ public:
         if (buffer_.size() - position < more) {
             size_t new_size = buffer_.size() * 4;
             if (new_size > PACKET_BUFFER_SIZE_MAX) {
-                throw std::overflow_error("packer buffer overflow!");
+                throw std::overflow_error("Packer buffer overflow!");
             }
             buffer_.resize(new_size);
         }
     }
 
-    packer& operator<< (uint64_t v)
+    Packer& operator<< (uint64_t v)
     {
         push(v);
         return *this;
     }
 
-    packer& operator<< (uint32_t v)
+    Packer& operator<< (uint32_t v)
     {
         push(v);
         return *this;
     }
 
-    packer& operator<< (uint16_t v)
+    Packer& operator<< (uint16_t v)
     {
         push(v);
         return *this;
     }
-    packer& operator<< (uint8_t v)
+    Packer& operator<< (uint8_t v)
     {
         push(v);
         return *this;
     }
 
-    packer& operator<< (int64_t v)
+    Packer& operator<< (int64_t v)
     {
         push(static_cast<uint64_t>(v));
         return *this;
     }
 
-    packer& operator<< (int32_t v)
+    Packer& operator<< (int32_t v)
     {
         push(static_cast<uint32_t>(v));
         return *this;
     }
 
-    packer& operator<< (int16_t v)
+    Packer& operator<< (int16_t v)
     {
         push(static_cast<uint16_t>(v));
         return *this;
     }
-    packer& operator<< (int8_t v)
+    Packer& operator<< (int8_t v)
     {
         push(static_cast<uint8_t>(v));
         return *this;
     }
 
-    packer& operator<< (const std::string & v)
+    Packer& operator<< (const std::string & v)
     {
         push(v);
         return *this;
     }
 
     template<typename T>
-    packer& operator<< (const std::vector<T> &v)
+    Packer& operator<< (const std::vector<T> &v)
     {
         uint16_t count = v.size();
         *this << count;
@@ -189,7 +189,7 @@ public:
     }
 
     template<typename T>
-    packer& operator<< (const std::set<T> &v)
+    Packer& operator<< (const std::set<T> &v)
     {
         uint16_t count = v.size();
         *this << count;
@@ -200,14 +200,14 @@ public:
     }
 
     template<typename K, typename V>
-    packer& operator<< (const std::pair<K, V> & p)
+    Packer& operator<< (const std::pair<K, V> & p)
     {
         *this << p.first << p.second;
         return *this;
     }
 
     template<typename K, typename V>
-    packer& operator<< (const std::map<K, V> & v)
+    Packer& operator<< (const std::map<K, V> & v)
     {
         uint16_t count = v.size();
         *this << count;
@@ -218,7 +218,7 @@ public:
     }
 
     template<typename K, typename V>
-    packer& operator<< (const std::unordered_map<K, V> & v)
+    Packer& operator<< (const std::unordered_map<K, V> & v)
     {
         uint16_t count = v.size();
         *this << count;
@@ -234,10 +234,10 @@ private:
     uint16_t	position_;
 };
 
-class unpacker
+class Unpacker
 {
 public:
-    unpacker(const char* buf, size_t len, bool copy = false)
+    Unpacker(const char* buf, size_t len, bool copy = false)
         : buffer_(NULL)
         , length_(len)
         , position_(0)
@@ -251,14 +251,14 @@ public:
             buffer_ = const_cast<char *>(buf);
         }
     }
-    ~unpacker()	{
+    ~Unpacker()	{
         if (copy_) {
             delete [] buffer_;
         }
     }
 
 public:
-    unpacker& rewind() {
+    Unpacker& rewind() {
         position_ = 2;
         return *this;
     }
@@ -323,60 +323,60 @@ public:
 
     void check_size(size_t more, uint16_t position) const {
         if (static_cast<size_t>(length_ - position) < more) {
-            throw std::overflow_error("unpacker buffer overflow!");
+            throw std::overflow_error("Unpacker buffer overflow!");
         }
     }
 
-    unpacker& operator>> (uint64_t & v)
+    Unpacker& operator>> (uint64_t & v)
     {
         v = pop_uint64();
         return *this;
     }
 
-    unpacker& operator>> (uint32_t & v)
+    Unpacker& operator>> (uint32_t & v)
     {
         v = pop_uint32();
         return *this;
     }
-    unpacker& operator>> (uint16_t & v)
+    Unpacker& operator>> (uint16_t & v)
     {
         v = pop_uint16();
         return *this;
     }
-    unpacker& operator>> (uint8_t & v)
+    Unpacker& operator>> (uint8_t & v)
     {
         v = pop_uint8();
         return *this;
     }
 
-    unpacker& operator>> (int64_t & v)
+    Unpacker& operator>> (int64_t & v)
     {
         v = static_cast<int64_t>(pop_uint64());
         return *this;
     }
-    unpacker& operator>> (int32_t & v)
+    Unpacker& operator>> (int32_t & v)
     {
         v = static_cast<int32_t>(pop_uint32());
         return *this;
     }
-    unpacker& operator>> (int16_t & v)
+    Unpacker& operator>> (int16_t & v)
     {
         v = static_cast<int16_t>(pop_uint16());
         return *this;
     }
-    unpacker& operator>> (int8_t & v)
+    Unpacker& operator>> (int8_t & v)
     {
         v = static_cast<int8_t>(pop_uint8());
         return *this;
     }
-    unpacker& operator>> (std::string & v)
+    Unpacker& operator>> (std::string & v)
     {
         v = pop_string();
         return *this;
     }
 
     template<typename T>
-    unpacker& operator>> (std::vector<T> &v)
+    Unpacker& operator>> (std::vector<T> &v)
     {
         uint16_t count = pop_uint16();
         for (uint16_t i = 0; i < count; i++) {
@@ -388,7 +388,7 @@ public:
     }
 
     template<typename T>
-    unpacker& operator>> (std::set<T> &v)
+    Unpacker& operator>> (std::set<T> &v)
     {
         uint16_t count = pop_uint16();
         for (uint16_t i = 0; i < count; i++) {
@@ -400,7 +400,7 @@ public:
     }
 
     template<typename K, typename V>
-    unpacker& operator>> (std::map<K, V> & x)
+    Unpacker& operator>> (std::map<K, V> & x)
     {
         uint16_t count = pop_uint16();
         for (uint16_t i = 0; i < count; i++) {
@@ -413,7 +413,7 @@ public:
     }
 
     template<typename K, typename V>
-    unpacker& operator>> (std::unordered_map<K, V> & x)
+    Unpacker& operator>> (std::unordered_map<K, V> & x)
     {
         uint16_t count = pop_uint16();
         for (uint16_t i = 0; i < count; i++) {
@@ -432,12 +432,9 @@ private:
     bool			copy_;
 };
 
-#ifndef __DECLARE_STRUCT__
-#define __DECLARE_STRUCT__
+#define TOOLS_DECLARE_STRUCT_END };
 
-#define DECLARE_STRUCT_END };
-
-#define DECLARE_SIMPLE_STRUCT_1_START(name,type1,name1) \
+#define TOOLS_DECLARE_SIMPLE_STRUCT_1_START(name,type1,name1) \
 struct name { \
 type1 name1;\
 name():name1(){}\
@@ -449,10 +446,10 @@ name & operator=(const name & r) { \
   return *this; \
 }
 
-#define DECLARE_SIMPLE_STRUCT_1(name,type1,name1) DECLARE_SIMPLE_STRUCT_1_START(name,type1,name1) \
-DECLARE_STRUCT_END
+#define TOOLS_DECLARE_SIMPLE_STRUCT_1(name,type1,name1) TOOLS_DECLARE_SIMPLE_STRUCT_1_START(name,type1,name1) \
+TOOLS_DECLARE_STRUCT_END
 
-#define DECLARE_SIMPLE_STRUCT_2_START(name,type1,name1,type2,name2) \
+#define TOOLS_DECLARE_SIMPLE_STRUCT_2_START(name,type1,name1,type2,name2) \
 struct name { \
 type1 name1;\
 type2 name2;\
@@ -465,10 +462,10 @@ name & operator=(const name & r) { \
   name2 = r.name2; \
   return *this; \
 }
-#define DECLARE_SIMPLE_STRUCT_2(name,type1,name1,type2,name2) DECLARE_SIMPLE_STRUCT_2_START(name,type1,name1,type2,name2) \
-DECLARE_STRUCT_END
+#define TOOLS_DECLARE_SIMPLE_STRUCT_2(name,type1,name1,type2,name2) TOOLS_DECLARE_SIMPLE_STRUCT_2_START(name,type1,name1,type2,name2) \
+TOOLS_DECLARE_STRUCT_END
 
-#define DECLARE_SIMPLE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) \
+#define TOOLS_DECLARE_SIMPLE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) \
 struct name { \
 type1 name1;\
 type2 name2;\
@@ -483,10 +480,10 @@ name & operator=(const name & r) { \
   name3 = r.name3; \
   return *this; \
 }
-#define DECLARE_SIMPLE_STRUCT_3(name,type1,name1,type2,name2,type3,name3) DECLARE_SIMPLE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) \
-DECLARE_STRUCT_END
+#define TOOLS_DECLARE_SIMPLE_STRUCT_3(name,type1,name1,type2,name2,type3,name3) TOOLS_DECLARE_SIMPLE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) \
+TOOLS_DECLARE_STRUCT_END
 
-#define DECLARE_SIMPLE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
+#define TOOLS_DECLARE_SIMPLE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
 struct name { \
 type1 name1;\
 type2 name2;\
@@ -503,10 +500,10 @@ name & operator=(const name & r) { \
   name4 = r.name4; \
   return *this; \
 }
-#define DECLARE_SIMPLE_STRUCT_4(name,type1,name1,type2,name2,type3,name3,type4,name4) DECLARE_SIMPLE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
-DECLARE_STRUCT_END
+#define TOOLS_DECLARE_SIMPLE_STRUCT_4(name,type1,name1,type2,name2,type3,name3,type4,name4) TOOLS_DECLARE_SIMPLE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
+TOOLS_DECLARE_STRUCT_END
 
-#define DECLARE_SIMPLE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
+#define TOOLS_DECLARE_SIMPLE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
 struct name { \
 type1 name1;\
 type2 name2;\
@@ -525,10 +522,10 @@ name & operator=(const name & r) { \
   name5 = r.name5; \
   return *this; \
 }
-#define DECLARE_SIMPLE_STRUCT_5(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) DECLARE_SIMPLE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
-DECLARE_STRUCT_END
+#define TOOLS_DECLARE_SIMPLE_STRUCT_5(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) TOOLS_DECLARE_SIMPLE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
+TOOLS_DECLARE_STRUCT_END
 
-#define DECLARE_SIMPLE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
+#define TOOLS_DECLARE_SIMPLE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
 struct name { \
 type1 name1;\
 type2 name2;\
@@ -549,10 +546,10 @@ name & operator=(const name & r) { \
   name6 = r.name6; \
   return *this; \
 }
-#define DECLARE_SIMPLE_STRUCT_6(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) DECLARE_SIMPLE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
-DECLARE_STRUCT_END
+#define TOOLS_DECLARE_SIMPLE_STRUCT_6(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) TOOLS_DECLARE_SIMPLE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
+TOOLS_DECLARE_STRUCT_END
 
-#define DECLARE_SIMPLE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
+#define TOOLS_DECLARE_SIMPLE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
 struct name { \
 type1 name1;\
 type2 name2;\
@@ -575,10 +572,10 @@ name & operator=(const name & r) { \
   name7 = r.name7; \
   return *this; \
 }
-#define DECLARE_SIMPLE_STRUCT_7(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) DECLARE_SIMPLE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
-DECLARE_STRUCT_END
+#define TOOLS_DECLARE_SIMPLE_STRUCT_7(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) TOOLS_DECLARE_SIMPLE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
+TOOLS_DECLARE_STRUCT_END
 
-#define DECLARE_SIMPLE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
+#define TOOLS_DECLARE_SIMPLE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
 struct name { \
 type1 name1;\
 type2 name2;\
@@ -603,10 +600,11 @@ name & operator=(const name & r) { \
   name8 = r.name8; \
   return *this; \
 }
-#define DECLARE_SIMPLE_STRUCT_8(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) DECLARE_SIMPLE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
-DECLARE_STRUCT_END
 
-#define DECLARE_SIMPLE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
+#define TOOLS_DECLARE_SIMPLE_STRUCT_8(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) TOOLS_DECLARE_SIMPLE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
+TOOLS_DECLARE_STRUCT_END
+
+#define TOOLS_DECLARE_SIMPLE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
 struct name { \
 type1 name1;\
 type2 name2;\
@@ -633,11 +631,11 @@ name & operator=(const name & r) { \
   name9 = r.name9; \
   return *this; \
 }
-#define DECLARE_SIMPLE_STRUCT_9(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) DECLARE_SIMPLE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
-DECLARE_STRUCT_END
+#define TOOLS_DECLARE_SIMPLE_STRUCT_9(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) TOOLS_DECLARE_SIMPLE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
+TOOLS_DECLARE_STRUCT_END
 
 
-#define DECLARE_STRUCT_1_START(name,type1,name1) DECLARE_SIMPLE_STRUCT_1_START(name,type1,name1) \
+#define TOOLS_DECLARE_STRUCT_1_START(name,type1,name1) TOOLS_DECLARE_SIMPLE_STRUCT_1_START(name,type1,name1) \
 friend bool operator<(const name & l, const name & r) \
 { \
   if (l.name1 != r.name1) \
@@ -659,9 +657,9 @@ friend bool operator!=(const name & l, const name & r) \
   return !(l == r); \
 }
 
-#define DECLARE_STRUCT_1(name,type1,name1) DECLARE_STRUCT_1_START(name,type1,name1) \
-DECLARE_STRUCT_END
-#define DECLARE_STRUCT_2_START(name,type1,name1,type2,name2) DECLARE_SIMPLE_STRUCT_2_START(name,type1,name1,type2,name2) \
+#define TOOLS_DECLARE_STRUCT_1(name,type1,name1) TOOLS_DECLARE_STRUCT_1_START(name,type1,name1) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_STRUCT_2_START(name,type1,name1,type2,name2) TOOLS_DECLARE_SIMPLE_STRUCT_2_START(name,type1,name1,type2,name2) \
 friend bool operator<(const name & l, const name & r) \
 { \
   if (l.name1 != r.name1) \
@@ -691,9 +689,9 @@ friend bool operator!=(const name & l, const name & r) \
   return !(l == r); \
 }
 
-#define DECLARE_STRUCT_2(name,type1,name1,type2,name2) DECLARE_STRUCT_2_START(name,type1,name1,type2,name2) \
-DECLARE_STRUCT_END
-#define DECLARE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) DECLARE_SIMPLE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) \
+#define TOOLS_DECLARE_STRUCT_2(name,type1,name1,type2,name2) TOOLS_DECLARE_STRUCT_2_START(name,type1,name1,type2,name2) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) TOOLS_DECLARE_SIMPLE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) \
 friend bool operator<(const name & l, const name & r) \
 { \
   if (l.name1 != r.name1) \
@@ -731,9 +729,9 @@ friend bool operator!=(const name & l, const name & r) \
   return !(l == r); \
 }
 
-#define DECLARE_STRUCT_3(name,type1,name1,type2,name2,type3,name3) DECLARE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) \
-DECLARE_STRUCT_END
-#define DECLARE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) DECLARE_SIMPLE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
+#define TOOLS_DECLARE_STRUCT_3(name,type1,name1,type2,name2,type3,name3) TOOLS_DECLARE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) TOOLS_DECLARE_SIMPLE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
 friend bool operator<(const name & l, const name & r) \
 { \
   if (l.name1 != r.name1) \
@@ -779,9 +777,9 @@ friend bool operator!=(const name & l, const name & r) \
   return !(l == r); \
 }
 
-#define DECLARE_STRUCT_4(name,type1,name1,type2,name2,type3,name3,type4,name4) DECLARE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
-DECLARE_STRUCT_END
-#define DECLARE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) DECLARE_SIMPLE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
+#define TOOLS_DECLARE_STRUCT_4(name,type1,name1,type2,name2,type3,name3,type4,name4) TOOLS_DECLARE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) TOOLS_DECLARE_SIMPLE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
 friend bool operator<(const name & l, const name & r) \
 { \
   if (l.name1 != r.name1) \
@@ -835,9 +833,9 @@ friend bool operator!=(const name & l, const name & r) \
   return !(l == r); \
 }
 
-#define DECLARE_STRUCT_5(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) DECLARE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
-DECLARE_STRUCT_END
-#define DECLARE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) DECLARE_SIMPLE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
+#define TOOLS_DECLARE_STRUCT_5(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) TOOLS_DECLARE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) TOOLS_DECLARE_SIMPLE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
 friend bool operator<(const name & l, const name & r) \
 { \
   if (l.name1 != r.name1) \
@@ -899,9 +897,9 @@ friend bool operator!=(const name & l, const name & r) \
   return !(l == r); \
 }
 
-#define DECLARE_STRUCT_6(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) DECLARE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
-DECLARE_STRUCT_END
-#define DECLARE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) DECLARE_SIMPLE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
+#define TOOLS_DECLARE_STRUCT_6(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) TOOLS_DECLARE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) TOOLS_DECLARE_SIMPLE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
 friend bool operator<(const name & l, const name & r) \
 { \
   if (l.name1 != r.name1) \
@@ -971,9 +969,9 @@ friend bool operator!=(const name & l, const name & r) \
   return !(l == r); \
 }
 
-#define DECLARE_STRUCT_7(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) DECLARE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
-DECLARE_STRUCT_END
-#define DECLARE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) DECLARE_SIMPLE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
+#define TOOLS_DECLARE_STRUCT_7(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) TOOLS_DECLARE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) TOOLS_DECLARE_SIMPLE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
 friend bool operator<(const name & l, const name & r) \
 { \
   if (l.name1 != r.name1) \
@@ -1051,9 +1049,9 @@ friend bool operator!=(const name & l, const name & r) \
   return !(l == r); \
 }
 
-#define DECLARE_STRUCT_8(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) DECLARE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
-DECLARE_STRUCT_END
-#define DECLARE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) DECLARE_SIMPLE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
+#define TOOLS_DECLARE_STRUCT_8(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) TOOLS_DECLARE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) TOOLS_DECLARE_SIMPLE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
 friend bool operator<(const name & l, const name & r) \
 { \
   if (l.name1 != r.name1) \
@@ -1139,131 +1137,128 @@ friend bool operator!=(const name & l, const name & r) \
   return !(l == r); \
 }
 
-#define DECLARE_STRUCT_9(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) DECLARE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
-DECLARE_STRUCT_END
+#define TOOLS_DECLARE_STRUCT_9(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) TOOLS_DECLARE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
+TOOLS_DECLARE_STRUCT_END
 
-#endif
-
-#ifndef __DECLARE_PACKABLE__
-#define __DECLARE_PACKABLE__
-
-#define DECLARE_PACKABLE_1_START(name,type1,name1) DECLARE_STRUCT_1_START(name,type1,name1) \
-friend packer & operator<< (packer& p, const name & x) \
+#define TOOLS_DECLARE_PACKABLE_1_START(name,type1,name1) TOOLS_DECLARE_STRUCT_1_START(name,type1,name1) \
+friend agora::tools::Packer & operator<< (agora::tools::Packer& p, const name & x) \
 {	\
     p << x.name1; \
     return p;\
 }\
-friend unpacker & operator>> (unpacker & p, name & x) \
+friend agora::tools::Unpacker & operator>> (agora::tools::Unpacker & p, name & x) \
 {			\
   p >> x.name1; \
     return p;\
 }
-#define DECLARE_PACKABLE_1(name,type1,name1) DECLARE_PACKABLE_1_START(name,type1,name1) \
-DECLARE_STRUCT_END
-#define DECLARE_PACKABLE_2_START(name,type1,name1,type2,name2) DECLARE_STRUCT_2_START(name,type1,name1,type2,name2) \
-friend packer & operator<< (packer& p, const name & x) \
+#define TOOLS_DECLARE_PACKABLE_1(name,type1,name1) TOOLS_DECLARE_PACKABLE_1_START(name,type1,name1) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_PACKABLE_2_START(name,type1,name1,type2,name2) TOOLS_DECLARE_STRUCT_2_START(name,type1,name1,type2,name2) \
+friend agora::tools::Packer & operator<< (agora::tools::Packer& p, const name & x) \
 {	\
     p << x.name1 << x.name2; \
     return p;\
 }\
-friend unpacker & operator>> (unpacker & p, name & x) \
+friend agora::tools::Unpacker & operator>> (agora::tools::Unpacker & p, name & x) \
 {			\
   p >> x.name1 >> x.name2; \
     return p;\
 }
-#define DECLARE_PACKABLE_2(name,type1,name1,type2,name2) DECLARE_PACKABLE_2_START(name,type1,name1,type2,name2) \
-DECLARE_STRUCT_END
-#define DECLARE_PACKABLE_3_START(name,type1,name1,type2,name2,type3,name3) DECLARE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) \
-friend packer & operator<< (packer& p, const name & x) \
+#define TOOLS_DECLARE_PACKABLE_2(name,type1,name1,type2,name2) TOOLS_DECLARE_PACKABLE_2_START(name,type1,name1,type2,name2) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_PACKABLE_3_START(name,type1,name1,type2,name2,type3,name3) TOOLS_DECLARE_STRUCT_3_START(name,type1,name1,type2,name2,type3,name3) \
+friend agora::tools::Packer & operator<< (agora::tools::Packer& p, const name & x) \
 {	\
     p << x.name1 << x.name2 << x.name3; \
     return p;\
 }\
-friend unpacker & operator>> (unpacker & p, name & x) \
+friend agora::tools::Unpacker & operator>> (agora::tools::Unpacker & p, name & x) \
 {			\
   p >> x.name1 >> x.name2 >> x.name3; \
     return p;\
 }
-#define DECLARE_PACKABLE_3(name,type1,name1,type2,name2,type3,name3) DECLARE_PACKABLE_3_START(name,type1,name1,type2,name2,type3,name3) \
-DECLARE_STRUCT_END
-#define DECLARE_PACKABLE_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) DECLARE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
-friend packer & operator<< (packer& p, const name & x) \
+#define TOOLS_DECLARE_PACKABLE_3(name,type1,name1,type2,name2,type3,name3) TOOLS_DECLARE_PACKABLE_3_START(name,type1,name1,type2,name2,type3,name3) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_PACKABLE_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) TOOLS_DECLARE_STRUCT_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
+friend agora::tools::Packer & operator<< (agora::tools::Packer& p, const name & x) \
 {	\
     p << x.name1 << x.name2 << x.name3 << x.name4; \
     return p;\
 }\
-friend unpacker & operator>> (unpacker & p, name & x) \
+friend agora::tools::Unpacker & operator>> (agora::tools::Unpacker & p, name & x) \
 {			\
   p >> x.name1 >> x.name2 >> x.name3 >> x.name4; \
     return p;\
 }
-#define DECLARE_PACKABLE_4(name,type1,name1,type2,name2,type3,name3,type4,name4) DECLARE_PACKABLE_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
-DECLARE_STRUCT_END
-#define DECLARE_PACKABLE_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) DECLARE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
-friend packer & operator<< (packer& p, const name & x) \
+#define TOOLS_DECLARE_PACKABLE_4(name,type1,name1,type2,name2,type3,name3,type4,name4) TOOLS_DECLARE_PACKABLE_4_START(name,type1,name1,type2,name2,type3,name3,type4,name4) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_PACKABLE_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) TOOLS_DECLARE_STRUCT_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
+friend agora::tools::Packer & operator<< (agora::tools::Packer& p, const name & x) \
 {	\
     p << x.name1 << x.name2 << x.name3 << x.name4 << x.name5; \
     return p;\
 }\
-friend unpacker & operator>> (unpacker & p, name & x) \
+friend agora::tools::Unpacker & operator>> (agora::tools::Unpacker & p, name & x) \
 {			\
   p >> x.name1 >> x.name2 >> x.name3 >> x.name4 >> x.name5; \
     return p;\
 }
-#define DECLARE_PACKABLE_5(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) DECLARE_PACKABLE_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
-DECLARE_STRUCT_END
-#define DECLARE_PACKABLE_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) DECLARE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
-friend packer & operator<< (packer& p, const name & x) \
+#define TOOLS_DECLARE_PACKABLE_5(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) TOOLS_DECLARE_PACKABLE_5_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_PACKABLE_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) TOOLS_DECLARE_STRUCT_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
+friend agora::tools::Packer & operator<< (agora::tools::Packer& p, const name & x) \
 {	\
     p << x.name1 << x.name2 << x.name3 << x.name4 << x.name5 << x.name6; \
     return p;\
 }\
-friend unpacker & operator>> (unpacker & p, name & x) \
+friend agora::tools::Unpacker & operator>> (agora::tools::Unpacker & p, name & x) \
 {			\
   p >> x.name1 >> x.name2 >> x.name3 >> x.name4 >> x.name5 >> x.name6; \
     return p;\
 }
-#define DECLARE_PACKABLE_6(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) DECLARE_PACKABLE_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
-DECLARE_STRUCT_END
-#define DECLARE_PACKABLE_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) DECLARE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
-friend packer & operator<< (packer& p, const name & x) \
+#define TOOLS_DECLARE_PACKABLE_6(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) TOOLS_DECLARE_PACKABLE_6_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6) \
+TOOLS_DECLARE_STRUCT_END
+#define TOOLS_DECLARE_PACKABLE_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) TOOLS_DECLARE_STRUCT_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
+friend agora::tools::Packer & operator<< (agora::tools::Packer& p, const name & x) \
 {	\
     p << x.name1 << x.name2 << x.name3 << x.name4 << x.name5 << x.name6 << x.name7; \
     return p;\
 }\
-friend unpacker & operator>> (unpacker & p, name & x) \
+friend agora::tools::Unpacker & operator>> (agora::tools::Unpacker & p, name & x) \
 {			\
   p >> x.name1 >> x.name2 >> x.name3 >> x.name4 >> x.name5 >> x.name6 >> x.name7; \
     return p;\
 }
-#define DECLARE_PACKABLE_7(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) DECLARE_PACKABLE_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
-DECLARE_STRUCT_END
-#define DECLARE_PACKABLE_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) DECLARE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
-friend packer & operator<< (packer& p, const name & x) \
+#define TOOLS_DECLARE_PACKABLE_7(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) TOOLS_DECLARE_PACKABLE_7_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7) \
+TOOLS_DECLARE_STRUCT_END
+
+#define TOOLS_DECLARE_PACKABLE_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) TOOLS_DECLARE_STRUCT_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
+friend agora::tools::Packer & operator<< (agora::tools::Packer& p, const name & x) \
 {	\
     p << x.name1 << x.name2 << x.name3 << x.name4 << x.name5 << x.name6 << x.name7 << x.name8; \
     return p;\
 }\
-friend unpacker & operator>> (unpacker & p, name & x) \
+friend agora::tools::Unpacker & operator>> (agora::tools::Unpacker & p, name & x) \
 {			\
   p >> x.name1 >> x.name2 >> x.name3 >> x.name4 >> x.name5 >> x.name6 >> x.name7 >> x.name8; \
     return p;\
 }
-#define DECLARE_PACKABLE_8(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) DECLARE_PACKABLE_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
-DECLARE_STRUCT_END
-#define DECLARE_PACKABLE_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) DECLARE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
-friend packer & operator<< (packer& p, const name & x) \
+
+#define TOOLS_DECLARE_PACKABLE_8(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) TOOLS_DECLARE_PACKABLE_8_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8) \
+TOOLS_DECLARE_STRUCT_END
+
+#define TOOLS_DECLARE_PACKABLE_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) TOOLS_DECLARE_STRUCT_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
+friend agora::tools::Packer & operator<< (agora::tools::Packer& p, const name & x) \
 {	\
     p << x.name1 << x.name2 << x.name3 << x.name4 << x.name5 << x.name6 << x.name7 << x.name8 << x.name9; \
     return p;\
 }\
-friend unpacker & operator>> (unpacker & p, name & x) \
+friend agora::tools::Unpacker & operator>> (agora::tools::Unpacker & p, name & x) \
 {			\
   p >> x.name1 >> x.name2 >> x.name3 >> x.name4 >> x.name5 >> x.name6 >> x.name7 >> x.name8 >> x.name9; \
     return p;\
 }
-#define DECLARE_PACKABLE_9(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) DECLARE_PACKABLE_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
-DECLARE_STRUCT_END
+#define TOOLS_DECLARE_PACKABLE_9(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) TOOLS_DECLARE_PACKABLE_9_START(name,type1,name1,type2,name2,type3,name3,type4,name4,type5,name5,type6,name6,type7,name7,type8,name8,type9,name9) \
+TOOLS_DECLARE_STRUCT_END
 
-#endif
 }}

@@ -22,8 +22,8 @@ namespace agora { namespace tools {
         static std::string audioVideoUpload() { return "3"; }
 
         typedef std::map<uint16_t, std::string> extra_map;
-        DECLARE_PACKABLE_8(Message, uint16_t,serviceType, std::string,appID, uint32_t,unixTs, uint32_t,salt, std::string,channelName, uint32_t,uid, uint32_t,expiredTs, extra_map,extra);
-        DECLARE_PACKABLE_7(DynamicKey5Content, uint16_t,serviceType, std::string,signature, std::string,appID, uint32_t,unixTs, uint32_t,randomInt, uint32_t,expiredTs, extra_map,extra);
+        TOOLS_DECLARE_PACKABLE_8(Message, uint16_t,serviceType, std::string,appID, uint32_t,unixTs, uint32_t,salt, std::string,channelName, uint32_t,uid, uint32_t,expiredTs, extra_map,extra);
+        TOOLS_DECLARE_PACKABLE_7(DynamicKey5Content, uint16_t,serviceType, std::string,signature, std::string,appID, uint32_t,unixTs, uint32_t,randomInt, uint32_t,expiredTs, extra_map,extra);
 
         std::string signature;
         std::string appID;
@@ -35,7 +35,7 @@ namespace agora { namespace tools {
         template<typename T>
         static std::string pack(const T& x)
         {
-            packer p;
+            Packer p;
             p << x;
             return p.pack().body();
         }
@@ -43,7 +43,7 @@ namespace agora { namespace tools {
         template<typename T>
         static void unpack(const std::string& data, T& x)
         {
-            unpacker u(data.data(), data.length());
+            Unpacker u(data.data(), data.length());
             u >> x;
         }
 
