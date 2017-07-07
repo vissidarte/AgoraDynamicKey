@@ -1,5 +1,6 @@
 #pragma once
 
+#include <random>
 #include <string>
 #include <sstream>
 #include <openssl/hmac.h>
@@ -51,6 +52,12 @@ namespace agora { namespace tools {
         }
 
         return true;
+    }
+
+    inline uint32_t generateSalt()
+    {
+        std::random_device r;
+        return r();
     }
 
     inline std::string toupper(const std::string& in)
