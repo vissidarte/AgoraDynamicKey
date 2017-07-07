@@ -432,6 +432,21 @@ private:
     bool			copy_;
 };
 
+template<typename T>
+inline std::string pack(const T& x)
+{
+    Packer p;
+    p << x;
+    return p.pack().body();
+}
+
+template<typename T>
+inline void unpack(const std::string& data, T& x)
+{
+    Unpacker u(data.data(), data.length());
+    u >> x;
+}
+
 #define TOOLS_DECLARE_STRUCT_END };
 
 #define TOOLS_DECLARE_SIMPLE_STRUCT_1_START(name,type1,name1) \

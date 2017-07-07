@@ -38,6 +38,21 @@ namespace agora { namespace tools {
         return std::string(reinterpret_cast<char *>(md), signSize);
     }
 
+    inline bool isUUID(const std::string& v)
+    {
+        if (v.length() != 32) {
+            return false;
+        }
+
+        for (char x : v) {
+            if (! isxdigit(x)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     inline std::string toupper(const std::string& in)
     {
         std::string out;

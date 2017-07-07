@@ -32,21 +32,6 @@ namespace agora { namespace tools {
         uint32_t expiredTs;
         extra_map extra;
 
-        template<typename T>
-        static std::string pack(const T& x)
-        {
-            Packer p;
-            p << x;
-            return p.pack().body();
-        }
-
-        template<typename T>
-        static void unpack(const std::string& data, T& x)
-        {
-            Unpacker u(data.data(), data.length());
-            u >> x;
-        }
-
         bool fromString(const std::string& channelKeyString)
         {
             if (channelKeyString.substr(0, VERSION_LENGTH) != version()) {
@@ -79,21 +64,6 @@ namespace agora { namespace tools {
             Message m(service, rawAppID, unixTs, salt, channelName, uid, expiredTs, extra);
             std::string toSign = pack(m);
             return stringToHEX(hmac_sign2(rawAppCertificate, toSign, HMAC_LENGTH));
-        }
-
-        static bool isUUID(const std::string& v)
-        {
-            if (v.length() != 32) {
-                return false;
-            }
-
-            for (char x : v) {
-                if (! isxdigit(x)) {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         static std::string generateDynamicKey(
