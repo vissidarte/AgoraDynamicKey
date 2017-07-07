@@ -157,11 +157,6 @@ namespace agora { namespace tools {
             return generateInChannelPermissionKey(appID, appCertificate, channelName, ::time(NULL), generateSalt(), uid, 0, permission);
         }
 
-        static std::string generateInChannelPermissionKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t uid, const std::string& permission, uint32_t revokeTimestamp)
-        {
-            return generateInChannelPermissionKey(appID, appCertificate, channelName, ::time(NULL), generateSalt(), uid, revokeTimestamp, permission);
-        }
-
         static std::string generateInChannelPermissionKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t revokeTimestamp, const std::string& permission)
         {
             extra_map extra;
