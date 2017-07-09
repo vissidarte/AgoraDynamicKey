@@ -7,6 +7,7 @@ var DynamicKey = require('../src/DynamicKey');
 var DynamicKey3 = require('../src/DynamicKey3');
 var DynamicKey4 = require('../src/DynamicKey4');
 var DynamicKey5 = require('../src/DynamicKey5');
+var DynamicKey6 = require('../src/DynamicKey6')
 
 var appID  = "970ca35de60c44645bbae8a215061b33";
 var appCertificate     = "5cfd2fd1755d40ecb72977518be15d3b";
@@ -81,6 +82,38 @@ exports.InChannelPermission5_Test = function(test) {
 
   var audioVideoUpload = "005BAAoADJERDA3QThENTE2NzJGNjQwMzY5NTFBNzE0QkI5NTc0N0Q1QjZGQjMQAJcMo13mDERkW7roohUGGzOwKDdW9buDA68oN1YBAAEAAQAz";
   var generatedAudioVideoUpload = DynamicKey5.generateInChannelPermissionKey(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.audioVideoUpload);
+  test.equal(audioVideoUpload, generatedAudioVideoUpload);
+  test.done();
+};
+
+exports.PublicSharingKey6Full_Test = function(test) {
+  var expected = "006970ca35de60c44645bbae8a215061b33AwAoADc0QTk5RTVEQjI4MDk0NUI0NzUwNTk0MUFDMjM4MDU2NzIwREY3QjCZCc2rsCg3VvW7gwOvKDdWAAA=";
+  var actual = DynamicKey6.generatePublicSharingKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
+  test.equal(expected, actual);
+  test.done();
+};
+
+exports.RecordingKey6Full_Test = function(test) {
+  var expected = "006970ca35de60c44645bbae8a215061b33AgAoADkyOUM5RTQ2MTg3QTAyMkJBQUIyNkI3QkYwMTg0MzhDNjc1Q0ZFMUGZCc2rsCg3VvW7gwOvKDdWAAA=";
+  var result = DynamicKey6.generateRecordingKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
+  test.equal(expected, result);
+  test.done();
+};
+
+exports.MediaChannelKey6Full_Test = function(test) {
+  var expected = "006970ca35de60c44645bbae8a215061b33AQAoAEJERTJDRDdFNkZDNkU0ODYxNkYxQTYwOUVFNTM1M0U5ODNCQjFDNDSZCc2rsCg3VvW7gwOvKDdWAAA=";
+  var result = DynamicKey6.generateMediaChannelKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
+  test.equal(expected, result);
+  test.done();
+};
+
+exports.InChannelPermission6Full_Test = function(test) {
+  var noUpload = "006970ca35de60c44645bbae8a215061b33BAAoADgyNEQxNDE4M0FGRDkyOEQ4REFFMUU1OTg5NTg2MzA3MTEyNjRGNzSZCc2rsCg3VvW7gwOvKDdWAQABAAEAMA==";
+  var generatedNoUpload = DynamicKey6.generateInChannelPermissionKey(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.noUpload);
+  test.equal(noUpload, generatedNoUpload);
+
+  var audioVideoUpload = "006970ca35de60c44645bbae8a215061b33BAAoADJERDA3QThENTE2NzJGNjQwMzY5NTFBNzE0QkI5NTc0N0Q1QjZGQjOZCc2rsCg3VvW7gwOvKDdWAQABAAEAMw==";
+  var generatedAudioVideoUpload = DynamicKey6.generateInChannelPermissionKey(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.audioVideoUpload);
   test.equal(audioVideoUpload, generatedAudioVideoUpload);
   test.done();
 };
