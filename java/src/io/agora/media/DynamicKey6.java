@@ -53,8 +53,20 @@ public class DynamicKey6 {
         return buffer.asBytes();
     }
 
+    public static String generatePublicSharingKey(String appID, String appCertificate, String channel) throws Exception {
+        return generatePublicSharingKey(appID, appCertificate, channel, getTimestamp(), getSalt(), 0, 0);
+    }
+
     public static String generatePublicSharingKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws Exception {
         return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<Short, String>(), PUBLIC_SHARING_SERVICE);
+    }
+
+    public static String generateRecordingKey(String appID, String appCertificate, String channel) throws Exception {
+        return generateRecordingKey(appID, appCertificate, channel, 0);
+    }
+
+    public static String generateRecordingKey(String appID, String appCertificate, String channel, long uid) throws Exception {
+        return generateRecordingKey(appID, appCertificate, channel, getTimestamp(), getSalt(), uid, 0);
     }
 
     public static String generateRecordingKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws Exception {

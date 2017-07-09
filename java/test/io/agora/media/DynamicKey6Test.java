@@ -17,10 +17,50 @@ public class DynamicKey6Test {
     private int expiredTs=1446455471;
 
     @Test
+    public void testPublicSharingKey() throws Exception {
+        String result = DynamicKey6.generatePublicSharingKey(
+                appID
+                , appCertificate
+                , channel);
+        DynamicKey6 k6 = testDynamicKey(DynamicKey6.PUBLIC_SHARING_SERVICE, result);
+        assertEquals(k6.uid, 0);
+        assertTrue(k6.unixTs <= DynamicKey6.getTimestamp());
+        assertNotEquals(k6.salt, 0);
+        assertEquals(k6.expiredTs, 0);
+    }
+
+    @Test
     public void testGeneratePublicSharingKeyFull() throws Exception {
         String expected = "006970ca35de60c44645bbae8a215061b33AwAoADc0QTk5RTVEQjI4MDk0NUI0NzUwNTk0MUFDMjM4MDU2NzIwREY3QjCZCc2rsCg3VvW7gwOvKDdWAAA=";
         String result = DynamicKey6.generatePublicSharingKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
         assertEquals(expected, result);
+    }
+
+    @Test
+    public void testRecordingKey() throws Exception {
+        String result = DynamicKey6.generateRecordingKey(
+                appID
+                , appCertificate
+                , channel);
+        DynamicKey6 k6 = testDynamicKey(DynamicKey6.RECORDING_SERVICE, result);
+        assertEquals(k6.uid, 0);
+        assertTrue(k6.unixTs <= DynamicKey6.getTimestamp());
+        assertNotEquals(k6.salt, 0);
+        assertEquals(k6.expiredTs, 0);
+    }
+
+    @Test
+    public void testRecordingKeyUid() throws Exception {
+        String result = DynamicKey6.generateRecordingKey(
+                appID
+                , appCertificate
+                , channel
+                , uid);
+        DynamicKey6 k6 = testDynamicKey(DynamicKey6.RECORDING_SERVICE, result);
+        assertEquals(k6.uid, uid);
+        assertTrue(k6.unixTs <= DynamicKey6.getTimestamp());
+        assertNotEquals(k6.salt, 0);
+        assertEquals(k6.expiredTs, 0);
     }
 
     @Test
