@@ -17,8 +17,8 @@ protected:
 
     virtual void SetUp()
     {
-        appID  = "970CA35de60c44645bbae8a215061b33";
-        appCertificate   = "5CFd2fd1755d40ecb72977518be15d3b";
+        appID  = "970ca35de60c44645bbae8a215061b33";
+        appCertificate   = "5cfd2fd1755d40ecb72977518be15d3b";
         channelName= "7d72365eb983485397e3e3f9d460bdda";
         unixTs = 1446455472;
         randomInt = 58964981;
@@ -90,7 +90,7 @@ void DynamicKey6_test::test_PublicSharingKey() {
 }
 
 void DynamicKey6_test::test_PublicSharingKeyFull() {
-    auto expected = "006970CA35de60c44645bbae8a215061b33AwAoADc0QTk5RTVEQjI4MDk0NUI0NzUwNTk0MUFDMjM4MDU2NzIwREY3QjCZCc2rsCg3VvW7gwOvKDdWAAA=";
+    auto expected = "006970ca35de60c44645bbae8a215061b33AwAoADc0QTk5RTVEQjI4MDk0NUI0NzUwNTk0MUFDMjM4MDU2NzIwREY3QjCZCc2rsCg3VvW7gwOvKDdWAAA=";
 
     testDynamicKey(DynamicKey6::PUBLIC_SHARING_SERVICE, [this]() {
         return DynamicKey6::generatePublicSharingKey(
@@ -140,7 +140,7 @@ void DynamicKey6_test::test_RecordingKeyUid() {
 }
 
 void DynamicKey6_test::test_RecordingKeyFull() {
-    auto expected = "006970CA35de60c44645bbae8a215061b33AgAoADkyOUM5RTQ2MTg3QTAyMkJBQUIyNkI3QkYwMTg0MzhDNjc1Q0ZFMUGZCc2rsCg3VvW7gwOvKDdWAAA=";
+    auto expected = "006970ca35de60c44645bbae8a215061b33AgAoADkyOUM5RTQ2MTg3QTAyMkJBQUIyNkI3QkYwMTg0MzhDNjc1Q0ZFMUGZCc2rsCg3VvW7gwOvKDdWAAA=";
 
     testDynamicKey(DynamicKey6::RECORDING_SERVICE, [this]() {
         return DynamicKey6::generateRecordingKey(
@@ -206,7 +206,7 @@ void DynamicKey6_test::test_MediaChannelKeyUidKick(){
 }
 
 void DynamicKey6_test::test_MediaChannelKeyFull(){
-    auto expected = "006970CA35de60c44645bbae8a215061b33AQAoAEJERTJDRDdFNkZDNkU0ODYxNkYxQTYwOUVFNTM1M0U5ODNCQjFDNDSZCc2rsCg3VvW7gwOvKDdWAAA=";
+    auto expected = "006970ca35de60c44645bbae8a215061b33AQAoAEJERTJDRDdFNkZDNkU0ODYxNkYxQTYwOUVFNTM1M0U5ODNCQjFDNDSZCc2rsCg3VvW7gwOvKDdWAAA=";
 
     testDynamicKey(DynamicKey6::MEDIA_CHANNEL_SERVICE, [this]() {
         return DynamicKey6::generateMediaChannelKey(
@@ -265,7 +265,7 @@ void DynamicKey6_test::test_InChannelPermission()
 
 void DynamicKey6_test::test_InChannelPermissionFull()
 {
-    auto noUpload = "006970CA35de60c44645bbae8a215061b33BAAoADgyNEQxNDE4M0FGRDkyOEQ4REFFMUU1OTg5NTg2MzA3MTEyNjRGNzSZCc2rsCg3VvW7gwOvKDdWAQABAAEAMA==";
+    auto noUpload = "006970ca35de60c44645bbae8a215061b33BAAoADgyNEQxNDE4M0FGRDkyOEQ4REFFMUU1OTg5NTg2MzA3MTEyNjRGNzSZCc2rsCg3VvW7gwOvKDdWAQABAAEAMA==";
     testDynamicKey(DynamicKey6::IN_CHANNEL_PERMISSION, [this]() {
         return DynamicKey6::generateInChannelPermissionKey(
                     appID
@@ -287,7 +287,7 @@ void DynamicKey6_test::test_InChannelPermissionFull()
         EXPECT_EQ(k6.extra[DynamicKey6::ALLOW_UPLOAD_IN_CHANNEL], DynamicKey6::noUpload());
     });
 
-    auto audioVideoUpload = "006970CA35de60c44645bbae8a215061b33BAAoADJERDA3QThENTE2NzJGNjQwMzY5NTFBNzE0QkI5NTc0N0Q1QjZGQjOZCc2rsCg3VvW7gwOvKDdWAQABAAEAMw==";
+    auto audioVideoUpload = "006970ca35de60c44645bbae8a215061b33BAAoADJERDA3QThENTE2NzJGNjQwMzY5NTFBNzE0QkI5NTc0N0Q1QjZGQjOZCc2rsCg3VvW7gwOvKDdWAQABAAEAMw==";
     testDynamicKey(DynamicKey6::IN_CHANNEL_PERMISSION, [this]() {
         return DynamicKey6::generateInChannelPermissionKey(
                     appID
@@ -312,7 +312,7 @@ void DynamicKey6_test::test_InChannelPermissionFull()
 
 void DynamicKey6_test::test_rawAppId()
 {
-    std::string noUpload = "006970CA35de60c44645bbae8a215061b33BAAoADgyNEQxNDE4M0FGRDkyOEQ4REFFMUU1OTg5NTg2MzA3MTEyNjRGNzSZCc2rsCg3VvW7gwOvKDdWAQABAAEAMA==";
+    std::string noUpload = "006970ca35de60c44645bbae8a215061b33BAAoADgyNEQxNDE4M0FGRDkyOEQ4REFFMUU1OTg5NTg2MzA3MTEyNjRGNzSZCc2rsCg3VvW7gwOvKDdWAQABAAEAMA==";
     testDynamicKey(DynamicKey6::IN_CHANNEL_PERMISSION, [this]() {
         return DynamicKey6::generateInChannelPermissionKey(
                     appID
