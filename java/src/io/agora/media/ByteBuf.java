@@ -8,7 +8,14 @@ import java.util.TreeMap;
  * Created by Li on 10/1/2016.
  */
 public class ByteBuf {
-    ByteBuffer buffer = ByteBuffer.allocate(1024).order(ByteOrder.LITTLE_ENDIAN);
+    ByteBuffer buffer = null;
+
+    public ByteBuf() {
+        buffer = ByteBuffer.allocate(1024).order(ByteOrder.LITTLE_ENDIAN);
+    }
+    public ByteBuf(byte[] bytes) {
+        buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+    }
 
     public byte[] asBytes() {
         byte[] out = new byte[buffer.position()];
@@ -46,5 +53,29 @@ public class ByteBuf {
         }
 
         return this;
+    }
+
+    public short readShort() {
+        return buffer.getShort();
+    }
+
+    public int readInt() {
+        return buffer.getInt();
+    }
+
+    public String readString() {
+        short length = readShort();
+        byte[] bytes = new byte[length];
+        buffer.get(bytes);
+        return new String(bytes);
+    }
+
+    public void readMap(TreeMap<Short, String> extra) {
+        short length = readShort();
+        for (short i = 0; i < length; i++) {
+            short k = readShort();
+            String v = readString();
+            extra.put(k, v);
+        }
     }
 }
