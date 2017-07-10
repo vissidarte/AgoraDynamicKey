@@ -88,32 +88,32 @@ exports.InChannelPermission5_Test = function(test) {
 
 exports.PublicSharingKey6Full_Test = function(test) {
   var expected = "006970ca35de60c44645bbae8a215061b33AwAoADc0QTk5RTVEQjI4MDk0NUI0NzUwNTk0MUFDMjM4MDU2NzIwREY3QjCZCc2rsCg3VvW7gwOvKDdWAAA=";
-  var actual = DynamicKey6.generatePublicSharingKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
+  var actual = DynamicKey6.generatePublicSharingKeyFull(appID, appCertificate, channel, ts, r, uid, expiredTs);
   test.equal(expected, actual);
   test.done();
 };
 
 exports.RecordingKey6Full_Test = function(test) {
   var expected = "006970ca35de60c44645bbae8a215061b33AgAoADkyOUM5RTQ2MTg3QTAyMkJBQUIyNkI3QkYwMTg0MzhDNjc1Q0ZFMUGZCc2rsCg3VvW7gwOvKDdWAAA=";
-  var result = DynamicKey6.generateRecordingKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
+  var result = DynamicKey6.generateRecordingKeyFull(appID, appCertificate, channel, ts, r, uid, expiredTs);
   test.equal(expected, result);
   test.done();
 };
 
 exports.MediaChannelKey6Full_Test = function(test) {
   var expected = "006970ca35de60c44645bbae8a215061b33AQAoAEJERTJDRDdFNkZDNkU0ODYxNkYxQTYwOUVFNTM1M0U5ODNCQjFDNDSZCc2rsCg3VvW7gwOvKDdWAAA=";
-  var result = DynamicKey6.generateMediaChannelKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
+  var result = DynamicKey6.generateMediaChannelKeyFull(appID, appCertificate, channel, ts, r, uid, expiredTs);
   test.equal(expected, result);
   test.done();
 };
 
 exports.InChannelPermission6Full_Test = function(test) {
   var noUpload = "006970ca35de60c44645bbae8a215061b33BAAoADgyNEQxNDE4M0FGRDkyOEQ4REFFMUU1OTg5NTg2MzA3MTEyNjRGNzSZCc2rsCg3VvW7gwOvKDdWAQABAAEAMA==";
-  var generatedNoUpload = DynamicKey6.generateInChannelPermissionKey(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.noUpload);
+  var generatedNoUpload = DynamicKey6.generateInChannelPermissionKeyFull(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.noUpload);
   test.equal(noUpload, generatedNoUpload);
 
   var audioVideoUpload = "006970ca35de60c44645bbae8a215061b33BAAoADJERDA3QThENTE2NzJGNjQwMzY5NTFBNzE0QkI5NTc0N0Q1QjZGQjOZCc2rsCg3VvW7gwOvKDdWAQABAAEAMw==";
-  var generatedAudioVideoUpload = DynamicKey6.generateInChannelPermissionKey(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.audioVideoUpload);
+  var generatedAudioVideoUpload = DynamicKey6.generateInChannelPermissionKeyFull(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.audioVideoUpload);
   test.equal(audioVideoUpload, generatedAudioVideoUpload);
   test.done();
 };
