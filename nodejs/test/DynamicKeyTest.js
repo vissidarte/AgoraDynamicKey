@@ -107,11 +107,69 @@ function testDynamicKey(test, serviceType, Generate, Verify)
     Verify(k6, result);
 }
 
+exports.test_PublicSharingKey = function(test) {
+    testDynamicKey(
+      test
+      , DynamicKey6.PUBLIC_SHARING_SERVICE
+      , function() {
+        return DynamicKey6.generatePublicSharingKey(
+                    appID
+                    , appCertificate
+                    , channel);
+      }
+      , function(k6, result) {
+        test.equal(k6.uid, 0);
+        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.randomInt, 0);
+        test.equal(k6.expiredTs, 0);
+    });
+    test.done();
+};
+
 exports.PublicSharingKey6Full_Test = function(test) {
   var expected = "006970ca35de60c44645bbae8a215061b33AwAoADc0QTk5RTVEQjI4MDk0NUI0NzUwNTk0MUFDMjM4MDU2NzIwREY3QjCZCc2rsCg3VvW7gwOvKDdWAAA=";
   var actual = DynamicKey6.generatePublicSharingKeyFull(appID, appCertificate, channel, ts, r, uid, expiredTs);
   test.equal(expected, actual);
   test.done();
+};
+
+exports.test_RecordingKey = function(test) {
+    testDynamicKey(
+      test
+      , DynamicKey6.RECORDING_SERVICE
+      , function() {
+        return DynamicKey6.generateRecordingKey(
+                    appID
+                    , appCertificate
+                    , channel);
+      }
+      , function(k6, result) {
+        test.equal(k6.uid, 0);
+        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.salt, 0);
+        test.equal(k6.expiredTs, 0);
+    });
+    test.done();
+};
+
+exports.test_RecordingKeyUid = function(test) {
+    testDynamicKey(
+      test
+      , DynamicKey6.RECORDING_SERVICE
+      , function() {
+        return DynamicKey6.generateRecordingKey(
+                    appID
+                    , appCertificate
+                    , channel
+                    , uid);
+      }
+      , function(k6, result) {
+        test.equal(k6.uid, uid);
+        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.salt, 0);
+        test.equal(k6.expiredTs, 0);
+    });
+    test.done();
 };
 
 exports.RecordingKey6Full_Test = function(test) {
@@ -135,7 +193,7 @@ exports.test_MediaChannelKey = function(test) {
           test.equal(k6.expiredTs, 0);
       });
     test.done();
-}
+};
 
 exports.test_MediaChannelKeyUid = function(test) {
     testDynamicKey(
@@ -174,6 +232,50 @@ exports.MediaChannelKey6Full_Test = function(test) {
   var result = DynamicKey6.generateMediaChannelKeyFull(appID, appCertificate, channel, ts, r, uid, expiredTs);
   test.equal(expected, result);
   test.done();
+};
+
+exports.test_InChannelPermission = function(test) {
+    testDynamicKey(
+      test
+      , DynamicKey6.IN_CHANNEL_PERMISSION
+      , function() {
+        return DynamicKey6.generateInChannelPermissionKey(
+                    appID
+                    , appCertificate
+                    , channel
+                    , uid
+                    , DynamicKey6.noUpload);
+      }
+      , function(k6, result) {
+        test.equal(k6.uid, uid);
+        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.salt, 0);
+        test.equal(k6.expiredTs, 0);
+        test.ok(k6.extra.hasOwnProperty(DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL));
+        test.equal(k6.extra[DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL], DynamicKey6.noUpload);
+    });
+
+    testDynamicKey(
+      test
+      , DynamicKey6.IN_CHANNEL_PERMISSION
+      , function() {
+        return DynamicKey6.generateInChannelPermissionKey(
+                    appID
+                    , appCertificate
+                    , channel
+                    , uid
+                    , DynamicKey6.audioVideoUpload);
+      }
+      , function(k6, result) {
+        test.equal(k6.uid, uid);
+        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.salt, 0);
+        test.equal(k6.expiredTs, 0);
+        test.ok(k6.extra.hasOwnProperty(DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL));
+        test.equal(k6.extra[DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL], DynamicKey6.audioVideoUpload);
+      }
+    );
+    test.done();
 };
 
 exports.InChannelPermission6Full_Test = function(test) {

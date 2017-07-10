@@ -4,14 +4,22 @@ var version = "006";
 var noUpload = "0";
 var audioVideoUpload = "3";
 
-var generatePublicSharingKeyFull = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
-    channelName=channelName.toString();
-    return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, null, PUBLIC_SHARING_SERVICE);
+var generatePublicSharingKey = function (appID, appCertificate, channelName) {
+    return generatePublicSharingKeyFull(appID, appCertificate, channelName, getTimestamp(), getSalt(), 0, 0);
 };
 
-var generateRecordingKeyFull = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+var generatePublicSharingKeyFull = function (appID, appCertificate, channelName, unixTs, salt, uid, expiredTs) {
     channelName=channelName.toString();
-    return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, null, RECORDING_SERVICE);
+    return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, null, PUBLIC_SHARING_SERVICE);
+};
+
+var generateRecordingKey = function (appID, appCertificate, channelName, uid) {
+    return generateRecordingKeyFull(appID, appCertificate, channelName, getTimestamp(), getSalt(), uid, 0);
+};
+
+var generateRecordingKeyFull = function (appID, appCertificate, channelName, unixTs, salt, uid, expiredTs) {
+    channelName=channelName.toString();
+    return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, null, RECORDING_SERVICE);
 };
 
 var generateMediaChannelKey = function (appID, appCertificate, channelName) {
@@ -26,25 +34,29 @@ var generateMediaChannelKeyUidKickTime = function (appID, appCertificate, channe
     return generateMediaChannelKeyFull(appID, appCertificate, channelName, getTimestamp(), getSalt(), uid, kickTs);
 };
 
-var generateMediaChannelKeyFull = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
+var generateMediaChannelKeyFull = function (appID, appCertificate, channelName, unixTs, salt, uid, expiredTs) {
     channelName=channelName.toString();
-    return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, null, MEDIA_CHANNEL_SERVICE);
+    return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, null, MEDIA_CHANNEL_SERVICE);
 };
 
-var generateInChannelPermissionKeyFull = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, permission) {
+var generateInChannelPermissionKey = function (appID, appCertificate, channelName, uid, permission) {
+    return generateInChannelPermissionKeyFull(appID, appCertificate, channelName, getTimestamp(), getSalt(), uid, 0, permission);
+};
+
+var generateInChannelPermissionKeyFull = function (appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, permission) {
     var extra = {};
     extra[ALLOW_UPLOAD_IN_CHANNEL] = permission;
-    return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, extra, IN_CHANNEL_PERMISSION);
+    return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, extra, IN_CHANNEL_PERMISSION);
 };
 
-var generateDynamicKey = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, extra, serviceType) {
-    var signature = generateSignature6(appCertificate, serviceType, appID, unixTs, randomInt, channelName, uid, expiredTs, extra);
+var generateDynamicKey = function (appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, extra, serviceType) {
+    var signature = generateSignature6(appCertificate, serviceType, appID, unixTs, salt, channelName, uid, expiredTs, extra);
     var content = DynamicKey6Content({
         serviceType: serviceType
         , signature: signature
         , uid: uid
         , unixTs: unixTs
-        , salt: randomInt
+        , salt: salt
         , expiredTs: expiredTs
         , extra: extra}).pack();
     return version + appID + content.toString('base64');
@@ -99,7 +111,7 @@ var fromString = function(keyString) {
     return that;
 };
 
-var generateSignature6 = function(appCertificate, serviceType, appID, unixTs, randomInt, channelName, uid, expiredTs, extra) {
+var generateSignature6 = function(appCertificate, serviceType, appID, unixTs, salt, channelName, uid, expiredTs, extra) {
     // decode hex to avoid case problem
     var rawAppID = hexDecode(appID);
     var rawAppCertificate = hexDecode(appCertificate);
@@ -108,7 +120,7 @@ var generateSignature6 = function(appCertificate, serviceType, appID, unixTs, ra
         serviceType: serviceType
         , appID: rawAppID
         , unixTs: unixTs
-        , salt: randomInt
+        , salt: salt
         , channelName: channelName
         , uid: uid
         , expiredTs: expiredTs
@@ -277,14 +289,18 @@ var VERSION_LENGTH = 3;
 var APP_ID_LENGTH = 32;
 
 module.exports.version = version;
+module.exports.ALLOW_UPLOAD_IN_CHANNEL = ALLOW_UPLOAD_IN_CHANNEL;
 module.exports.noUpload = noUpload;
 module.exports.audioVideoUpload = audioVideoUpload;
+module.exports.generatePublicSharingKey = generatePublicSharingKey;
 module.exports.generatePublicSharingKeyFull = generatePublicSharingKeyFull;
+module.exports.generateRecordingKey = generateRecordingKey;
 module.exports.generateRecordingKeyFull = generateRecordingKeyFull;
 module.exports.generateMediaChannelKey = generateMediaChannelKey;
 module.exports.generateMediaChannelKeyUid = generateMediaChannelKeyUid;
 module.exports.generateMediaChannelKeyUidKickTime = generateMediaChannelKeyUidKickTime;
 module.exports.generateMediaChannelKeyFull = generateMediaChannelKeyFull;
+module.exports.generateInChannelPermissionKey = generateInChannelPermissionKey;
 module.exports.generateInChannelPermissionKeyFull = generateInChannelPermissionKeyFull;
 module.exports.generateDynamicKey = generateDynamicKey;
 module.exports.generateSignature = generateSignature6;
