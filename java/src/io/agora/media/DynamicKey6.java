@@ -99,13 +99,13 @@ public class DynamicKey6 {
         return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, extra, IN_CHANNEL_PERMISSION);
     }
 
-    String signature = "";
-    String appID = "";
-    long uid;
-    int unixTs ;
-    int salt;
-    int expiredTs;
-    TreeMap<Short, String> extra = new TreeMap<Short, String>();
+    public String signature = "";
+    public String appID = "";
+    public long uid;
+    public int unixTs ;
+    public int salt;
+    public int expiredTs;
+    public TreeMap<Short, String> extra = new TreeMap<Short, String>();
 
     static int getTimestamp() {
         return (int)(new Date().getTime()/1000);
