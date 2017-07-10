@@ -14,6 +14,18 @@ var generateRecordingKeyFull = function (appID, appCertificate, channelName, uni
     return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, null, RECORDING_SERVICE);
 };
 
+var generateMediaChannelKey = function (appID, appCertificate, channelName) {
+    return generateMediaChannelKeyUid(appID, appCertificate, channelName, 0);
+};
+
+var generateMediaChannelKeyUid = function (appID, appCertificate, channelName, uid) {
+    return generateMediaChannelKeyUidKickTime(appID, appCertificate, channelName, uid, 0);
+};
+
+var generateMediaChannelKeyUidKickTime = function (appID, appCertificate, channelName, uid, kickTs) {
+    return generateMediaChannelKeyFull(appID, appCertificate, channelName, getTimestamp(), getSalt(), uid, kickTs);
+};
+
 var generateMediaChannelKeyFull = function (appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs) {
     channelName=channelName.toString();
     return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, null, MEDIA_CHANNEL_SERVICE);
@@ -36,6 +48,14 @@ var generateDynamicKey = function (appID, appCertificate, channelName, unixTs, r
         , expiredTs: expiredTs
         , extra: extra}).pack();
     return version + appID + content.toString('base64');
+};
+
+var getTimestamp = function() {
+    return Math.floor(Date.now() / 1000);
+};
+
+var getSalt = function() {
+    return crypto.randomBytes(4).readUInt32LE(0);
 };
 
 var fromString = function(keyString) {
@@ -98,17 +118,6 @@ var generateSignature6 = function(appCertificate, serviceType, appID, unixTs, ra
     var toSign = m.pack();
     return encodeHMac(rawAppCertificate, toSign);
 };
-
-module.exports.version = version;
-module.exports.noUpload = noUpload;
-module.exports.audioVideoUpload = audioVideoUpload;
-module.exports.generatePublicSharingKeyFull = generatePublicSharingKeyFull;
-module.exports.generateRecordingKeyFull = generateRecordingKeyFull;
-module.exports.generateMediaChannelKeyFull = generateMediaChannelKeyFull;
-module.exports.generateInChannelPermissionKeyFull = generateInChannelPermissionKeyFull;
-module.exports.generateDynamicKey = generateDynamicKey;
-module.exports.generateSignature = generateSignature6;
-module.exports.fromString = fromString;
 
 var encodeHMac = function(key, message) {
     return crypto.createHmac('sha1', key).update(message).digest('hex').toUpperCase();
@@ -266,3 +275,22 @@ var IN_CHANNEL_PERMISSION = 4;
 // length
 var VERSION_LENGTH = 3;
 var APP_ID_LENGTH = 32;
+
+module.exports.version = version;
+module.exports.noUpload = noUpload;
+module.exports.audioVideoUpload = audioVideoUpload;
+module.exports.generatePublicSharingKeyFull = generatePublicSharingKeyFull;
+module.exports.generateRecordingKeyFull = generateRecordingKeyFull;
+module.exports.generateMediaChannelKey = generateMediaChannelKey;
+module.exports.generateMediaChannelKeyUid = generateMediaChannelKeyUid;
+module.exports.generateMediaChannelKeyUidKickTime = generateMediaChannelKeyUidKickTime;
+module.exports.generateMediaChannelKeyFull = generateMediaChannelKeyFull;
+module.exports.generateInChannelPermissionKeyFull = generateInChannelPermissionKeyFull;
+module.exports.generateDynamicKey = generateDynamicKey;
+module.exports.generateSignature = generateSignature6;
+module.exports.fromString = fromString;
+module.exports.getTimestamp = getTimestamp;
+module.exports.MEDIA_CHANNEL_SERVICE = MEDIA_CHANNEL_SERVICE;
+module.exports.RECORDING_SERVICE = RECORDING_SERVICE;
+module.exports.PUBLIC_SHARING_SERVICE = PUBLIC_SHARING_SERVICE;
+module.exports.IN_CHANNEL_PERMISSION = IN_CHANNEL_PERMISSION;

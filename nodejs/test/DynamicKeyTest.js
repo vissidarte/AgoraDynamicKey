@@ -7,14 +7,13 @@ var DynamicKey = require('../src/DynamicKey');
 var DynamicKey3 = require('../src/DynamicKey3');
 var DynamicKey4 = require('../src/DynamicKey4');
 var DynamicKey5 = require('../src/DynamicKey5');
-var DynamicKey6 = require('../src/DynamicKey6')
+var DynamicKey6 = require('../src/DynamicKey6');
 
-var appID  = "970ca35de60c44645bbae8a215061b33";
-var appCertificate     = "5cfd2fd1755d40ecb72977518be15d3b";
+var appID = "970ca35de60c44645bbae8a215061b33";
+var appCertificate = "5cfd2fd1755d40ecb72977518be15d3b";
 var channel = "7d72365eb983485397e3e3f9d460bdda";
 var ts = 1446455472;
 var r = 58964981;
-//var uid=999;
 var uid=2882341273;
 var expiredTs=1446455471;
 
@@ -47,7 +46,6 @@ exports.RecordingKey4_Test = function (test) {
 };
 
 exports.MediaChannelKey4_Test = function (test) {
-  console.log("MediaChannelKey4_Test");
   var expected = "004d0ec5ee3179c964fe7c0485c045541de6bff332b970ca35de60c44645bbae8a215061b3314464554720383bbf51446455471";
   var actual = DynamicKey4.generateMediaChannelKey(appID, appCertificate, channel, ts, r, uid, expiredTs);
   test.equal(expected, actual);
@@ -86,6 +84,29 @@ exports.InChannelPermission5_Test = function(test) {
   test.done();
 };
 
+function testDynamicKey(test, serviceType, Generate, Verify)
+{
+    var result = Generate();
+
+    var k6 = DynamicKey6.fromString(result);
+    test.ok(k6.parsed);
+
+    test.equal(k6.appID, appID);
+
+    var signature = DynamicKey6.generateSignature(
+                                    appCertificate
+                                    , serviceType
+                                    , k6.appID
+                                    , k6.unixTs
+                                    , k6.salt
+                                    , channel
+                                    , k6.uid
+                                    , k6.expiredTs
+                                    , k6.extra);
+    test.equal(k6.signature, signature);
+    Verify(k6, result);
+}
+
 exports.PublicSharingKey6Full_Test = function(test) {
   var expected = "006970ca35de60c44645bbae8a215061b33AwAoADc0QTk5RTVEQjI4MDk0NUI0NzUwNTk0MUFDMjM4MDU2NzIwREY3QjCZCc2rsCg3VvW7gwOvKDdWAAA=";
   var actual = DynamicKey6.generatePublicSharingKeyFull(appID, appCertificate, channel, ts, r, uid, expiredTs);
@@ -98,6 +119,54 @@ exports.RecordingKey6Full_Test = function(test) {
   var result = DynamicKey6.generateRecordingKeyFull(appID, appCertificate, channel, ts, r, uid, expiredTs);
   test.equal(expected, result);
   test.done();
+};
+
+exports.test_MediaChannelKey = function(test) {
+    testDynamicKey(
+      test
+      , DynamicKey6.MEDIA_CHANNEL_SERVICE
+      , function (){
+          return DynamicKey6.generateMediaChannelKey(appID, appCertificate, channel);
+      }
+      , function(k6, result) {
+          test.equal(k6.uid, 0);
+          test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
+          test.notEqual(k6.salt, 0);
+          test.equal(k6.expiredTs, 0);
+      });
+    test.done();
+}
+
+exports.test_MediaChannelKeyUid = function(test) {
+    testDynamicKey(
+      test
+      , DynamicKey6.MEDIA_CHANNEL_SERVICE
+      , function() {
+        return DynamicKey6.generateMediaChannelKeyUid(appID, appCertificate, channel, uid);
+      }
+      , function(k6, result) {
+        test.equal(k6.uid, uid);
+        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.salt, 0);
+        test.equal(k6.expiredTs, 0);
+    });
+    test.done();
+};
+
+exports.test_MediaChannelKeyUidKick = function(test) {
+    testDynamicKey(
+      test
+      , DynamicKey6.MEDIA_CHANNEL_SERVICE
+      , function() {
+        return DynamicKey6.generateMediaChannelKeyUidKickTime(appID, appCertificate, channel, uid, expiredTs);
+      }
+      , function(k6, result) {
+        test.equal(k6.uid, uid);
+        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.salt, 0);
+        test.equal(k6.expiredTs, expiredTs);
+    });
+    test.done();
 };
 
 exports.MediaChannelKey6Full_Test = function(test) {
