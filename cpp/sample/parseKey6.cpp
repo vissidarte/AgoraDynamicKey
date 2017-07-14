@@ -33,7 +33,7 @@ int main(int argc, char const *argv[]) {
     std::cout << "Timestamp:  " << k6.unixTs << std::endl;
     std::cout << "Expired:    " << k6.expiredTs << std::endl;
     std::cout << "Extra:      [" << map_to_string(k6.extra, ", ") << "]" << std::endl;
-    std::cout << "Salt:       " << k6.randomInt << std::endl;
+    std::cout << "Salt:       " << k6.salt << std::endl;
     std::cout << "Signature:  " << k6.signature << std::endl;
 
     return 0;

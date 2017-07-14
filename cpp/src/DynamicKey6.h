@@ -25,28 +25,28 @@ namespace agora { namespace tools {
 
         typedef std::map<uint16_t, std::string> extra_map;
         TOOLS_DECLARE_PACKABLE_8(Message, uint16_t,serviceType, std::string,appID, uint32_t,unixTs, uint32_t,salt, std::string,channelName, uint32_t,uid, uint32_t,expiredTs, extra_map,extra);
-        TOOLS_DECLARE_PACKABLE_7(DynamicKey6Content, uint16_t,serviceType, std::string,signature, uint32_t,uid, uint32_t,unixTs, uint32_t,randomInt, uint32_t,expiredTs, extra_map,extra);
+        TOOLS_DECLARE_PACKABLE_7(DynamicKey6Content, uint16_t,serviceType, std::string,signature, uint32_t,uid, uint32_t,unixTs, uint32_t,salt, uint32_t,expiredTs, extra_map,extra);
 
         std::string signature;
         std::string appID;
         uint32_t uid;
         uint32_t unixTs ;
-        uint32_t randomInt;
+        uint32_t salt;
         uint32_t expiredTs;
         extra_map extra;
 
-        bool fromString(const std::string& channelKeyString)
+        bool fromString(const std::string& keyString)
         {
-            if (channelKeyString.substr(0, VERSION_LENGTH) != version()) {
+            if (keyString.substr(0, VERSION_LENGTH) != version()) {
                 return false;
             }
 
-            this->appID = channelKeyString.substr(VERSION_LENGTH, APP_ID_LENGTH);
+            this->appID = keyString.substr(VERSION_LENGTH, APP_ID_LENGTH);
             if (! isUUID(this->appID)) {
                 return false;
             }
 
-            std::string rawContent = base64Decode(channelKeyString.substr(VERSION_LENGTH + APP_ID_LENGTH));
+            std::string rawContent = base64Decode(keyString.substr(VERSION_LENGTH + APP_ID_LENGTH));
             if (rawContent.empty()) {
                 return false;
             }
@@ -57,7 +57,7 @@ namespace agora { namespace tools {
             this->signature = content.signature;
             this->uid = content.uid;
             this->unixTs = content.unixTs;
-            this->randomInt = content.randomInt;
+            this->salt = content.salt;
             this->expiredTs = content.expiredTs;
             this->extra = content.extra;
             return true;
@@ -79,7 +79,7 @@ namespace agora { namespace tools {
                 , const std::string& appCertificate
                 , const std::string& channelName
                 , uint32_t unixTs
-                , uint32_t randomInt
+                , uint32_t salt
                 , uint32_t uid
                 , uint32_t expiredTs
                 , const extra_map& extra
@@ -96,8 +96,8 @@ namespace agora { namespace tools {
                 return "";
             }
 
-            std::string signature = generateSignature(appCertificate, service, appID, unixTs, randomInt, channelName, uid, expiredTs, extra);
-            DynamicKey6Content content(service, signature, uid, unixTs, randomInt, expiredTs, extra);
+            std::string signature = generateSignature(appCertificate, service, appID, unixTs, salt, channelName, uid, expiredTs, extra);
+            DynamicKey6Content content(service, signature, uid, unixTs, salt, expiredTs, extra);
             return version() + appID + base64Encode(pack(content));
         }
 
@@ -120,11 +120,11 @@ namespace agora { namespace tools {
             , const std::string& appCertificate
             , const std::string& channelName
             , uint32_t unixTs
-            , uint32_t randomInt
+            , uint32_t salt
             , uint32_t uid
             , uint32_t kickTimestamp)   
         {
-            return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, kickTimestamp, extra_map(), MEDIA_CHANNEL_SERVICE);
+            return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, kickTimestamp, extra_map(), MEDIA_CHANNEL_SERVICE);
         }
 
         static std::string generateRecordingKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName)
@@ -137,9 +137,9 @@ namespace agora { namespace tools {
             return generateRecordingKey(appID, appCertificate, channelName, ::time(NULL), generateSalt(), uid, 0);
         }
 
-        static std::string generateRecordingKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t reserved)   
+        static std::string generateRecordingKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t salt, uint32_t uid, uint32_t reserved)   
         {            
-            return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, reserved, extra_map(), RECORDING_SERVICE);
+            return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, reserved, extra_map(), RECORDING_SERVICE);
         }
 
         static std::string generatePublicSharingKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName)
@@ -147,9 +147,9 @@ namespace agora { namespace tools {
             return generatePublicSharingKey(appID, appCertificate, channelName, ::time(NULL), generateSalt(), 0, 0);
         }
 
-        static std::string generatePublicSharingKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t reserved)   
+        static std::string generatePublicSharingKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t salt, uint32_t uid, uint32_t reserved)   
         {
-            return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, reserved, extra_map(), PUBLIC_SHARING_SERVICE);
+            return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, reserved, extra_map(), PUBLIC_SHARING_SERVICE);
         }
 
         static std::string generateInChannelPermissionKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t uid, const std::string& permission)
@@ -157,11 +157,11 @@ namespace agora { namespace tools {
             return generateInChannelPermissionKey(appID, appCertificate, channelName, ::time(NULL), generateSalt(), uid, 0, permission);
         }
 
-        static std::string generateInChannelPermissionKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t revokeTimestamp, const std::string& permission)
+        static std::string generateInChannelPermissionKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t salt, uint32_t uid, uint32_t revokeTimestamp, const std::string& permission)
         {
             extra_map extra;
             extra[ALLOW_UPLOAD_IN_CHANNEL] = permission;
-            return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, revokeTimestamp, extra, IN_CHANNEL_PERMISSION);
+            return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, revokeTimestamp, extra, IN_CHANNEL_PERMISSION);
         }
     };
 }}

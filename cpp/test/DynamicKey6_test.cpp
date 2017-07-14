@@ -11,7 +11,7 @@ protected:
     std::string appCertificate;
     std::string channelName;
     uint32_t unixTs;
-    uint32_t randomInt;
+    uint32_t salt;
     uint32_t uid;
     uint32_t expiredTs;
 
@@ -21,7 +21,7 @@ protected:
         appCertificate   = "5cfd2fd1755d40ecb72977518be15d3b";
         channelName= "7d72365eb983485397e3e3f9d460bdda";
         unixTs = 1446455472;
-        randomInt = 58964981;
+        salt = 58964981;
         uid=2882341273u;
         expiredTs=1446455471;
     }
@@ -64,7 +64,7 @@ private:
                                         , service
                                         , k6.appID
                                         , k6.unixTs
-                                        , k6.randomInt
+                                        , k6.salt
                                         , channelName
                                         , k6.uid
                                         , k6.expiredTs
@@ -84,7 +84,7 @@ void DynamicKey6_test::test_PublicSharingKey() {
     }, [this](const DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(k6.uid, 0);
         EXPECT_LE(k6.unixTs, ::time(nullptr));
-        EXPECT_NE(k6.randomInt, 0);
+        EXPECT_NE(k6.salt, 0);
         EXPECT_EQ(k6.expiredTs, 0);
     });
 }
@@ -98,14 +98,14 @@ void DynamicKey6_test::test_PublicSharingKeyFull() {
                     , appCertificate
                     , channelName
                     , unixTs
-                    , randomInt
+                    , salt
                     , uid
                     , expiredTs);
     }, [expected, this](const DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(expected, result);
         EXPECT_EQ(k6.uid, uid);
         EXPECT_EQ(k6.unixTs, unixTs);
-        EXPECT_EQ(k6.randomInt, randomInt);
+        EXPECT_EQ(k6.salt, salt);
         EXPECT_EQ(k6.expiredTs, expiredTs);
     });
 }
@@ -119,7 +119,7 @@ void DynamicKey6_test::test_RecordingKey() {
     }, [](const DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(k6.uid, 0);
         EXPECT_LE(k6.unixTs, ::time(nullptr));
-        EXPECT_NE(k6.randomInt, 0);
+        EXPECT_NE(k6.salt, 0);
         EXPECT_EQ(k6.expiredTs, 0);
     });
 }
@@ -134,7 +134,7 @@ void DynamicKey6_test::test_RecordingKeyUid() {
     }, [this](const DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(k6.uid, uid);
         EXPECT_LE(k6.unixTs, ::time(nullptr));
-        EXPECT_NE(k6.randomInt, 0);
+        EXPECT_NE(k6.salt, 0);
         EXPECT_EQ(k6.expiredTs, 0);
     });
 }
@@ -148,14 +148,14 @@ void DynamicKey6_test::test_RecordingKeyFull() {
                     , appCertificate
                     , channelName
                     , unixTs
-                    , randomInt
+                    , salt
                     , uid
                     , expiredTs);
     }, [expected, this](const DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(expected, result);
         EXPECT_EQ(k6.uid, uid);
         EXPECT_EQ(k6.unixTs, unixTs);
-        EXPECT_EQ(k6.randomInt, randomInt);
+        EXPECT_EQ(k6.salt, salt);
         EXPECT_EQ(k6.expiredTs, expiredTs);
     });
 }
@@ -169,7 +169,7 @@ void DynamicKey6_test::test_MediaChannelKey() {
     }, [](const DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(k6.uid, 0);
         EXPECT_LE(k6.unixTs, ::time(nullptr));
-        EXPECT_NE(k6.randomInt, 0);
+        EXPECT_NE(k6.salt, 0);
         EXPECT_EQ(k6.expiredTs, 0);
     });
 }
@@ -184,7 +184,7 @@ void DynamicKey6_test::test_MediaChannelKeyUid() {
     }, [this](const DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(k6.uid, uid);
         EXPECT_LE(k6.unixTs, ::time(nullptr));
-        EXPECT_NE(k6.randomInt, 0);
+        EXPECT_NE(k6.salt, 0);
         EXPECT_EQ(k6.expiredTs, 0);
     });
 }
@@ -200,7 +200,7 @@ void DynamicKey6_test::test_MediaChannelKeyUidKick(){
     }, [this](const DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(k6.uid, uid);
         EXPECT_LE(k6.unixTs, ::time(nullptr));
-        EXPECT_NE(k6.randomInt, 0);
+        EXPECT_NE(k6.salt, 0);
         EXPECT_EQ(k6.expiredTs, expiredTs);
     });
 }
@@ -214,14 +214,14 @@ void DynamicKey6_test::test_MediaChannelKeyFull(){
                     , appCertificate
                     , channelName
                     , unixTs
-                    , randomInt
+                    , salt
                     , uid
                     , expiredTs);
     }, [expected, this](const DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(expected, result);
         EXPECT_EQ(k6.uid, uid);
         EXPECT_EQ(k6.unixTs, unixTs);
-        EXPECT_EQ(k6.randomInt, randomInt);
+        EXPECT_EQ(k6.salt, salt);
         EXPECT_EQ(k6.expiredTs, expiredTs);
     });
 }
@@ -238,7 +238,7 @@ void DynamicKey6_test::test_InChannelPermission()
     }, [this](DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(k6.uid, uid);
         EXPECT_LE(k6.unixTs, ::time(nullptr));
-        EXPECT_NE(k6.randomInt, 0);
+        EXPECT_NE(k6.salt, 0);
         EXPECT_EQ(k6.expiredTs, 0);
         ASSERT_FALSE(k6.extra.empty());
         EXPECT_TRUE(k6.extra.find(DynamicKey6::ALLOW_UPLOAD_IN_CHANNEL) != k6.extra.end());
@@ -255,7 +255,7 @@ void DynamicKey6_test::test_InChannelPermission()
     }, [this](DynamicKey6& k6, const std::string& result) {
         EXPECT_EQ(k6.uid, uid);
         EXPECT_LE(k6.unixTs, ::time(nullptr));
-        EXPECT_NE(k6.randomInt, 0);
+        EXPECT_NE(k6.salt, 0);
         EXPECT_EQ(k6.expiredTs, 0);
         ASSERT_FALSE(k6.extra.empty());
         EXPECT_TRUE(k6.extra.find(DynamicKey6::ALLOW_UPLOAD_IN_CHANNEL) != k6.extra.end());
@@ -272,7 +272,7 @@ void DynamicKey6_test::test_InChannelPermissionFull()
                     , appCertificate
                     , channelName
                     , unixTs
-                    , randomInt
+                    , salt
                     , uid
                     , expiredTs
                     , DynamicKey6::noUpload());
@@ -280,7 +280,7 @@ void DynamicKey6_test::test_InChannelPermissionFull()
         EXPECT_EQ(noUpload, result);
         EXPECT_EQ(k6.uid, uid);
         EXPECT_EQ(k6.unixTs, unixTs);
-        EXPECT_EQ(k6.randomInt, randomInt);
+        EXPECT_EQ(k6.salt, salt);
         EXPECT_EQ(k6.expiredTs, expiredTs);
         ASSERT_FALSE(k6.extra.empty());
         EXPECT_TRUE(k6.extra.find(DynamicKey6::ALLOW_UPLOAD_IN_CHANNEL) != k6.extra.end());
@@ -294,7 +294,7 @@ void DynamicKey6_test::test_InChannelPermissionFull()
                     , appCertificate
                     , channelName
                     , unixTs
-                    , randomInt
+                    , salt
                     , uid
                     , expiredTs
                     , DynamicKey6::audioVideoUpload());
@@ -302,7 +302,7 @@ void DynamicKey6_test::test_InChannelPermissionFull()
         EXPECT_EQ(audioVideoUpload, result);
         EXPECT_EQ(k6.uid, uid);
         EXPECT_EQ(k6.unixTs, unixTs);
-        EXPECT_EQ(k6.randomInt, randomInt);
+        EXPECT_EQ(k6.salt, salt);
         EXPECT_EQ(k6.expiredTs, expiredTs);
         ASSERT_FALSE(k6.extra.empty());
         EXPECT_TRUE(k6.extra.find(DynamicKey6::ALLOW_UPLOAD_IN_CHANNEL) != k6.extra.end());
@@ -319,7 +319,7 @@ void DynamicKey6_test::test_rawAppId()
                     , appCertificate
                     , channelName
                     , unixTs
-                    , randomInt
+                    , salt
                     , uid
                     , expiredTs
                     , DynamicKey6::noUpload());
