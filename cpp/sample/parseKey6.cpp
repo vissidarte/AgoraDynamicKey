@@ -29,12 +29,12 @@ int main(int argc, char const *argv[]) {
     }
 
     std::cout << "App ID:     " << k6.appID << std::endl;
-    std::cout << "UID:        " << k6.uid << std::endl;
-    std::cout << "Timestamp:  " << k6.unixTs << std::endl;
-    std::cout << "Expired:    " << k6.expiredTs << std::endl;
-    std::cout << "Extra:      [" << map_to_string(k6.extra, ", ") << "]" << std::endl;
-    std::cout << "Salt:       " << k6.salt << std::endl;
-    std::cout << "Signature:  " << k6.signature << std::endl;
+    std::cout << "UID:        " << k6.content.uid << std::endl;
+    std::cout << "Timestamp:  " << k6.content.unixTs << std::endl;
+    std::cout << "Expired:    " << k6.content.expiredTs << std::endl;
+    std::cout << "Extra:      [" << map_to_string(k6.content.extra, ", ") << "]" << std::endl;
+    std::cout << "Salt:       " << k6.content.salt << std::endl;
+    std::cout << "Signature:  " << k6.content.signature << std::endl;
 
     return 0;
 }

@@ -27,13 +27,8 @@ namespace agora { namespace tools {
         TOOLS_DECLARE_PACKABLE_8(Message, uint16_t,serviceType, std::string,appID, uint32_t,unixTs, uint32_t,salt, std::string,channelName, uint32_t,uid, uint32_t,expiredTs, extra_map,extra);
         TOOLS_DECLARE_PACKABLE_7(DynamicKey6Content, uint16_t,serviceType, std::string,signature, uint32_t,uid, uint32_t,unixTs, uint32_t,salt, uint32_t,expiredTs, extra_map,extra);
 
-        std::string signature;
         std::string appID;
-        uint32_t uid;
-        uint32_t unixTs ;
-        uint32_t salt;
-        uint32_t expiredTs;
-        extra_map extra;
+        DynamicKey6Content content;
 
         bool fromString(const std::string& keyString)
         {
@@ -51,15 +46,7 @@ namespace agora { namespace tools {
                 return false;
             }
 
-            DynamicKey6Content content;
-            unpack(rawContent, content);
-
-            this->signature = content.signature;
-            this->uid = content.uid;
-            this->unixTs = content.unixTs;
-            this->salt = content.salt;
-            this->expiredTs = content.expiredTs;
-            this->extra = content.extra;
+            unpack(rawContent, this->content);
             return true;
         }
 
