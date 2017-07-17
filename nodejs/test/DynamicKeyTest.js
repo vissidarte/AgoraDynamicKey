@@ -97,13 +97,13 @@ function testDynamicKey(test, serviceType, Generate, Verify)
                                     appCertificate
                                     , serviceType
                                     , k6.appID
-                                    , k6.unixTs
-                                    , k6.salt
+                                    , k6.content.unixTs
+                                    , k6.content.salt
                                     , channel
-                                    , k6.uid
-                                    , k6.expiredTs
-                                    , k6.extra);
-    test.equal(k6.signature, signature);
+                                    , k6.content.uid
+                                    , k6.content.expiredTs
+                                    , k6.content.extra);
+    test.equal(k6.content.signature, signature);
     Verify(k6, result);
 }
 
@@ -118,10 +118,10 @@ exports.test_PublicSharingKey = function(test) {
                     , channel);
       }
       , function(k6, result) {
-        test.equal(k6.uid, 0);
-        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
-        test.notEqual(k6.randomInt, 0);
-        test.equal(k6.expiredTs, 0);
+        test.equal(k6.content.uid, 0);
+        test.ok(k6.content.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.content.salt, 0);
+        test.equal(k6.content.expiredTs, 0);
     });
     test.done();
 };
@@ -144,10 +144,10 @@ exports.test_RecordingKey = function(test) {
                     , channel);
       }
       , function(k6, result) {
-        test.equal(k6.uid, 0);
-        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
-        test.notEqual(k6.salt, 0);
-        test.equal(k6.expiredTs, 0);
+        test.equal(k6.content.uid, 0);
+        test.ok(k6.content.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.content.salt, 0);
+        test.equal(k6.content.expiredTs, 0);
     });
     test.done();
 };
@@ -157,17 +157,17 @@ exports.test_RecordingKeyUid = function(test) {
       test
       , DynamicKey6.RECORDING_SERVICE
       , function() {
-        return DynamicKey6.generateRecordingKey(
+        return DynamicKey6.generateRecordingKeyUid(
                     appID
                     , appCertificate
                     , channel
                     , uid);
       }
       , function(k6, result) {
-        test.equal(k6.uid, uid);
-        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
-        test.notEqual(k6.salt, 0);
-        test.equal(k6.expiredTs, 0);
+        test.equal(k6.content.uid, uid);
+        test.ok(k6.content.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.content.salt, 0);
+        test.equal(k6.content.expiredTs, 0);
     });
     test.done();
 };
@@ -187,10 +187,10 @@ exports.test_MediaChannelKey = function(test) {
           return DynamicKey6.generateMediaChannelKey(appID, appCertificate, channel);
       }
       , function(k6, result) {
-          test.equal(k6.uid, 0);
-          test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
-          test.notEqual(k6.salt, 0);
-          test.equal(k6.expiredTs, 0);
+          test.equal(k6.content.uid, 0);
+          test.ok(k6.content.unixTs <= DynamicKey6.getTimestamp());
+          test.notEqual(k6.content.salt, 0);
+          test.equal(k6.content.expiredTs, 0);
       });
     test.done();
 };
@@ -203,10 +203,10 @@ exports.test_MediaChannelKeyUid = function(test) {
         return DynamicKey6.generateMediaChannelKeyUid(appID, appCertificate, channel, uid);
       }
       , function(k6, result) {
-        test.equal(k6.uid, uid);
-        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
-        test.notEqual(k6.salt, 0);
-        test.equal(k6.expiredTs, 0);
+        test.equal(k6.content.uid, uid);
+        test.ok(k6.content.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.content.salt, 0);
+        test.equal(k6.content.expiredTs, 0);
     });
     test.done();
 };
@@ -219,10 +219,10 @@ exports.test_MediaChannelKeyUidKick = function(test) {
         return DynamicKey6.generateMediaChannelKeyUidKickTime(appID, appCertificate, channel, uid, expiredTs);
       }
       , function(k6, result) {
-        test.equal(k6.uid, uid);
-        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
-        test.notEqual(k6.salt, 0);
-        test.equal(k6.expiredTs, expiredTs);
+        test.equal(k6.content.uid, uid);
+        test.ok(k6.content.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.content.salt, 0);
+        test.equal(k6.content.expiredTs, expiredTs);
     });
     test.done();
 };
@@ -247,12 +247,12 @@ exports.test_InChannelPermission = function(test) {
                     , DynamicKey6.noUpload);
       }
       , function(k6, result) {
-        test.equal(k6.uid, uid);
-        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
-        test.notEqual(k6.salt, 0);
-        test.equal(k6.expiredTs, 0);
-        test.ok(k6.extra.hasOwnProperty(DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL));
-        test.equal(k6.extra[DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL], DynamicKey6.noUpload);
+        test.equal(k6.content.uid, uid);
+        test.ok(k6.content.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.content.salt, 0);
+        test.equal(k6.content.expiredTs, 0);
+        test.ok(k6.content.extra.hasOwnProperty(DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL));
+        test.equal(k6.content.extra[DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL], DynamicKey6.noUpload);
     });
 
     testDynamicKey(
@@ -267,12 +267,12 @@ exports.test_InChannelPermission = function(test) {
                     , DynamicKey6.audioVideoUpload);
       }
       , function(k6, result) {
-        test.equal(k6.uid, uid);
-        test.ok(k6.unixTs <= DynamicKey6.getTimestamp());
-        test.notEqual(k6.salt, 0);
-        test.equal(k6.expiredTs, 0);
-        test.ok(k6.extra.hasOwnProperty(DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL));
-        test.equal(k6.extra[DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL], DynamicKey6.audioVideoUpload);
+        test.equal(k6.content.uid, uid);
+        test.ok(k6.content.unixTs <= DynamicKey6.getTimestamp());
+        test.notEqual(k6.content.salt, 0);
+        test.equal(k6.content.expiredTs, 0);
+        test.ok(k6.content.extra.hasOwnProperty(DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL));
+        test.equal(k6.content.extra[DynamicKey6.ALLOW_UPLOAD_IN_CHANNEL], DynamicKey6.audioVideoUpload);
       }
     );
     test.done();

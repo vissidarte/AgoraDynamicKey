@@ -13,7 +13,11 @@ var generatePublicSharingKeyFull = function (appID, appCertificate, channelName,
     return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, null, PUBLIC_SHARING_SERVICE);
 };
 
-var generateRecordingKey = function (appID, appCertificate, channelName, uid) {
+var generateRecordingKey = function (appID, appCertificate, channelName) {
+    return generateRecordingKeyFull(appID, appCertificate, channelName, getTimestamp(), getSalt(), 0, 0);
+};
+
+var generateRecordingKeyUid = function (appID, appCertificate, channelName, uid) {
     return generateRecordingKeyFull(appID, appCertificate, channelName, getTimestamp(), getSalt(), uid, 0);
 };
 
@@ -34,9 +38,9 @@ var generateMediaChannelKeyUidKickTime = function (appID, appCertificate, channe
     return generateMediaChannelKeyFull(appID, appCertificate, channelName, getTimestamp(), getSalt(), uid, kickTs);
 };
 
-var generateMediaChannelKeyFull = function (appID, appCertificate, channelName, unixTs, salt, uid, expiredTs) {
+var generateMediaChannelKeyFull = function (appID, appCertificate, channelName, unixTs, salt, uid, kickTs) {
     channelName=channelName.toString();
-    return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, null, MEDIA_CHANNEL_SERVICE);
+    return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, kickTs, null, MEDIA_CHANNEL_SERVICE);
 };
 
 var generateInChannelPermissionKey = function (appID, appCertificate, channelName, uid, permission) {
@@ -73,13 +77,15 @@ var getSalt = function() {
 var fromString = function(keyString) {
     var that = {
         parsed: false
-        , signature: ""
         , appID: ""
-        , uid: 0
-        , unixTs: 0
-        , salt: 0
-        , expiredTs: 0
-        , extra: {}
+        , content: {
+            signature: ""
+            , uid: 0
+            , unixTs: 0
+            , salt: 0
+            , expiredTs: 0
+            , extra: {}
+        }
     };
 
     if (keyString.substr(0, VERSION_LENGTH) != version) {
@@ -99,12 +105,12 @@ var fromString = function(keyString) {
 
     var content = DynamicKey6Content().unpack(rawContent);
 
-    that.signature = content.signature;
-    that.uid = content.uid;
-    that.unixTs = content.unixTs;
-    that.salt = content.salt;
-    that.expiredTs = content.expiredTs;
-    that.extra = content.extra;
+    that.content.signature = content.signature;
+    that.content.uid = content.uid;
+    that.content.unixTs = content.unixTs;
+    that.content.salt = content.salt;
+    that.content.expiredTs = content.expiredTs;
+    that.content.extra = content.extra;
 
     that.parsed = true;
 
@@ -295,6 +301,7 @@ module.exports.audioVideoUpload = audioVideoUpload;
 module.exports.generatePublicSharingKey = generatePublicSharingKey;
 module.exports.generatePublicSharingKeyFull = generatePublicSharingKeyFull;
 module.exports.generateRecordingKey = generateRecordingKey;
+module.exports.generateRecordingKeyUid = generateRecordingKeyUid;
 module.exports.generateRecordingKeyFull = generateRecordingKeyFull;
 module.exports.generateMediaChannelKey = generateMediaChannelKey;
 module.exports.generateMediaChannelKeyUid = generateMediaChannelKeyUid;

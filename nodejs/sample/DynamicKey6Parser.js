@@ -20,9 +20,9 @@ function toString(map, separator)
 }
 
 console.log("App ID:     " + k6.appID);
-console.log("UID:        " + k6.uid);
-console.log("Timestamp:  " + k6.unixTs);
-console.log("Expired:    " + k6.expiredTs);
+console.log("UID:        " + k6.content.uid);
+console.log("Timestamp:  " + k6.content.unixTs);
+console.log("Expired:    " + k6.content.expiredTs);
 console.log("Extra:      [" + toString(k6.extra, ", ") + "]");
-console.log("Salt:       " + k6.salt);
-console.log("Signature:  " + k6.signature);
+console.log("Salt:       " + k6.content.salt);
+console.log("Signature:  " + k6.content.signature);
