@@ -38,9 +38,9 @@ public class DynamicKey6 {
         return new String(Hex.encodeHex(DynamicKeyUtil.encodeHMAC(rawAppCertificate, toSign), false));
     }
 
-    public static String generateDynamicKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs, TreeMap<Short, String> extra, short service) throws Exception {
-        String signature = generateSignature(appCertificate, service, appID, ts, salt, channel, uid, expiredTs, extra);
-        DynamicKey6Content content = new DynamicKey6Content(service, signature, (int)uid, ts, salt, expiredTs, extra);
+    public static String generateDynamicKey(String appID, String appCertificate, String channelName, int unixTs, int salt, long uid, int expiredTs, TreeMap<Short, String> extra, short service) throws Exception {
+        String signature = generateSignature(appCertificate, service, appID, unixTs, salt, channelName, uid, expiredTs, extra);
+        DynamicKey6Content content = new DynamicKey6Content(service, signature, (int)uid, unixTs, salt, expiredTs, extra);
         byte[] bytes = pack(content);
         byte[] encoded = new Base64().encode(bytes);
         String base64 = new String(encoded);
@@ -53,54 +53,55 @@ public class DynamicKey6 {
         return buffer.asBytes();
     }
 
-    public static String generatePublicSharingKey(String appID, String appCertificate, String channel) throws Exception {
-        return generatePublicSharingKey(appID, appCertificate, channel, getTimestamp(), getSalt(), 0, 0);
+    public static String generatePublicSharingKey(String appID, String appCertificate, String channelName) throws Exception {
+        return generatePublicSharingKey(appID, appCertificate, channelName, getTimestamp(), getSalt(), 0, 0);
     }
 
-    public static String generatePublicSharingKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws Exception {
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<Short, String>(), PUBLIC_SHARING_SERVICE);
+    public static String generatePublicSharingKey(String appID, String appCertificate, String channelName, int unixTs, int salt, long uid, int expiredTs) throws Exception {
+        return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, new TreeMap<Short, String>(), PUBLIC_SHARING_SERVICE);
     }
 
-    public static String generateRecordingKey(String appID, String appCertificate, String channel) throws Exception {
-        return generateRecordingKey(appID, appCertificate, channel, 0);
+    public static String generateRecordingKey(String appID, String appCertificate, String channelName) throws Exception {
+        return generateRecordingKey(appID, appCertificate, channelName, 0);
     }
 
-    public static String generateRecordingKey(String appID, String appCertificate, String channel, long uid) throws Exception {
-        return generateRecordingKey(appID, appCertificate, channel, getTimestamp(), getSalt(), uid, 0);
+    public static String generateRecordingKey(String appID, String appCertificate, String channelName, long uid) throws Exception {
+        return generateRecordingKey(appID, appCertificate, channelName, getTimestamp(), getSalt(), uid, 0);
     }
 
-    public static String generateRecordingKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws Exception {
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<Short, String>(), RECORDING_SERVICE);
+    public static String generateRecordingKey(String appID, String appCertificate, String channelName, int unixTs, int salt, long uid, int expiredTs) throws Exception {
+        return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, new TreeMap<Short, String>(), RECORDING_SERVICE);
     }
 
-    public static String generateMediaChannelKey(String appID, String appCertificate, String channel) throws Exception {
-        return generateMediaChannelKey(appID, appCertificate, channel, 0);
+    public static String generateMediaChannelKey(String appID, String appCertificate, String channelName) throws Exception {
+        return generateMediaChannelKey(appID, appCertificate, channelName, 0);
     }
 
-    public static String generateMediaChannelKey(String appID, String appCertificate, String channel, long uid) throws Exception {
-        return generateMediaChannelKey(appID, appCertificate, channel, uid, 0);
+    public static String generateMediaChannelKey(String appID, String appCertificate, String channelName, long uid) throws Exception {
+        return generateMediaChannelKey(appID, appCertificate, channelName, uid, 0);
     }
 
-    public static String generateMediaChannelKey(String appID, String appCertificate, String channel, long uid, int expiredTs) throws Exception {
-        return generateMediaChannelKey(appID, appCertificate, channel, getTimestamp(), getSalt(), uid, expiredTs);
+    public static String generateMediaChannelKey(String appID, String appCertificate, String channelName, long uid, int kickTimestamp) throws Exception {
+        return generateMediaChannelKey(appID, appCertificate, channelName, getTimestamp(), getSalt(), uid, kickTimestamp);
     }
 
-    public static String generateMediaChannelKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws Exception {
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<Short, String>(), MEDIA_CHANNEL_SERVICE);
+    public static String generateMediaChannelKey(String appID, String appCertificate, String channelName, int unixTs, int salt, long uid, int expiredTs) throws Exception {
+        return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, new TreeMap<Short, String>(), MEDIA_CHANNEL_SERVICE);
     }
 
-    public static String generateInChannelPermissionKey(String appID, String appCertificate, String channel, long uid, String permission) throws Exception {
-        return generateInChannelPermissionKey(appID, appCertificate, channel, getTimestamp(), getSalt(), uid, 0, permission);
+    public static String generateInChannelPermissionKey(String appID, String appCertificate, String channelName, long uid, String permission) throws Exception {
+        return generateInChannelPermissionKey(appID, appCertificate, channelName, getTimestamp(), getSalt(), uid, 0, permission);
     }
 
-    public static String generateInChannelPermissionKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs, String permission) throws Exception {
+    public static String generateInChannelPermissionKey(String appID, String appCertificate, String channelName, int unixTs, int salt, long uid, int expiredTs, String permission) throws Exception {
         TreeMap<Short, String> extra = new TreeMap<Short, String>();
         extra.put(ALLOW_UPLOAD_IN_CHANNEL, permission);
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, extra, IN_CHANNEL_PERMISSION);
+        return generateDynamicKey(appID, appCertificate, channelName, unixTs, salt, uid, expiredTs, extra, IN_CHANNEL_PERMISSION);
     }
 
     public String signature = "";
     public String appID = "";
+    public short serviceType;
     public long uid;
     public int unixTs ;
     public int salt;
@@ -131,6 +132,7 @@ public class DynamicKey6 {
         }
 
         DynamicKey6Content content = new DynamicKey6Content(rawContent);
+        serviceType = content.serviceType;
         signature = content.signature;
         uid = content.uid & 0xFFFFFFFFL;
         unixTs = content.unixTs;
