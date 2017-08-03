@@ -68,6 +68,7 @@ namespace agora { namespace tools {
             this->randomInt = content.randomInt;
             this->expiredTs = content.expiredTs;
             this->extra = content.extra;
+            this->serviceType = content.serviceType;
             return true;
         }
 

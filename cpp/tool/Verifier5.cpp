@@ -47,8 +47,24 @@ int main(int argc, char const *argv[]) {
 
     std::cout << std::endl;
     std::cout << "Original \t " << keyString << std::endl;
-    std::cout << "Uid = 0 \t " << DynamicKey5::generateMediaChannelKey(appID, appCertificate, channelName, key5.unixTs, key5.randomInt, 0, key5.expiredTs) << std::endl;
-    std::cout << "Uid = " << uid << " \t " << DynamicKey5::generateMediaChannelKey(appID, appCertificate, channelName, key5.unixTs, key5.randomInt, uid, key5.expiredTs) << std::endl;
+
+    if (key5.serviceType == DynamicKey5::MEDIA_CHANNEL_SERVICE) {
+        std::cout << "Uid = 0 \t " << DynamicKey5::generateMediaChannelKey(appID, appCertificate, channelName, key5.unixTs, key5.randomInt, 0, key5.expiredTs) << std::endl;
+        std::cout << "Uid = " << uid << " \t " << DynamicKey5::generateMediaChannelKey(appID, appCertificate, channelName, key5.unixTs, key5.randomInt, uid, key5.expiredTs) << std::endl;
+    } else if (key5.serviceType == DynamicKey5::RECORDING_SERVICE) {
+        std::cout << "Uid = 0 \t " << DynamicKey5::generateRecordingKey(appID, appCertificate, channelName, key5.unixTs, key5.randomInt, 0, key5.expiredTs) << std::endl;
+        std::cout << "Uid = " << uid << " \t " << DynamicKey5::generateRecordingKey(appID, appCertificate, channelName, key5.unixTs, key5.randomInt, uid, key5.expiredTs) << std::endl;
+    } else if (key5.serviceType == DynamicKey5::IN_CHANNEL_PERMISSION) {
+        std::string permission = key5.extra[DynamicKey5::ALLOW_UPLOAD_IN_CHANNEL];
+        if (permission != DynamicKey5::noUpload() && permission != DynamicKey5::audioVideoUpload()) {
+            std::cout << "Unknown in channel upload permission " << permission << " in extra [" << map_to_string(key5.extra, ", ") << "]" << std::endl;
+            return 0;
+        }
+        std::cout << "Uid = 0 \t " << DynamicKey5::generateInChannelPermissionKey(appID, appCertificate, channelName, key5.unixTs, key5.randomInt, 0, key5.expiredTs, permission) << std::endl;
+        std::cout << "Uid = " << uid << " \t " << DynamicKey5::generateInChannelPermissionKey(appID, appCertificate, channelName, key5.unixTs, key5.randomInt, uid, key5.expiredTs, permission) << std::endl;
+    } else {
+        std::cout << "Unknown service type " << key5.serviceType << std::endl;
+    }
 
     return 0;
 }
