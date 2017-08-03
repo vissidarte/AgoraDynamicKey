@@ -31,6 +31,7 @@ namespace agora { namespace tools {
         uint32_t randomInt;
         uint32_t expiredTs;
         extra_map extra;
+        uint16_t serviceType = 0;
 
         template<typename T>
         static std::string pack(const T& x)
