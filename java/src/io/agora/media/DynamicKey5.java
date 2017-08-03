@@ -22,7 +22,25 @@ public class DynamicKey5 {
     // InChannelPermissionKey
     public final static short ALLOW_UPLOAD_IN_CHANNEL = 1;
 
-    static String generateSignature(String appCertificate, short service, String appID, int unixTs, int salt, String channelName, long uid, int expiredTs, TreeMap<Short, String> extra) throws Exception {
+    public DynamicKey5Content content;
+
+    public boolean fromString(String key) {
+        if (! key.substring(0, 3).equals(version)) {
+            return false;
+        }
+
+        byte[] rawContent = new Base64().decode(key.substring(3));
+        if (rawContent.length == 0) {
+            return false;
+        }
+
+        content = new DynamicKey5Content();
+        ByteBuf buffer = new ByteBuf(rawContent);
+        content.unmarshall(buffer);
+        return true;
+    }
+
+    public static String generateSignature(String appCertificate, short service, String appID, int unixTs, int salt, String channelName, long uid, int expiredTs, TreeMap<Short, String> extra) throws Exception {
         // decode hex to avoid case problem
         Hex hex = new Hex();
         byte[] rawAppID = hex.decode(appID.getBytes());
@@ -92,7 +110,7 @@ public class DynamicKey5 {
         }
     }
 
-    static class DynamicKey5Content implements Packable {
+    public static class DynamicKey5Content implements Packable {
         public short serviceType;
         public String signature;
         public byte[] appID;
@@ -100,6 +118,9 @@ public class DynamicKey5 {
         public int salt;
         public int expiredTs;
         public TreeMap<Short, String> extra;
+
+        public DynamicKey5Content() {
+        }
 
         public DynamicKey5Content(short serviceType, String signature, byte[] appID, int unixTs, int salt, int expiredTs, TreeMap<Short, String> extra) {
             this.serviceType = serviceType;
@@ -113,6 +134,16 @@ public class DynamicKey5 {
 
         public ByteBuf marshall(ByteBuf out) {
             return out.put(serviceType).put(signature).put(appID).put(unixTs).put(salt).put(expiredTs).put(extra);
+        }
+
+        public void unmarshall(ByteBuf in) {
+            this.serviceType = in.readShort();
+            this.signature = in.readString();
+            this.appID = in.readBytes();
+            this.unixTs = in.readInt();
+            this.salt = in.readInt();
+            this.expiredTs = in.readInt();
+            this.extra = in.readMap();
         }
     }
 }
