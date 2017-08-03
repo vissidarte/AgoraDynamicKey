@@ -3,6 +3,9 @@ package io.agora.media.tool;
 import io.agora.media.DynamicKey5;
 import org.apache.commons.codec.binary.Hex;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * Created by liwei on 8/2/17.
  */
@@ -26,17 +29,33 @@ public class Verifier5 {
         }
 
         System.out.println("signature " + key5.content.signature);
-        System.out.println("appID " + new String(Hex.encodeHex(key5.content.appID, false)));
-        System.out.println("unixTs " + key5.content.unixTs);
+        System.out.println("appID     " + new String(Hex.encodeHex(key5.content.appID, false)));
+        System.out.println("unixTs    " + key5.content.unixTs);
         System.out.println("randomInt " + key5.content.salt);
         System.out.println("expiredTs " + key5.content.expiredTs);
-        System.out.println("extra " + key5.content.extra.size());
-        System.out.println("service " + key5.content.serviceType);
+        System.out.println("extra     [" + toString(key5.content.extra) + "]");
+        System.out.println("service   " + key5.content.serviceType);
 
         System.out.println();
         System.out.println("Original \t\t " + channelKey);
-        System.out.println("Uid = 0 \t\t " + DynamicKey5.generateMediaChannelKey(appID, appCertificate, channelName, key5.content.unixTs, key5.content.salt, 0, key5.content.expiredTs));
-        System.out.println("Uid =  " + uid + " \t " + DynamicKey5.generateMediaChannelKey(appID, appCertificate, channelName, key5.content.unixTs, key5.content.salt, uid, key5.content.expiredTs));
+
+        if (key5.content.serviceType == DynamicKey5.MEDIA_CHANNEL_SERVICE) {
+            System.out.println("Uid = 0 \t\t " + DynamicKey5.generateMediaChannelKey(appID, appCertificate, channelName, key5.content.unixTs, key5.content.salt, 0, key5.content.expiredTs));
+            System.out.println("Uid =  " + uid + " \t " + DynamicKey5.generateMediaChannelKey(appID, appCertificate, channelName, key5.content.unixTs, key5.content.salt, uid, key5.content.expiredTs));
+        } else if (key5.content.serviceType == DynamicKey5.RECORDING_SERVICE) {
+            System.out.println("Uid = 0 \t\t " + DynamicKey5.generateRecordingKey(appID, appCertificate, channelName, key5.content.unixTs, key5.content.salt, 0, key5.content.expiredTs));
+            System.out.println("Uid =  " + uid + " \t " + DynamicKey5.generateRecordingKey(appID, appCertificate, channelName, key5.content.unixTs, key5.content.salt, uid, key5.content.expiredTs));
+        } else if (key5.content.serviceType == DynamicKey5.IN_CHANNEL_PERMISSION) {
+            String permission = key5.content.extra.get(DynamicKey5.ALLOW_UPLOAD_IN_CHANNEL);
+            if (permission != DynamicKey5.noUpload && permission != DynamicKey5.audioVideoUpload) {
+                System.out.println("Unknown in channel upload permission " + permission + " in extra [" + toString(key5.content.extra) + "]");
+                return ;
+            }
+            System.out.println("Uid = 0 \t\t " + DynamicKey5.generateInChannelPermissionKey(appID, appCertificate, channelName, key5.content.unixTs, key5.content.salt, 0, key5.content.expiredTs, permission));
+            System.out.println("Uid =  " + uid + " \t " + DynamicKey5.generateInChannelPermissionKey(appID, appCertificate, channelName, key5.content.unixTs, key5.content.salt, uid, key5.content.expiredTs, permission));
+        } else {
+            System.out.println("Unknown service type " + key5.content.serviceType);
+        }
 
         String signature = DynamicKey5.generateSignature(appCertificate,
                 key5.content.serviceType,
@@ -50,4 +69,22 @@ public class Verifier5 {
         );
         System.out.println("generated signature " + signature);
     }
+
+    private static String toString(TreeMap<Short, String> extra) {
+        String s = "";
+
+        String separator = "";
+
+        for (Map.Entry<Short,String> v : extra.entrySet()) {
+            s += separator;
+            s += v.getKey();
+            s += ":";
+            s += v.getValue();
+            separator = ", ";
+        }
+
+        return s;
+    }
+
+
 }
