@@ -136,6 +136,9 @@ namespace agora { namespace tools {
             return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, extra_map(), MEDIA_CHANNEL_SERVICE);
         }
 
+        /*
+         * NOTE: For ARS only, not Recording SDK(Linux). generateMediaChannelKey is for Recording SDK.
+         */
         static std::string generateRecordingKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs)   
         {            
             return generateDynamicKey(appID, appCertificate, channelName, unixTs, randomInt, uid, expiredTs, extra_map(), RECORDING_SERVICE);
