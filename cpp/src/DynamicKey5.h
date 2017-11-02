@@ -31,7 +31,7 @@ namespace agora { namespace tools {
         uint32_t randomInt;
         uint32_t expiredTs;
         extra_map extra;
-        uint16_t serviceType = 0;
+        uint16_t serviceType;
 
         template<typename T>
         static std::string pack(const T& x)
@@ -60,7 +60,11 @@ namespace agora { namespace tools {
             }
 
             DynamicKey5Content content;
-            unpack(rawContent, content);
+            try {
+              unpack(rawContent, content);
+            } catch (std::overflow_error &e) {
+              return false;
+            }
 
             this->signature = content.signature;
             this->appID = stringToHEX(content.appID);
