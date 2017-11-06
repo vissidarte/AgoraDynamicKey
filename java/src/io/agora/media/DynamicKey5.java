@@ -40,15 +40,40 @@ public class DynamicKey5 {
         return true;
     }
 
-    public static String generateSignature(String appCertificate, short service, String appID, int unixTs, int salt, String channelName, long uid, int expiredTs, TreeMap<Short, String> extra) throws Exception {
+    public static String generateSignature(String appCertificate, short service, String appID, int unixTs, int salt, String channelName, long uid, int expiredTs,
+                                           TreeMap<Short, String> extra) throws Exception {
+        System.out.println("\nappCertificate:"+appCertificate);
+        System.out.println("service:"+service);
+        System.out.println("appID:"+appID);
+        System.out.println("unixTs:"+unixTs);
+        System.out.println("salt:"+salt);
+        System.out.println("channelName:"+channelName);
+        System.out.println("uid:"+uid);
+        System.out.println("expiredTs:"+expiredTs);
+        System.out.println("extra:"+extra);
         // decode hex to avoid case problem
         Hex hex = new Hex();
         byte[] rawAppID = hex.decode(appID.getBytes());
         byte[] rawAppCertificate = hex.decode(appCertificate.getBytes());
 
+        System.out.println("rawAppID1:"+ joinByteArray(appID.getBytes()));
+        System.out.println("rawAppID:"+ joinByteArray(rawAppID));
+
         Message m = new Message(service, rawAppID, unixTs, salt, channelName, (int)(uid & 0xFFFFFFFFL), expiredTs, extra);
         byte[] toSign = pack(m);
-        return new String(Hex.encodeHex(DynamicKeyUtil.encodeHMAC(rawAppCertificate, toSign), false));
+
+        System.out.println("toSign:"+ joinByteArray(toSign));
+        String signature = new String(Hex.encodeHex(DynamicKeyUtil.encodeHMAC(rawAppCertificate, toSign), false));
+        System.out.println("signature:"+signature);
+        return signature;
+    }
+
+    public static String joinByteArray(byte[] bytes){
+        StringBuffer sb = new StringBuffer();
+        for (byte b: bytes) {
+            sb.append(b+",");
+        }
+        return sb.toString();
     }
 
     public static String generateDynamicKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs, TreeMap<Short, String> extra, short service) throws Exception {
