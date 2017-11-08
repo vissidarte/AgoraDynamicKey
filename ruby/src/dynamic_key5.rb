@@ -136,7 +136,7 @@ module DynamicKey5
     content+= pack_uint32(expired_ts)
     content+= pack_map(extra)
 
-    version + Base64.encode64(content)
+    version + Base64.encode64(content).gsub(/\n/,'')
   end
 
   def gen_signature(
@@ -161,7 +161,7 @@ module DynamicKey5
     content += pack_uint32(expired_ts)
     content += pack_map(extra)
 
-    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha1"), raw_app_certificate, content)
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha1"), raw_app_certificate, content).upcase
   end
 
   def pack_uint16(x)
