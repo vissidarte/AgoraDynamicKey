@@ -170,7 +170,20 @@ def generateSignature(
         + packString(channelName) \
         + packUint32(uid)\
         + packUint32(expiredTs)\
-        +  packMap(extra)
+        + packMap(extra)
+    print "\nappId:"+appID
+    print "appCertificate:"+appCertificate
+    print "servicetype:"+str(servicetype)
+    print "unixTs:"+str(unixTs)
+    print "randomInt:"+str(randomInt)
+    print "channelName:"+str(channelName)
+    print "uid:"+str(uid)
+    print "expiredTs:"+str(expiredTs)
+    print "extra:"+str(extra)
+    print "len(content):"+str(len(content))
+
     signature = hmac.new(appCertificate.decode('hex'), content, sha1).hexdigest()
+    print "signature:\""+signature+"\""
+
     return signature.upper()
 
