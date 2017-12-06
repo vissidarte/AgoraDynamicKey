@@ -1,6 +1,7 @@
 #pragma once
 
 #include <openssl/hmac.h>
+#include <openssl/evp.h>
 #include <cctype>
 #include <cstddef>
 #include <cstdlib>
@@ -9,6 +10,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <random>
 
 #include "Packer.h" 
 
@@ -53,8 +55,14 @@ inline bool IsUUID(const std::string& v) {
   return true;
 }
 
+inline uint32_t GenerateSalt()
+{
+    std::random_device r;
+    return r();
+}
+
 // HMAC
-inline std::string hmac_sign2(const std::string& appCertificate,
+inline std::string HmacSign(const std::string& appCertificate,
                               const std::string& message, uint32_t signSize) {
   if (appCertificate.empty()) {
     return "";
@@ -66,6 +74,20 @@ inline std::string hmac_sign2(const std::string& appCertificate,
        message.length(), &md[0], &md_len);
   return std::string(reinterpret_cast<char*>(md), signSize);
 }
+
+inline std::string HmacSign2(const std::string& appCertificate,
+                              const std::string& message, uint32_t signSize) {
+  if (appCertificate.empty()) {
+    return "";
+  }
+  unsigned char md[EVP_MAX_MD_SIZE];
+  uint32_t md_len = 0;
+  HMAC(EVP_sha256(), (const unsigned char*)appCertificate.data(),
+       appCertificate.length(), (const unsigned char*)message.data(),
+       message.length(), &md[0], &md_len);
+  return std::string(reinterpret_cast<char*>(md), signSize);
+}
+
 
 inline std::string toupper(const std::string& in) {
   std::string out;

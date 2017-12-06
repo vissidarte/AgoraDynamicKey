@@ -55,7 +55,7 @@ namespace agora { namespace tools {
             << channelName
             << std::setfill ('0') << std::setw(10) << std::dec<<uid
             << std::setfill ('0') << std::setw(10) << expiredTs;
-        return stringToHex(hmac_sign2(appCertificate, ss.str(), HMAC_LENGTH));                 
+        return stringToHex(HmacSign(appCertificate, ss.str(), HMAC_LENGTH));                 
     }
 
         static std::string generateMediaChannelKey(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t randomInt, uint32_t uid, uint32_t expiredTs)   
