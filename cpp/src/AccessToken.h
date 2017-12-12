@@ -20,12 +20,12 @@ struct AccessToken {
 
     kPublishAudiocdn = 5,
     kPublishVideoCdn = 6,
-    kHostinAudioStream = 7,
-    kHostinVideoStream = 8,
-    kHostinDataStream = 9,
-    kInviteAudioStream = 10,
-    kInviteVideoStream = 11,
-    kInviteDataStream = 12,
+    kRequestPublishAudioStream = 7,
+    kRequestPublishVideoStream = 8,
+    kRequestPublishDataStream = 9,
+    kInvitePublishAudioStream = 10,
+    kInvitePublishVideoStream = 11,
+    kInvitePublishDataStream = 12,
 
     kAdministrateChannel = 101,
   };
