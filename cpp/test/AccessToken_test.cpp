@@ -1,10 +1,10 @@
-#include "../src/DynamicKey6.h"
+#include "../src/AccessToken.h"
 #include <gtest/gtest.h>
 #include <string>
 #include <stdint.h>
 using namespace agora::tools;
 
-class DynamicKey6_test : public testing::Test {
+class AccessToken_test : public testing::Test {
  protected:
   virtual void SetUp() {
     appID = "970CA35de60c44645bbae8a215061b33";
@@ -17,14 +17,14 @@ class DynamicKey6_test : public testing::Test {
 
   virtual void TearDown() {}
 
-  void testDynamicKey(std::string expected, DynamicKey6 key) {
+  void testDynamicKey(std::string expected, AccessToken key) {
     std::string result = key.Build();
     EXPECT_EQ(expected, result);
 
     if (expected == "") {
       return;
     }
-    DynamicKey6 k6;
+    AccessToken k6;
     bool parsed = k6.FromString(result);
     ASSERT_TRUE(parsed);
     EXPECT_EQ(k6.app_id_, key.app_id_);
@@ -42,10 +42,10 @@ class DynamicKey6_test : public testing::Test {
     EXPECT_EQ(k6.crc_uid_, crc_uid);
     EXPECT_EQ(k6.message_.ts, key.message_.ts);
     EXPECT_EQ(k6.message_.salt, key.message_.salt);
-    EXPECT_EQ(k6.message_.messages[DynamicKey6::Privileges::kJoinChannel],
-              key.message_.messages[DynamicKey6::Privileges::kJoinChannel]);
+    EXPECT_EQ(k6.message_.messages[AccessToken::Privileges::kJoinChannel],
+              key.message_.messages[AccessToken::Privileges::kJoinChannel]);
 
-    std::string signature = DynamicKey6::GenerateSignature(
+    std::string signature = AccessToken::GenerateSignature(
         appCertificate, k6.app_id_, key.channel_name_, key.uid_,
         k6.message_raw_content_);
     EXPECT_EQ(k6.signature_, signature);
@@ -54,10 +54,11 @@ class DynamicKey6_test : public testing::Test {
     std::string expected =
         "006970CA35de60c44645bbae8a215061b33FACV0fZUBw+"
         "72cVoL9eyGGh3Q6Poi7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW";
-    DynamicKey6 key(appID, appCertificate, channelName, uid);
+    AccessToken key(appID, appCertificate, channelName, uid);
     key.message_.salt = 1;
     key.message_.ts = 1111111;
-    key.AddPrivilege(DynamicKey6::Privileges::kJoinChannel, expiredTs);
+    // key.AddPrivilege(AccessToken::Privileges::kJoinChannel, expiredTs);
+    key.message_.messages[AccessToken::Privileges::kJoinChannel] = expiredTs;
     testDynamicKey(expected, key);
   }
 
@@ -65,8 +66,10 @@ class DynamicKey6_test : public testing::Test {
     std::string expected =
         "006970CA35de60c44645bbae8a215061b33FACV0fZUBw+"
         "72cVoL9eyGGh3Q6Poi7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW";
-    DynamicKey6 key(appID, appCertificate, channelName, uidStr);
-    key.AddPrivilege(DynamicKey6::Privileges::kJoinChannel, expiredTs);
+    AccessToken key(
+            appID, appCertificate, channelName, uidStr);
+    // key.AddPrivilege(AccessToken::Privileges::kJoinChannel, expiredTs);
+    key.message_.messages[AccessToken::Privileges::kJoinChannel] = expiredTs;
     key.message_.salt = 1;
     key.message_.ts = 1111111;
     testDynamicKey(expected, key);
@@ -74,10 +77,10 @@ class DynamicKey6_test : public testing::Test {
 
   void testDynamicKeyWithErrorUid() {
     std::string expected = "";
-    DynamicKey6 key(appID, appCertificate, channelName, "error");
+    AccessToken key(appID, appCertificate, channelName, "error");
     key.message_.salt = 1;
     key.message_.ts = 1111111;
-    key.AddPrivilege(DynamicKey6::Privileges::kJoinChannel, expiredTs);
+    key.AddPrivilege(AccessToken::Privileges::kJoinChannel, 100);
     testDynamicKey(expected, key);
   }
 
@@ -91,12 +94,12 @@ class DynamicKey6_test : public testing::Test {
   uint32_t expiredTs;
 };
 
-TEST_F(DynamicKey6_test, testDynamicKeyWithErrorUid) {
+TEST_F(AccessToken_test, testDynamicKeyWithErrorUid) {
   testDynamicKeyWithErrorUid();
 }
-TEST_F(DynamicKey6_test, testDynamicKeyWithIntUid) {
+TEST_F(AccessToken_test, testDynamicKeyWithIntUid) {
   testDynamicKeyWithIntUid();
 }
-TEST_F(DynamicKey6_test, testDynamicKeyWithStringUid) {
+TEST_F(AccessToken_test, testDynamicKeyWithStringUid) {
   testDynamicKeyWithStringUid();
 }

@@ -11,14 +11,14 @@
 namespace agora {
 namespace tools {
 
-struct DynamicKey6 {
+struct AccessToken {
   enum Privileges {
     kJoinChannel = 1,
     kPublishAudioStream = 2,
     kPublishVideoStream = 3,
     kPublishDataStream = 4,
-    kPublishAudiocdn = 5,
 
+    kPublishAudiocdn = 5,
     kPublishVideoCdn = 6,
     kHostinAudioStream = 7,
     kHostinVideoStream = 8,
@@ -50,9 +50,9 @@ struct DynamicKey6 {
     return (HmacSign2(appCertificate, ss.str(), HMAC_LENGTH));
   }
 
-  DynamicKey6() : crc_channel_name_(0), crc_uid_(0) {}
+  AccessToken() : crc_channel_name_(0), crc_uid_(0) {}
 
-  DynamicKey6(const std::string& appId, const std::string& appCertificate,
+  AccessToken(const std::string& appId, const std::string& appCertificate,
               const std::string& channelName, uint32_t uid = 0)
       : app_id_(appId),
         app_cert_(appCertificate),
@@ -72,7 +72,7 @@ struct DynamicKey6 {
     message_.ts = now + 34 * 3600;
   }
 
-  DynamicKey6(const std::string& appId, const std::string& appCertificate,
+  AccessToken(const std::string& appId, const std::string& appCertificate,
               const std::string& channelName, const std::string& uid = "")
       : app_id_(appId),
         app_cert_(appCertificate),
@@ -119,12 +119,12 @@ struct DynamicKey6 {
     content.crcUid = crc_uid_;
     content.rawMessage = message_raw_content_;
     std::stringstream ss;
-    ss << DynamicKey6::Version() << app_id_ << base64Encode(Pack(content));
+    ss << AccessToken::Version() << app_id_ << base64Encode(Pack(content));
     return ss.str();
   }
 
   void AddPrivilege(Privileges privilege, uint32_t timeoutFromNow = 0) {
-    message_.messages[privilege] = timeoutFromNow;
+    message_.messages[privilege] = time(NULL) + timeoutFromNow;
   }
 
   bool FromString(const std::string& channelKeyString) {
