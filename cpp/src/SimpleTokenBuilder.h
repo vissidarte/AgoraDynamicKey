@@ -11,6 +11,8 @@
 namespace agora {
     namespace tools {
 
+// declaration
+
         enum Role {
             Role_Attendee = 0,  // for communication
             Role_Publisher = 1, // for live broadcast
@@ -33,6 +35,8 @@ namespace agora {
 
             AccessToken m_tokenCreator;
         };
+
+// implementation
 
         static const AccessToken::PrivilegeMessageMap attendeePrivileges = {{AccessToken::kJoinChannel, 0}, {AccessToken::kPublishAudioStream, 0}, {AccessToken::kPublishVideoStream, 0}, {AccessToken::kPublishDataStream, 0}};
         static const AccessToken::PrivilegeMessageMap publisherPrivileges = {{AccessToken::kJoinChannel, 0}, {AccessToken::kPublishAudioStream, 0}, {AccessToken::kPublishVideoStream, 0}, {AccessToken::kPublishDataStream, 0}, {AccessToken::kPublishAudiocdn, 0}, {AccessToken::kPublishVideoCdn, 0}, {AccessToken::kInvitePublishAudioStream, 0}, {AccessToken::kInvitePublishVideoStream, 0}, {AccessToken::kInvitePublishDataStream, 0} };
