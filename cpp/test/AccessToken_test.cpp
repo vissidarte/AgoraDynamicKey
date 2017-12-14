@@ -17,7 +17,7 @@ class AccessToken_test : public testing::Test {
 
   virtual void TearDown() {}
 
-  void testDynamicKey(std::string expected, AccessToken key) {
+  void testAccessToken(std::string expected, AccessToken key) {
     std::string result = key.Build();
     EXPECT_EQ(expected, result);
 
@@ -50,7 +50,7 @@ class AccessToken_test : public testing::Test {
         k6.message_raw_content_);
     EXPECT_EQ(k6.signature_, signature);
   }
-  void testDynamicKeyWithIntUid() {
+  void testAccessTokenWithIntUid() {
     std::string expected =
         "006970CA35de60c44645bbae8a215061b33FACV0fZUBw+"
         "72cVoL9eyGGh3Q6Poi7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW";
@@ -59,10 +59,10 @@ class AccessToken_test : public testing::Test {
     key.message_.ts = 1111111;
     // key.AddPrivilege(AccessToken::Privileges::kJoinChannel, expiredTs);
     key.message_.messages[AccessToken::Privileges::kJoinChannel] = expiredTs;
-    testDynamicKey(expected, key);
+    testAccessToken(expected, key);
   }
 
-  void testDynamicKeyWithStringUid() {
+  void testAccessTokenWithStringUid() {
     std::string expected =
         "006970CA35de60c44645bbae8a215061b33FACV0fZUBw+"
         "72cVoL9eyGGh3Q6Poi7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW";
@@ -72,16 +72,16 @@ class AccessToken_test : public testing::Test {
     key.message_.messages[AccessToken::Privileges::kJoinChannel] = expiredTs;
     key.message_.salt = 1;
     key.message_.ts = 1111111;
-    testDynamicKey(expected, key);
+    testAccessToken(expected, key);
   }
 
-  void testDynamicKeyWithErrorUid() {
+  void testAccessTokenWithErrorUid() {
     std::string expected = "";
     AccessToken key(appID, appCertificate, channelName, "error");
     key.message_.salt = 1;
     key.message_.ts = 1111111;
     key.AddPrivilege(AccessToken::Privileges::kJoinChannel, 100);
-    testDynamicKey(expected, key);
+    testAccessToken(expected, key);
   }
 
  public:
@@ -94,12 +94,12 @@ class AccessToken_test : public testing::Test {
   uint32_t expiredTs;
 };
 
-TEST_F(AccessToken_test, testDynamicKeyWithErrorUid) {
-  testDynamicKeyWithErrorUid();
+TEST_F(AccessToken_test, testAccessTokenWithErrorUid) {
+  testAccessTokenWithErrorUid();
 }
-TEST_F(AccessToken_test, testDynamicKeyWithIntUid) {
-  testDynamicKeyWithIntUid();
+TEST_F(AccessToken_test, testAccessTokenWithIntUid) {
+  testAccessTokenWithIntUid();
 }
-TEST_F(AccessToken_test, testDynamicKeyWithStringUid) {
-  testDynamicKeyWithStringUid();
+TEST_F(AccessToken_test, testAccessTokenWithStringUid) {
+  testAccessTokenWithStringUid();
 }
