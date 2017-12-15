@@ -52,8 +52,8 @@ class AccessToken_test : public testing::Test {
   }
   void testAccessTokenWithIntUid() {
     std::string expected =
-        "006970CA35de60c44645bbae8a215061b33FACV0fZUBw+"
-        "72cVoL9eyGGh3Q6Poi7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW";
+        "006970CA35de60c44645bbae8a215061b33IACV0fZUBw+"
+        "72cVoL9eyGGh3Q6Poi8bgjwVLnyKSJyOXR7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW";
     AccessToken key(appID, appCertificate, channelName, uid);
     key.message_.salt = 1;
     key.message_.ts = 1111111;
@@ -64,8 +64,8 @@ class AccessToken_test : public testing::Test {
 
   void testAccessTokenWithStringUid() {
     std::string expected =
-        "006970CA35de60c44645bbae8a215061b33FACV0fZUBw+"
-        "72cVoL9eyGGh3Q6Poi7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW";
+        "006970CA35de60c44645bbae8a215061b33IACV0fZUBw+"
+        "72cVoL9eyGGh3Q6Poi8bgjwVLnyKSJyOXR7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW";
     AccessToken key(
             appID, appCertificate, channelName, uidStr);
     // key.AddPrivilege(AccessToken::Privileges::kJoinChannel, expiredTs);
