@@ -47,18 +47,23 @@ def packMapUint32(m):
 
 class AccessToken:
 
-    def __init__(self, appID, appCertificate, channelName, uid, salt, ts, msgType, expiredTs):
-        extra = {}
-        extra[msgType] = expiredTs
+    def __init__(self, appID, appCertificate, channelName, uid, salt, ts):
         self.appID = appID
         self.appCertificate = appCertificate
         self.channelName = channelName
         self.uid = uid
-        self.message = packUint32(salt) \
-            + packUint32(ts) \
-            + packMapUint32(extra)
+        self.salt = salt
+        self.ts = ts
+        self.extra = {}
+
+    def add_privilege(self, privilege, expiredTs):
+        self.extra[privilege] = expiredTs
 
     def build(self):
+        self.message = packUint32(self.salt) \
+            + packUint32(self.ts) \
+            + packMapUint32(self.extra)
+
         val = self.appID + self.channelName + self.uid + self.message
         signature = hmac.new(self.appCertificate, val, sha256).digest()
         crc_channel_name = crc32(self.channelName) & 0xffffffff
