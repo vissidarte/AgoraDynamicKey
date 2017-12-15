@@ -47,7 +47,7 @@ struct AccessToken {
                                        const std::string& message) {
     std::stringstream ss;
     ss << appID << channelName << uid << message;
-    return (HmacSign2(appCertificate, ss.str(), HMAC_LENGTH));
+    return (HmacSign2(appCertificate, ss.str(), HMAC_SHA256_LENGTH));
   }
 
   AccessToken() : crc_channel_name_(0), crc_uid_(0) {}

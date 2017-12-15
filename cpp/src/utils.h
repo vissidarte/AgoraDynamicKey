@@ -18,6 +18,7 @@ namespace agora {
 namespace tools {
 
 const uint32_t HMAC_LENGTH = 20;
+const uint32_t HMAC_SHA256_LENGTH = 32;
 const uint32_t SIGNATURE_LENGTH = 40;
 const uint32_t APP_ID_LENGTH = 32;
 const uint32_t UNIX_TS_LENGTH = 10;
