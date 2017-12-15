@@ -15,19 +15,20 @@ expiredTs = 1446455471
 salt = 1
 ts = 1111111
 
+
 class AccessTokenTest(unittest.TestCase):
 
     def test_(self):
         expected = "006970CA35de60c44645bbae8a215061b33IACV0fZUBw+72cVoL9eyGGh3Q6Poi8bgjwVLnyKSJyOXR7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW"
 
-        key = AccessToken(appID, appCertificate, channelName, uid, salt, ts)
-        key.add_privilege(kJoinChannel, expiredTs)
+        key = AccessToken(appID, appCertificate, channelName, uid)
+        key.salt = salt
+        key.ts = ts
+        key.messages[kJoinChannel] = expiredTs
         result = key.build()
 
         self.assertEqual(expected, result)
 
+
 if __name__ == "__main__":
     unittest.main()
-
-
-
