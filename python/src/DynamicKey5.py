@@ -173,4 +173,3 @@ def generateSignature(
         +  packMap(extra)
     signature = hmac.new(appCertificate.decode('hex'), content, sha1).hexdigest()
     return signature.upper()
-
