@@ -67,9 +67,9 @@ class AccessToken_test : public testing::Test {
         "006970CA35de60c44645bbae8a215061b33IACV0fZUBw+"
         "72cVoL9eyGGh3Q6Poi8bgjwVLnyKSJyOXR7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW";
     AccessToken key(
-            appID, appCertificate, channelName, uidStr);
-    // key.AddPrivilege(AccessToken::Privileges::kJoinChannel, expiredTs);
-    key.message_.messages[AccessToken::Privileges::kJoinChannel] = expiredTs;
+        // appID, appCertificate, channelName, uidStr);
+            "70ca35de60c44645bbae84215061b33b", "5cfd2fd1755d40ecb72977518be15d3b", "test", "");
+    // key.message_.messages[AccessToken::Privileges::kJoinChannel] = expiredTs;
     key.message_.salt = 1;
     key.message_.ts = 1111111;
     testAccessToken(expected, key);
