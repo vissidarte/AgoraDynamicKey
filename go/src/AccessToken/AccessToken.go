@@ -50,10 +50,14 @@ func random(min int, max int) int {
 
 func NewAccessToken(appID, appCertificate, channelName string, uid uint32) AccessToken {
 	uidStr := fmt.Sprintf("%d", uid)
-	ts := uint32(time.Now().Unix())
+	ts := uint32(time.Now().Unix()) + 24 * 3600
 	salt := uint32(random(1, 99999999))
 	message := make(map[uint16]uint32)
     return AccessToken{appID, appCertificate, channelName, uidStr, ts, salt, message}
+}
+
+func (token AccessToken) AddPrivilege(key uint16, secondsFromNow uint32) {
+	token.Message[key] = uint32(time.Now().Unix()) + secondsFromNow
 }
 
 func (token AccessToken) Build() (string, error) {
