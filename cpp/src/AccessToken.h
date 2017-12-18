@@ -6,7 +6,7 @@
 #include <map>
 #include <string>
 #include <utility>
-#include "AgoraDynamicKey/cpp/src/utils.h"
+#include "cpp/src/utils.h"
 
 namespace agora {
 namespace tools {
@@ -69,7 +69,7 @@ struct AccessToken {
     uint32_t now = time(NULL);
     std::srand(now);
     message_.salt = GenerateSalt();
-    message_.ts = now + 34 * 3600;
+    message_.ts = now + 24 * 3600;
   }
 
   AccessToken(const std::string& appId, const std::string& appCertificate,
@@ -83,7 +83,7 @@ struct AccessToken {
     uint32_t now = time(NULL);
     std::srand(now);
     message_.salt = GenerateSalt();
-    message_.ts = now + 34 * 3600;
+    message_.ts = now + 24 * 3600;
   }
 
   std::string Build() {

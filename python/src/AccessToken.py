@@ -60,7 +60,7 @@ class AccessToken:
         self.appCertificate = appCertificate
         self.channelName = channelName
         self.uidStr = str(uid)
-        self.ts = int(time.time())
+        self.ts = int(time.time()) + 24 * 3600
         self.salt = random.randint(1, 99999999)
         self.messages = {}
 
