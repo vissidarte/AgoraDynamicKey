@@ -67,7 +67,6 @@ struct AccessToken {
     }
     uid_ = uidStr.str();
     uint32_t now = time(NULL);
-    std::srand(now);
     message_.salt = GenerateSalt();
     message_.ts = now + 24 * 3600;
   }
@@ -81,7 +80,6 @@ struct AccessToken {
         crc_channel_name_(0),
         crc_uid_(0) {
     uint32_t now = time(NULL);
-    std::srand(now);
     message_.salt = GenerateSalt();
     message_.ts = now + 24 * 3600;
   }
@@ -95,14 +93,6 @@ struct AccessToken {
     if (!IsUUID(app_cert_)) {
       perror("invalid appCertificate");
       return "";
-    }
-    if (uid_ != "") {
-      try {
-        std::stoul(uid_);
-      } catch (...) {
-        perror("invalid uid");
-        return "";
-      }
     }
     message_raw_content_ = Pack(message_);
     signature_ = GenerateSignature(app_cert_, app_id_, channel_name_, uid_,
