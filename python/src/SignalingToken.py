@@ -1,5 +1,6 @@
 import hashlib
 
+
 def getToken(account, appID, appCertificate, expiredTs):
     digest_String = account + appID + appCertificate + str(expiredTs)
     m = hashlib.md5()
