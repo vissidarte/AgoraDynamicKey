@@ -4,16 +4,14 @@ import java.util.Date;
 
 public class SignalingToken {
 
-    public static String getToken(String appId, String appcertificate, String account, int validTimeInSeconds) throws NoSuchAlgorithmException {
+    public static String getToken(String appId, String certificate, String account, int expiredTsInSeconds) throws NoSuchAlgorithmException {
 
-        int expiredTime = (int) (new Date().getTime() / 1000l + validTimeInSeconds);
-        StringBuilder digest_String = new StringBuilder().append(account).append(appId).append(appcertificate).append(expiredTime);
+        StringBuilder digest_String = new StringBuilder().append(account).append(appId).append(certificate).append(expiredTsInSeconds);
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         md5.update(digest_String.toString().getBytes());
         byte[] output = md5.digest();
         String token = hexlify(output);
-        String token_String = new StringBuilder().append("1").append(":").append(appId).append(":").append(expiredTime).append(":").append(token).toString();
-
+        String token_String = new StringBuilder().append("1").append(":").append(appId).append(":").append(expiredTsInSeconds).append(":").append(token).toString();
         return token_String;
     }
 
@@ -29,7 +27,6 @@ public class SignalingToken {
             out[j++] = toDigits[(0xF0 & data[i]) >>> 4];
             out[j++] = toDigits[0x0F & data[i]];
         }
-        
         return String.valueOf(out);
     }
 }
