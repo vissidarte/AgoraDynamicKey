@@ -2,16 +2,14 @@ package SignalingToken
 
 import (
 	"fmt"
-	"time"
 	"crypto/md5"
 	"encoding/hex"
 )
 
-func GenerateSignalingToken(account, appID, appCertificate string, validTimeInSeconds uint32) (string) {
+func GenerateSignalingToken(account, appID, appCertificate string, expiredTsInSeconds uint32) (string) {
 
 	version := "1"
-	now := time.Now().Unix()
-	expired := fmt.Sprint(uint32(now)+validTimeInSeconds)
+	expired := fmt.Sprint(expiredTsInSeconds)
 	content := account + appID + appCertificate + expired
 
 	hasher := md5.New()
