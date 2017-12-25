@@ -84,7 +84,7 @@ namespace agora { namespace tools {
 
             Message m(service, rawAppID, unixTs, salt, channelName, uid, expiredTs, extra);
             std::string toSign = pack(m);
-            return stringToHEX(hmac_sign2(rawAppCertificate, toSign, HMAC_LENGTH));
+            return stringToHEX(HmacSign(rawAppCertificate, toSign, HMAC_LENGTH));
         }
 
         static bool isUUID(const std::string& v)

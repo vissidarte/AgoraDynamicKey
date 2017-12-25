@@ -1,9 +1,14 @@
 import hashlib
 
-
-def getToken(account, appID, appCertificate, expiredTs):
-    digest_String = account + appID + appCertificate + str(expiredTs)
-    m = hashlib.md5()
-    m.update(digest_String)
-    md5_str = m.hexdigest()
-    return "1:" + appID + ":" + str(expiredTs) + ":" + md5_str
+def generateSignalingToken(
+        account,
+        appID,
+        appCertificate,
+        expiredTsInSeconds
+        ):
+	version = "1"
+	expired = str(expiredTsInSeconds)
+	content = account + appID + appCertificate + expired
+	md5sum  = hashlib.md5(content).hexdigest()
+	result  = "%s:%s:%s:%s"%(version, appID, expired, md5sum)
+	return result

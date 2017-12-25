@@ -61,7 +61,7 @@ namespace agora { namespace tools {
         signContent.unixTs = unixTs;
         signContent.randomInt = randomInt;
         signContent.channelName = channelName;
-        return stringToHex(hmac_sign2(appCertificate, signContent.pack(), HMAC_LENGTH));
+        return stringToHex(HmacSign(appCertificate, signContent.pack(), HMAC_LENGTH));
     }
 
     static std::string generate(const std::string& appID, const std::string& appCertificate, const std::string& channelName, uint32_t unixTs, uint32_t randomInt)   
