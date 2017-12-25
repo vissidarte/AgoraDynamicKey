@@ -91,9 +91,9 @@ class AccessToken_test : public testing::Test {
   uint32_t expiredTs;
 };
 
-TEST_F(AccessToken_test, testAccessTokenWithErrorUid) {
-  testAccessTokenWithErrorUid();
-}
+// TEST_F(AccessToken_test, testAccessTokenWithErrorUid) {
+  // testAccessTokenWithErrorUid();
+// }
 TEST_F(AccessToken_test, testAccessTokenWithIntUid) {
   testAccessTokenWithIntUid();
 }
