@@ -8,10 +8,10 @@
 
 struct  CGeneSignalToken
 {
-	static std::string generateSignallingToken(const std::string &account, const std::string &appId, const std::string appCertificateId, int expiredSecond)
+	static std::string generateSignallingToken(const std::string &account, const std::string &appId, const std::string appCertificateId, int expiredTsInSeconds)
 	{
 		CString md5StrSrc;
-		md5StrSrc.Format(_T("%s%s%s%d"), CString(account.c_str()), CString(appId.c_str()), CString(appCertificateId.c_str()), expiredSecond);
+		md5StrSrc.Format(_T("%s%s%s%d"), CString(account.c_str()), CString(appId.c_str()), CString(appCertificateId.c_str()), expiredTsInSeconds);
 		
 		std::string sgbk = CStringA(md5StrSrc.GetBuffer());
 		md5StrSrc.ReleaseBuffer();
@@ -34,7 +34,7 @@ struct  CGeneSignalToken
 
 		std::string md5StrDest = agora::tools::md5(str);
 		CString tokenStr;
-		tokenStr.Format(_T("1:%s:%d:%s"), CString(appId.c_str()), expiredSecond, CString(md5StrDest.c_str()));
+		tokenStr.Format(_T("1:%s:%d:%s"), CString(appId.c_str()), expiredTsInSeconds, CString(md5StrDest.c_str()));
 		std::string md5DestStr = CStringA(tokenStr.GetBuffer()).GetBuffer();
 		tokenStr.ReleaseBuffer();
 
