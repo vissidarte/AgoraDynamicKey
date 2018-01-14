@@ -1,18 +1,21 @@
 <?php
 
-$kJoinChannel = 1;
-$kPublishAudioStream = 2;
-$kPublishVideoStream = 3;
-$kPublishDataStream = 4;
-$kPublishAudiocdn = 5;
-$kPublishVideoCdn = 6;
-$kRequestPublishAudioStream = 7;
-$kRequestPublishVideoStream = 8;
-$kRequestPublishDataStream = 9;
-$kInvitePublishAudioStream = 10;
-$kInvitePublishVideoStream = 11;
-$kInvitePublishDataStream = 12;
-$kAdministrateChannel = 101;
+
+$Privileges = array(
+    "kJoinChannel" => 1,
+    "kPublishAudioStream" => 2,
+    "kPublishVideoStream" => 3,
+    "kPublishDataStream" => 4,
+    "kPublishAudiocdn" => 5,
+    "kPublishVideoCdn" => 6,
+    "kRequestPublishAudioStream" => 7,
+    "kRequestPublishVideoStream" => 8,
+    "kRequestPublishDataStream" => 9,
+    "kInvitePublishAudioStream" => 10,
+    "kInvitePublishVideoStream" => 11,
+    "kInvitePublishDataStream" => 12,
+    "kAdministrateChannel" => 101
+);
 
 class Message
 {
@@ -52,7 +55,7 @@ class AccessToken
         $this->uid = $uid;
         date_default_timezone_set("UTC");
         $date = new DateTime();
-        $this->ts = $date->getTimestamp();
+        $this->ts = $date->getTimestamp() + 24 * 3600;
         $this->salt = rand(0, 100000);
         $this->msgs = array();
     }
@@ -60,6 +63,12 @@ class AccessToken
     public function setPriviledge($key, $seconds)
     {
         $this->msgs[$key] = $seconds;
+        return $this;
+    }
+
+    public function removePriviledge($key, $seconds)
+    {
+        unset($this->msgs[$key]);
         return $this;
     }
 
@@ -79,60 +88,7 @@ class AccessToken
     }
 }
 
-function generateDynamicKey($appID, $appCertificate, $channelName, $ts, $uid, $randomInt)
-{
-    $signature = generateSignature($appID, $appCertificate, $channelName, $ts, $uid, $randomInt);
-    // $content = packContent($serviceType, $signature, hex2bin($appID), $ts, $randomInt, $expiredTs, $extra);
-    // echo bin2hex($content);
-    global $version;
-    return $version . base64_encode("");
-}
-
-function generateSignature($appID, $appCertificate, $channelName, $ts, $uid, $salt)
-{
-    $msg = new Message($salt, $ts);
-    $msg->packContent();
-
-    return "";
-    // $rawAppID = hex2bin($appID);
-    // $rawAppCertificate = hex2bin($appCertificate);
-
-    // $buffer = pack("S", $serviceType);
-    // $buffer .= pack("S", strlen($rawAppID)) . $rawAppID;
-    // $buffer .= pack("I", $ts);
-    // $buffer .= pack("I", $salt);
-    // $buffer .= pack("S", strlen($channelName)) . $channelName;
-    // $buffer .= pack("I", $uid);
-    // $buffer .= pack("I", $expiredTs);
-
-    // $buffer .= pack("S", count($extra));
-    // foreach ($extra as $key => $value) {
-    //     $buffer .= pack("S", $key);
-    //     $buffer .= pack("S", strlen($value)) . $value;
-    // }
-
-    // return strtoupper(hash_hmac('sha1', $buffer, $rawAppCertificate));
-}
-
 function packString($value)
 {
     return pack("S", strlen($value)) . $value;
 }
-
-// function packContent($serviceType, $signature, $appID, $ts, $salt, $expiredTs, $extra)
-// {
-//     $buffer = pack("S", $serviceType);
-//     $buffer .= packString($signature);
-//     $buffer .= packString($appID);
-//     $buffer .= pack("I", $ts);
-//     $buffer .= pack("I", $salt);
-//     $buffer .= pack("I", $expiredTs);
-
-//     $buffer .= pack("S", count($extra));
-//     foreach ($extra as $key => $value) {
-//         $buffer .= pack("S", $key);
-//         $buffer .= packString($value);
-//     }
-
-//     return $buffer;
-// }
