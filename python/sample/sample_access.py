@@ -8,7 +8,7 @@ import time
 from random import randint
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
-from AccessToken import *
+import AccessToken
 
 appID = "970CA35de60c44645bbae8a215061b33"
 appCertificate = "5CFd2fd1755d40ecb72977518be15d3b"
@@ -20,10 +20,10 @@ ts = 1111111
 
 def main():
   
-  key = AccessToken(appID, appCertificate, channelName, uid)
+  key = AccessToken.AccessToken(appID, appCertificate, channelName, uid)
   key.salt = salt
   key.ts = ts
-  key.messages[kJoinChannel] = expiredTs
+  key.messages[AccessToken.kJoinChannel] = expiredTs
   
   result = key.build()
   print "Access Token:", result

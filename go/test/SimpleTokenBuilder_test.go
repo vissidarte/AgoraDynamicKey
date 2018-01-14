@@ -16,7 +16,7 @@ func Test_SimpleTokenBuilder(t *testing.T) {
 	uid := uint32(2882341273)
 	expiredTs := uint32(1446455471)
 
-	builder := SimpleTokenBuilder.NewSimpleTokenBuilder(appID, appCertificate, channelName, uid)
+	builder := SimpleTokenBuilder.CreateSimpleTokenBuilder(appID, appCertificate, channelName, uid)
 	builder.Token.Salt = uint32(1)
 	builder.Token.Ts = uint32(1111111)
 	builder.Token.Message[AccessToken.KJoinChannel] = expiredTs

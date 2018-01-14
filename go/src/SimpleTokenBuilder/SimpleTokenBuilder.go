@@ -65,7 +65,7 @@ func random(min int, max int) int {
     return rand.Intn(max-min) + min
 }
 
-func NewSimpleTokenBuilder(appID, appCertificate, channelName string, uid uint32) SimpleTokenBuilder {
+func CreateSimpleTokenBuilder(appID, appCertificate, channelName string, uid uint32) SimpleTokenBuilder {
 	uidStr := fmt.Sprintf("%d", uid)
 	ts := uint32(time.Now().Unix()) + 24 * 3600
 	salt := uint32(random(1, 99999999))

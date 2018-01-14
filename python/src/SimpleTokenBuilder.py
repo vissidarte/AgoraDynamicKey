@@ -7,10 +7,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
 from AccessToken import *
 
 
-ROLE_ATTENDEE = 1
-ROLE_PUBLISHER = 2
-ROLE_SUBSCRIBER = 3
-ROLE_ADMIN = 4
+Role_Attendee = 1
+Role_Publisher = 2
+Role_Subscriber = 3
+Role_Admin = 4
 
 AttendeePrivileges = OrderedDict ([
 	(kJoinChannel, 0),
@@ -47,10 +47,10 @@ AdminPrivileges = OrderedDict ([
 ])
 
 RolePrivileges = OrderedDict ([
-	(ROLE_ATTENDEE, AttendeePrivileges),
-	(ROLE_PUBLISHER, PublisherPrivileges),
-	(ROLE_SUBSCRIBER, SubscriberPrivileges), 
-	(ROLE_ADMIN, AdminPrivileges)
+	(Role_Attendee, AttendeePrivileges),
+	(Role_Publisher, PublisherPrivileges),
+	(Role_Subscriber, SubscriberPrivileges), 
+	(Role_Admin, AdminPrivileges)
 ])
 
 class SimpleTokenBuilder:
