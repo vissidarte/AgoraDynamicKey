@@ -1,5 +1,28 @@
 # AgoraDynamicKey
 
+## AccessToken
+
+AccessToken is more powerful than the original Dynamic Key. It can include several privileges in one token which can be sent to various services from Agora.
+
+AccessToken is available from SDK 2.1.0 or later.
+
+Sample usage,
+
+```c++
+AccessToken a(appID, appCertificate, channelName, uid);
+a.AddPrivilege(AccessToken::kJoinChannel);
+a.AddPrivilege(AccessToken::kPublishAudioStream);
+std::string token = key.Build();
+```
+
+### Note
+
+Languages not available for now.
+* Java
+* PHP
+
+## Dynamic Key
+
 For joining media channel, use generateMediaChannelKey.
 
 For recording service, use generateRecordingKey.
