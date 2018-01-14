@@ -17,16 +17,19 @@ func main() {
 	builder := SimpleTokenBuilder.NewSimpleTokenBuilder(appID, appCertificate, channelName, uid)
 	builder.Token.Salt = uint32(1)
 	builder.Token.Ts = uint32(1111111)
-	builder.Token.Message[AccessToken.PRI_JOIN_CHANNEL] = expiredTs
-	//fmt.Println(builder)
-	//SimpleTokenBuilder.InitPriviliges(&builder, SimpleTokenBuilder.ROLE_ATTENDEE)
-	//fmt.Println(builder)
-	//SimpleTokenBuilder.SetPrivilege(&builder, AccessToken.PRI_JOIN_CHANNEL, expiredTs)
-	//fmt.Println(builder)
-	//SimpleTokenBuilder.RemovePrivilege(&builder, AccessToken.PRI_JOIN_CHANNEL)
-	//fmt.Println(builder)
+	
+	builder.Token.Message[AccessToken.KJoinChannel] = expiredTs
+	fmt.Println(builder.Token.Message)
+	SimpleTokenBuilder.InitPriviliges(&builder, SimpleTokenBuilder.Role_Attendee)
+	fmt.Println(builder.Token.Message)
+	builder.SetPrivilege(AccessToken.KJoinChannel, expiredTs)
+	fmt.Println(builder.Token.Message)
+	builder.RemovePrivilege(AccessToken.KPublishAudioStream)
+	builder.RemovePrivilege(AccessToken.KPublishVideoStream)
+	builder.RemovePrivilege(AccessToken.KPublishDataStream)
+	fmt.Println(builder.Token.Message)
 
-	if result, err := builder.Token.Build(); err != nil {
+	if result, err := builder.BuildToken(); err != nil {
 		fmt.Println(err)
 	} else {
 		fmt.Println(result)

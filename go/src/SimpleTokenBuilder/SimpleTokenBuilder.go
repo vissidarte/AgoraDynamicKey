@@ -7,52 +7,52 @@ import (
 	"math/rand"
 )
 
-//type Role uint16
+type Role uint16
 const (
-	ROLE_ATTENDEE = 1
-    ROLE_PUBLISHER = 2
-    ROLE_SUBSCRIBER = 3
-    ROLE_ADMIN = 4
+	Role_Attendee = 1
+    Role_Publisher = 2
+    Role_Subscriber = 3
+    Role_Admin = 4
 )
 
 var attendeePrivileges = map[uint16]uint32 {
-	AccessToken.PRI_JOIN_CHANNEL: 0, 
-	AccessToken.PRI_PUBLISH_AUDIO_STREAM: 0, 
-	AccessToken.PRI_PUBLISH_VIDEO_STREAM: 0, 
-	AccessToken.PRI_PUBLISH_DATA_STREAM: 0,
+	AccessToken.KJoinChannel: 0, 
+	AccessToken.KPublishAudioStream: 0, 
+	AccessToken.KPublishVideoStream: 0, 
+	AccessToken.KPublishDataStream: 0,
 }
 var publisherPrivileges = map[uint16]uint32 {
-	AccessToken.PRI_JOIN_CHANNEL: 0, 
-	AccessToken.PRI_PUBLISH_AUDIO_STREAM: 0, 
-	AccessToken.PRI_PUBLISH_VIDEO_STREAM: 0, 
-	AccessToken.PRI_PUBLISH_DATA_STREAM: 0,
-	AccessToken.PRI_PUBLISH_AUDIO_CDN: 0,
-	AccessToken.PRI_PUBLISH_VIDEO_CDN: 0,
-	AccessToken.PRI_INVITE_PUBLISH_AUDIO_STREAM: 0,
-	AccessToken.PRI_INVITE_PUBLISH_VIDEO_STREAM: 0,
-	AccessToken.PRI_INVITE_PUBLISH_DATA_STREAM: 0,
+	AccessToken.KJoinChannel: 0, 
+	AccessToken.KPublishAudioStream: 0, 
+	AccessToken.KPublishVideoStream: 0, 
+	AccessToken.KPublishDataStream: 0,
+	AccessToken.KPublishAudiocdn: 0,
+	AccessToken.KPublishVideoCdn: 0,
+	AccessToken.KInvitePublishAudioStream: 0,
+	AccessToken.KInvitePublishVideoStream: 0,
+	AccessToken.KInvitePublishDataStream: 0,
 }
 
 var subscriberPrivileges = map[uint16]uint32 {
-	AccessToken.PRI_JOIN_CHANNEL: 0, 
-	AccessToken.PRI_REQUEST_PUBLISH_AUDIO_STREAM: 0, 
-	AccessToken.PRI_REQUEST_PUBLISH_VIDEO_STREAM: 0, 
-	AccessToken.PRI_REQUEST_PUBLISH_DATA_STREAM: 0,
+	AccessToken.KJoinChannel: 0, 
+	AccessToken.KRequestPublishAudioStream: 0, 
+	AccessToken.KRequestPublishVideoStream: 0, 
+	AccessToken.KRequestPublishDataStream: 0,
 }
 
 var adminPrivileges = map[uint16]uint32 {
-	AccessToken.PRI_JOIN_CHANNEL: 0, 
-	AccessToken.PRI_PUBLISH_AUDIO_STREAM: 0, 
-	AccessToken.PRI_PUBLISH_VIDEO_STREAM: 0, 
-	AccessToken.PRI_PUBLISH_DATA_STREAM: 0,
-	AccessToken.PRI_ADMINISTRATE_CHANNEL: 0,
+	AccessToken.KJoinChannel: 0, 
+	AccessToken.KPublishAudioStream: 0, 
+	AccessToken.KPublishVideoStream: 0, 
+	AccessToken.KPublishDataStream: 0,
+	AccessToken.KAdministrateChannel: 0,
 }
 
 var RolePrivileges = map[uint16](map[uint16]uint32) {
-	ROLE_ATTENDEE: attendeePrivileges, 
-	ROLE_PUBLISHER: publisherPrivileges, 
-	ROLE_SUBSCRIBER: subscriberPrivileges, 
-	ROLE_ADMIN: adminPrivileges,
+	Role_Attendee: attendeePrivileges, 
+	Role_Publisher: publisherPrivileges, 
+	Role_Subscriber: subscriberPrivileges, 
+	Role_Admin: adminPrivileges,
 }
 
 
@@ -74,19 +74,22 @@ func NewSimpleTokenBuilder(appID, appCertificate, channelName string, uid uint32
     return SimpleTokenBuilder{token}
 }
 
-func InitPriviliges(builder *SimpleTokenBuilder, role uint16) {
+func InitPriviliges(builder *SimpleTokenBuilder, role Role) {
+	rolepri := uint16(role)
 	builder.Token.Message = make(map[uint16]uint32)
-	for key, value := range RolePrivileges[role] {
+	for key, value := range RolePrivileges[rolepri] {
 		builder.Token.Message[key] = value
 	}
 }
 
-func SetPrivilege(builder *SimpleTokenBuilder, privilege uint16, timeoutFromNow uint32) {
-	builder.Token.Message[privilege] = timeoutFromNow
+func (builder SimpleTokenBuilder) SetPrivilege(privilege AccessToken.Privileges, timeoutFromNow uint32) {
+	pri := uint16(privilege)
+	builder.Token.Message[pri] = timeoutFromNow
 }
 
-func RemovePrivilege(builder *SimpleTokenBuilder, privilege uint16) {
-	delete(builder.Token.Message, privilege);
+func (builder SimpleTokenBuilder) RemovePrivilege(privilege AccessToken.Privileges) {
+	pri := uint16(privilege)
+	delete(builder.Token.Message, pri)
 }
 
 func (builder SimpleTokenBuilder) BuildToken() (string,error) {

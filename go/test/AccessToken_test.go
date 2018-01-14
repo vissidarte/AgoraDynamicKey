@@ -15,10 +15,10 @@ func Test_AccessToken(t *testing.T) {
 	uid := uint32(2882341273)
 	expiredTs := uint32(1446455471)
 
-	token := AccessToken.NewAccessToken(appID, appCertificate, channelName, uid)
+	token := AccessToken.CreateAccessToken(appID, appCertificate, channelName, uid)
 	token.Salt = uint32(1)
 	token.Ts = uint32(1111111)
-	token.Message[AccessToken.PRI_JOIN_CHANNEL] = expiredTs
+	token.Message[AccessToken.KJoinChannel] = expiredTs
 
 	if result, err := token.Build(); err != nil {
 		t.Error(err)

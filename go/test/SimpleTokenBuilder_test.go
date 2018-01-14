@@ -19,9 +19,9 @@ func Test_SimpleTokenBuilder(t *testing.T) {
 	builder := SimpleTokenBuilder.NewSimpleTokenBuilder(appID, appCertificate, channelName, uid)
 	builder.Token.Salt = uint32(1)
 	builder.Token.Ts = uint32(1111111)
-	builder.Token.Message[AccessToken.PRI_JOIN_CHANNEL] = expiredTs
+	builder.Token.Message[AccessToken.KJoinChannel] = expiredTs
 
-	if result, err := builder.Token.Build(); err != nil {
+	if result, err := builder.BuildToken(); err != nil {
 		t.Error(err)
 	} else {
 		if result != expected {
