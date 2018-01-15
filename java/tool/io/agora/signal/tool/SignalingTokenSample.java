@@ -1,3 +1,7 @@
+package io.agora.signal.tool;
+
+import io.agora.signal.SignalingToken;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
