@@ -41,7 +41,9 @@ public class AccessToken {
     public byte[] signature;
     public byte[] messageRawContent;
     public long crcChannelName;
+    public byte[] crcChannelNames2;
     public long crcUid;
+    public byte[] crcUids2;
     public PrivilegeMessage message;
 
     public int expiredTs;
@@ -69,13 +71,13 @@ public class AccessToken {
                 , messageRawContent);
         this.crcChannelName = crc32(this.channelName) & 0xffffffff;
         byte[] crcChannelNames = longToBytes(this.crcChannelName);
-        byte[] crcChannelNames2 = new byte[4];
+        this.crcChannelNames2 = new byte[4];
         for (int i = 0; i < 4; i++) {
             crcChannelNames2[i] = crcChannelNames[i];
         }
         this.crcUid = crc32(this.uid) & 0xffffffff;
         byte[] crcUids = longToBytes(this.crcUid);
-        byte[] crcUids2 = new byte[4];
+        this.crcUids2 = new byte[4];
         for (int i = 0; i < 4; i++) {
             crcUids2[i] = crcUids[i];
         }
@@ -116,7 +118,27 @@ public class AccessToken {
         return Utils.hmacSign(appCertificate, baos.toByteArray());
     }
 
-    public class PrivilegeMessage implements Packable {
+    public boolean fromString(String channelKeyString) {
+        if (channelKeyString.substring(0, Utils.VERSION_LENGTH) != getVersion()) {
+            return false;
+        }
+        try {
+            this.appId = channelKeyString.substring(Utils.VERSION_LENGTH, Utils.APP_ID_LENGTH);
+            PackContent packContent = new PackContent();
+            Utils.unpack(channelKeyString.substring(Utils.VERSION_LENGTH + Utils.APP_ID_LENGTH, channelKeyString.length()).getBytes(), packContent);
+            this.signature = packContent.signature;
+            this.crcChannelNames2 = packContent.crcChannelName;
+            this.crcUids2 = packContent.crcUid;
+            this.messageRawContent = packContent.rawMessage;
+            Utils.unpack(this.messageRawContent, this.message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public class PrivilegeMessage implements Packable2 {
         public int salt;
         public int ts;
         public TreeMap<Short, Integer> messages;
@@ -131,13 +153,23 @@ public class AccessToken {
         public ByteBuf marshall(ByteBuf out) {
             return out.put(salt).put(ts).putTreeMap(messages);
         }
+
+        @Override
+        public void unmrshall(ByteBuf in) {
+            this.salt = in.readInt();
+            this.ts = in.readInt();
+            this.messages = in.readTreeMap();
+        }
     }
 
-    public class PackContent implements Packable {
+    public class PackContent implements Packable2 {
         public byte[] signature;
         public byte[] crcChannelName;
         public byte[] crcUid;
         public byte[] rawMessage;
+
+        public PackContent() {
+        }
 
         public PackContent(byte[] signature, byte[] crcChannelName, byte[] crcUid, byte[] rawMessage) {
             this.signature = signature;
@@ -149,6 +181,14 @@ public class AccessToken {
         @Override
         public ByteBuf marshall(ByteBuf out) {
             return out.put(signature).put2(crcChannelName).put2(crcUid).put(rawMessage);
+        }
+
+        @Override
+        public void unmrshall(ByteBuf in) {
+            this.signature = in.readBytes2();
+            this.crcChannelName = in.readBytes3();
+            this.crcUid = in.readBytes3();
+            this.rawMessage = in.readBytes2();
         }
     }
 }

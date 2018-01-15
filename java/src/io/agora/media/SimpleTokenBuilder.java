@@ -1,5 +1,7 @@
 package io.agora.media;
 
+import java.util.Date;
+import java.util.Random;
 import java.util.TreeMap;
 
 import static io.agora.media.AccessToken.Privileges.*;
@@ -77,12 +79,19 @@ public class SimpleTokenBuilder {
         }
     }
 
-    public SimpleTokenBuilder(String appId, String appCertificate, String channelName, String uid, int ts, int salt) {
+    public SimpleTokenBuilder(String appId, String appCertificate, String channelName, String uid) {
         this.appId = appId;
         this.appCertificate = appCertificate;
         this.channelName = channelName;
         this.uid = uid;
+        int ts = (int) (new Date().getTime() / 1000);
+        int salt = new Random().nextInt();
         mTokenCreator = new AccessToken(appId, appCertificate, channelName, uid, ts, salt);
+    }
+
+    public boolean initTokenBuilder(String originToken) {
+        mTokenCreator.fromString(originToken);
+        return true;
     }
 
     public boolean initPriviliges(Role role) {
