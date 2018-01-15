@@ -20,7 +20,7 @@ func main() {
 	
 	builder.Token.Message[AccessToken.KJoinChannel] = expiredTs
 	fmt.Println(builder.Token.Message)
-	SimpleTokenBuilder.InitPriviliges(&builder, SimpleTokenBuilder.Role_Attendee)
+	builder.InitPriviliges(SimpleTokenBuilder.Role_Attendee)
 	fmt.Println(builder.Token.Message)
 	builder.SetPrivilege(AccessToken.KJoinChannel, expiredTs)
 	fmt.Println(builder.Token.Message)

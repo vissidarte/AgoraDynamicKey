@@ -12,7 +12,11 @@ $expiredTs = 1446455471;
 
 
 $expected = "006970CA35de60c44645bbae8a215061b33IACV0fZUBw+72cVoL9eyGGh3Q6Poi8bgjwVLnyKSJyOXR7dIfRBXoFHlEAABAAAAR/QQAAEAAQCvKDdW";
-$token = new AccessToken();
+$builder = new AccessToken($appID, $appCertificate, $channelName, $uid);
+$builder->setPriviledge($Privileges["kJoinChannel"], $expiredTs);
+$builder->salt = $randomInt;
+$builder->ts = $ts;
 
+assertEqual($expected, $builder->build());
 
 ?>
