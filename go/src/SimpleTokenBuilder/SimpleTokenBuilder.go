@@ -74,7 +74,7 @@ func CreateSimpleTokenBuilder(appID, appCertificate, channelName string, uid uin
     return SimpleTokenBuilder{token}
 }
 
-func InitPriviliges(builder *SimpleTokenBuilder, role Role) {
+func (builder SimpleTokenBuilder) InitPriviliges(role Role) {
 	rolepri := uint16(role)
 	builder.Token.Message = make(map[uint16]uint32)
 	for key, value := range RolePrivileges[rolepri] {
