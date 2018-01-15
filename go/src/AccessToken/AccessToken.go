@@ -15,22 +15,23 @@ import (
 	"hash/crc32"
 )
 
+type Privileges uint16
 const (
-	PRI_JOIN_CHANNEL = 1
-    PRI_PUBLISH_AUDIO_STREAM = 2
-    PRI_PUBLISH_VIDEO_STREAM = 3
-    PRI_PUBLISH_DATA_STREAM = 4
+	KJoinChannel = 1
+    KPublishAudioStream = 2
+    KPublishVideoStream = 3
+    KPublishDataStream = 4
 
-	PRI_PUBLISH_AUDIO_CDN = 5
-    PRI_PUBLISH_VIDEO_CDN = 6
-    PRI_REQUEST_PUBLISH_AUDIO_STREAM = 7
-    PRI_REQUEST_PUBLISH_VIDEO_STREAM = 8
-    PRI_REQUEST_PUBLISH_DATA_STREAM = 9
-    PRI_INVITE_PUBLISH_AUDIO_STREAM = 10
-    PRI_INVITE_PUBLISH_VIDEO_STREAM = 11
-	PRI_INVITE_PUBLISH_DATA_STREAM = 12
+	KPublishAudiocdn = 5
+    KPublishVideoCdn = 6
+    KRequestPublishAudioStream = 7
+    KRequestPublishVideoStream = 8
+    KRequestPublishDataStream = 9
+    KInvitePublishAudioStream = 10
+    KInvitePublishVideoStream = 11
+	KInvitePublishDataStream = 12
 	
-	PRI_ADMINISTRATE_CHANNEL = 101
+	KAdministrateChannel = 101
 )
 
 type AccessToken struct {
@@ -48,7 +49,7 @@ func random(min int, max int) int {
     return rand.Intn(max-min) + min
 }
 
-func NewAccessToken(appID, appCertificate, channelName string, uid uint32) AccessToken {
+func CreateAccessToken(appID, appCertificate, channelName string, uid uint32) AccessToken {
 	uidStr := fmt.Sprintf("%d", uid)
 	ts := uint32(time.Now().Unix()) + 24 * 3600
 	salt := uint32(random(1, 99999999))
@@ -56,8 +57,9 @@ func NewAccessToken(appID, appCertificate, channelName string, uid uint32) Acces
     return AccessToken{appID, appCertificate, channelName, uidStr, ts, salt, message}
 }
 
-func (token AccessToken) AddPrivilege(key uint16, secondsFromNow uint32) {
-	token.Message[key] = uint32(time.Now().Unix()) + secondsFromNow
+func (token AccessToken) AddPrivilege(key Privileges, secondsFromNow uint32) {
+	pri := uint16(key)
+	token.Message[pri] = uint32(time.Now().Unix()) + secondsFromNow
 }
 
 func (token AccessToken) Build() (string, error) {
