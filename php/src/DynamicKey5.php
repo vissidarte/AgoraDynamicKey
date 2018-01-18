@@ -14,25 +14,18 @@ $IN_CHANNEL_PERMISSION = 4;
 
     function generateRecordingKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs)
     {
-        global $RECORDING_SERVICE;
-
-        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $RECORDING_SERVICE, array());
+        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $GLOBALS["RECORDING_SERVICE"], array());
     }
 
     function generateMediaChannelKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs)
     {
-        global $MEDIA_CHANNEL_SERVICE;
-
-        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $MEDIA_CHANNEL_SERVICE, array());
+        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $GLOBALS["MEDIA_CHANNEL_SERVICE"], array());
     }
 
     function generateInChannelPermissionKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $permission)
     {
-        global $ALLOW_UPLOAD_IN_CHANNEL;
-        global $IN_CHANNEL_PERMISSION;
-
-        $extra[$ALLOW_UPLOAD_IN_CHANNEL] = $permission;
-        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $IN_CHANNEL_PERMISSION, $extra);
+        $extra[$GLOBALS["ALLOW_UPLOAD_IN_CHANNEL"]] = $permission;
+        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $GLOBALS["IN_CHANNEL_PERMISSION"], $extra);
     }
 
     function generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $serviceType, $extra)
@@ -40,8 +33,7 @@ $IN_CHANNEL_PERMISSION = 4;
         $signature = generateSignature($serviceType, $appID, $appCertificate, $channelName, $uid, $ts, $randomInt, $expiredTs, $extra);
         $content = packContent($serviceType, $signature, hex2bin($appID), $ts, $randomInt, $expiredTs, $extra);
         // echo bin2hex($content);
-        global $version;
-        return $version . base64_encode($content);
+        return $GLOBALS["version"] . base64_encode($content);
     }
 
     function generateSignature($serviceType, $appID, $appCertificate, $channelName, $uid, $ts, $salt, $expiredTs, $extra)
