@@ -245,7 +245,7 @@ inline unsigned char* base64_decode(const char* input, int length,
 inline std::string base64Encode(const std::string& data) {
   char* r = base64_encode((const unsigned char*)data.data(), data.length());
   std::string s(r);
-  delete r;
+  delete[] r;
   return s;
 }
 
@@ -253,7 +253,7 @@ inline std::string base64Decode(const std::string& data) {
   int length = 0;
   const unsigned char* r = base64_decode(data.data(), data.length(), &length);
   std::string s((const char*)r, (size_t)length);
-  delete r;
+  delete[] r;
   return s;
 }
 }
