@@ -31,12 +31,12 @@ class Message
 
     public function packContent()
     {
-        $buffer = unpack("C*", pack("I", $this->salt));
-        $buffer = array_merge($buffer, unpack("C*", pack("I", $this->ts)));
-        $buffer = array_merge($buffer, unpack("C*", pack("S", sizeof($this->msgs))));
+        $buffer = unpack("C*", pack("V", $this->salt));
+        $buffer = array_merge($buffer, unpack("C*", pack("V", $this->ts)));
+        $buffer = array_merge($buffer, unpack("C*", pack("v", sizeof($this->msgs))));
         foreach ($this->msgs as $key => $value) {
-            $buffer = array_merge($buffer, unpack("C*", pack("S", $key)));
-            $buffer = array_merge($buffer, unpack("C*", pack("I", $value)));
+            $buffer = array_merge($buffer, unpack("C*", pack("v", $key)));
+            $buffer = array_merge($buffer, unpack("C*", pack("V", $value)));
         }
         return $buffer;
     }
@@ -81,7 +81,7 @@ class AccessToken
         $crc_channel_name = crc32($this->channelName) & 0xffffffff;
         $crc_uid = crc32($this->uid) & 0xffffffff;
 
-        $content = array_merge(unpack("C*", packString($sig)), unpack("C*", pack("I", $crc_channel_name)), unpack("C*", pack("I", $crc_uid)), unpack("C*", pack("S", count($msg))), $msg);
+        $content = array_merge(unpack("C*", packString($sig)), unpack("C*", pack("V", $crc_channel_name)), unpack("C*", pack("V", $crc_uid)), unpack("C*", pack("v", count($msg))), $msg);
         $version = "006";
         $ret = $version . $this->appID . base64_encode(implode(array_map("chr", $content)));
         return $ret;
@@ -90,5 +90,5 @@ class AccessToken
 
 function packString($value)
 {
-    return pack("S", strlen($value)) . $value;
+    return pack("v", strlen($value)) . $value;
 }
