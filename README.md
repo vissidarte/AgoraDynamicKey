@@ -18,7 +18,6 @@ std::string token = key.Build();
 ### Note
 
 Languages not available for now.
-* Java
 * PHP
 
 ## Dynamic Key
