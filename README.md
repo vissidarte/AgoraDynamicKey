@@ -1,10 +1,13 @@
 # AgoraDynamicKey
 
+This page describes the authentication mechanism used by the Agora SDK, as well as providing the related code for generating AccessToken (v2.1.0) or Dynamic Key (v2.0.2 or earlier).
+
+
 ## AccessToken
 
-AccessToken is more powerful than the original Dynamic Key. It can include several privileges in one token which can be sent to various services from Agora.
+AccessToken is more powerful than the legacy Dynamic Key. It encapsulates several privileges in one token to cover various services provided by Agora.
 
-AccessToken is available from SDK 2.1.0 or later.
+AccessToken is available as of SDK 2.1.0.
 
 Sample usage,
 
@@ -14,27 +17,65 @@ a.AddPrivilege(AccessToken::kJoinChannel);
 a.AddPrivilege(AccessToken::kPublishAudioStream);
 std::string token = key.Build();
 ```
+Sample Code for generating AccessToken are available on the following platforms:
 
+ + C++
+ + GO
+ + Java
+ + Node.js
+ + Python
+ + PHP
 
+### C++
+
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/cpp/src/SimpleTokenBuilder.h
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/cpp/src/AccessToken.h
+
+### GO
+
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/go/src/SimpleTokenBuilder/SimpleTokenBuilder.go
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/go/src/SimpleTokenBuilder/AccessToken.go
+
+### Java
+
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/java/src/io/agora/media/SimpleTokenBuilder.java
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/java/src/io/agora/media/AccessToken.java
+
+### Node.js
+
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/nodejs/src/SimpleTokenBuilder.js
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/nodejs/src/AccessToken.js
+
+### Python
+
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/python/src/SimpleTokenBuilder.py
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/python/src/AccessToken.py
+
+### PHP
+
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/php/src/SimpleTokenBuilder.php
++ https://github.com/AgoraIO/AgoraDynamicKey/blob/master/php/src/AccessToken.php
 
 ## Dynamic Key
 
-For joining media channel, use generateMediaChannelKey.
+The Dynamic Key is used by Agora SDK of versions earlier than 2.1.
 
-For recording service, use generateRecordingKey.
+ + To join a media channel, use generateMediaChannelKey.
+ + For recording services, use generateRecordingKey.
 
-Here are sample for C++, Go, Java, Nodejs, PHP and Python.
+Following are samples for C++, Go, Java, Nodejs, PHP and Python.
 
-## SDK and Dynamic Key Compatibility
-Note: It is recommended for you to upgrade to DynamicKey5 ASAP.
+### SDK and Dynamic Key Compatibility
 
-### If you need to verify user permission in channel:
+If you are using the Agora SDK of a version earlier than 2.1 and looking at implementing the function of publishing with a permission key, Agora recommends that you upgrade to DynamicKey5.
+
+#### To verify user permission in channel:
 | Dynamic Key Version | UID | SDK Version  |
 |---|---|---|
 | DynamicKey5  | specify the permission | 1.7.0 or later  |
 
 
-### If you need to verify the User ID:
+#### To verify the User ID:
 
 | Dynamic Key Version | UID | SDK Version  |
 |---|---|---|
@@ -43,7 +84,7 @@ Note: It is recommended for you to upgrade to DynamicKey5 ASAP.
 | DynamicKey3  | specify uid of user  | 1.2.3 or later  |
 | DynamicKey  |  NA |  NA |
 
-### If you do not need to verify the User ID:
+#### If you do not need to verify the User ID:
 
 | Dynamic Key Version | UID | SDK Version  |
 |---|---|---|
@@ -54,7 +95,7 @@ Note: It is recommended for you to upgrade to DynamicKey5 ASAP.
 
 
 
-## C++
+### C++
 ```c
 /**
  * build with command:
@@ -87,7 +128,7 @@ int main(int argc, char const *argv[]) {
 
 ```
 
-## Go
+### Go
 ```go
 package main
 
@@ -131,7 +172,7 @@ func main() {
 }
 ```
 
-## Java
+### Java
 ```java
 package io.agora.media.sample;
 
@@ -158,7 +199,7 @@ public class DynamicKey5Sample {
 }
 ```
 
-## Node.js
+### Node.js
 ```javascript
 var DynamicKey5 = require('../src/DynamicKey5');
 var appID  = "970ca35de60c44645bbae8a215061b33";
@@ -177,7 +218,7 @@ console.log("5 in channel permission key(audio video upload): "
     + DynamicKey5.generateInChannelPermissionKey(appID, appCertificate, channel, ts, r, uid, expiredTs, DynamicKey5.audioVideoUpload));
 ```
 
-## PHP
+### PHP
 ```php
 <?php
 include "../src/DynamicKey5.php";
@@ -203,7 +244,7 @@ echo generateInChannelPermissionKey($appID, $appCertificate, $channelName, $ts, 
 
 ```
 
-## Python
+### Python
 ```python
 import sys
 import os
@@ -232,7 +273,7 @@ if __name__ == "__main__":
 
 ```
 
-## Ruby
+### Ruby
 ```ruby
 require '../src/dynamic_key5'
 app_id = "970ca35de60c44645bbae8a215061b33"
@@ -258,4 +299,3 @@ puts "in_channel_permission_key1:#{in_channel_permission_key1}"
 puts "in_channel_permission_key2:#{in_channel_permission_key2}"
 
 ```
-
